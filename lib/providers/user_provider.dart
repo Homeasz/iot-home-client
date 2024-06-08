@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:homeasz/models/user_model.dart';
-import 'package:homeasz/services/auth_service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:homeasz/services/user_service.dart';
+import 'package:provider/provider.dart';
 
-class AuthProvider extends ChangeNotifier {
+class UserProvider extends ChangeNotifier {
   User? _user;
 
   User? get user => _user;
@@ -10,7 +12,7 @@ class AuthProvider extends ChangeNotifier {
   Future<void> login(String email, String password) async {
     // call the login API
     // if successful, set the user
-    _user = await AuthService().login(email, password);
+    _user = await UserService().login(email, password);
     notifyListeners();
   }
 
@@ -18,7 +20,7 @@ class AuthProvider extends ChangeNotifier {
     // call the signup API
     // if successful, set the user
     try {
-      _user = await AuthService().signup(email, password);
+      _user = await UserService().signup(email, password);
       notifyListeners();
     } catch (e) {
       rethrow;
@@ -26,13 +28,13 @@ class AuthProvider extends ChangeNotifier {
   }
 
   Future<void> logout() async {
-    await AuthService().logout();
+    await UserService().logout();
     _user = null;
     notifyListeners();
   }
 
   Future<bool?> isAuthenticated() async {
-    final isAuthenticated = await AuthService().isAuthenticated();
+    final isAuthenticated = await UserService().isAuthenticated();
     return isAuthenticated;
   }
 }
