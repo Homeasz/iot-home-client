@@ -17,8 +17,8 @@ class AuthService {
     return !isExpired;
   }
 
-  String? getToken() {
-    final SharedPreferences prefs = SharedPreferences.getInstance() as SharedPreferences;
+  Future<String?> getToken() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
     return prefs.getString('token');
   }
 

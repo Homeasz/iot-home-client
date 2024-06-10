@@ -35,7 +35,7 @@ class _SignUpPageState extends State<SignUpPage> {
       return;
     }
     try {
-      await authProvider.signup(email, password);
+      await authProvider.signup(context, email, password);
       if (authProvider.user != null) {
         Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
       } else {

@@ -1,5 +1,4 @@
 // lib/models/user.dart
-import 'dart:ffi';
 import 'dart:convert';
 
 class User {
