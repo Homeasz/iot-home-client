@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:homeasz/pages/home_page.dart';
 import 'package:homeasz/providers/auth_provider.dart';
 import 'package:homeasz/services/auth_service.dart';
-import 'package:homeasz/pages/login_or_singup_page.dart';
+import 'package:homeasz/pages/auth/login_or_singup_page.dart';
 import 'package:provider/provider.dart';
 
 class AuthPage extends StatefulWidget {

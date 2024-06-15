@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:homeasz/models/user_model.dart';
+import 'package:homeasz/models/auth_model.dart';
 import 'package:homeasz/services/auth_service.dart';
 import 'package:provider/provider.dart';
 import 'package:homeasz/providers/user_provider.dart';
 
 class AuthProvider extends ChangeNotifier {
-  User? _user;
+  AuthUser? _authUser;
 
-  User? get user => _user;
+  AuthUser? get user => _authUser;
 
   Future<void> login(BuildContext context, email, String password) async {
     // call the login API
     // if successful, set the user
-    _user = await AuthService().login(email, password);
-    if (_user != null) {
+    _authUser = await AuthService().login(email, password);
+    if (_authUser != null) {
       Provider.of<UserProvider>(context, listen: false).getUser();
     }
     notifyListeners();
@@ -24,8 +24,8 @@ class AuthProvider extends ChangeNotifier {
     // call the signup API
     // if successful, set the user
     try {
-      _user = await AuthService().signup(email, password);
-      if (_user != null) {
+      _authUser = await AuthService().signup(email, password);
+      if (_authUser != null) {
         Provider.of<UserProvider>(context, listen: false).getUser();
       }
       notifyListeners();
@@ -36,7 +36,7 @@ class AuthProvider extends ChangeNotifier {
 
   Future<void> logout() async {
     await AuthService().logout();
-    _user = null;
+    _authUser = null;
     notifyListeners();
   }
 

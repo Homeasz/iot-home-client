@@ -34,10 +34,13 @@ class _AddESPPageState extends State<AddESPPage> {
       isCameraInitialized = true;
     });
   }
-  void connect() async{
 
+  void connect() async {
+    final ssid = ssidController.text;
+    final password = passwordController.text;
+    bool? connected = await WiFiForIoTPlugin.connect(ssid, password:password);
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -55,7 +58,7 @@ class _AddESPPageState extends State<AddESPPage> {
                     MyCamera(camera: firstCamera!)
                   else
                     const CircularProgressIndicator(),
-                  
+
                   // horizontal divider with or text and border padding
                   const Padding(
                     padding: EdgeInsets.all(8.0),

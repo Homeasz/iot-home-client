@@ -4,7 +4,7 @@ import 'package:homeasz/components/my_button.dart';
 import 'package:homeasz/utils/utils.dart';
 import 'package:provider/provider.dart';
 
-import '../providers/auth_provider.dart';
+import '../../providers/auth_provider.dart';
 
 class LoginPage extends StatefulWidget {
   final Function()? onTap;
@@ -46,7 +46,6 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     final authProvider = Provider.of<AuthProvider>(context);
     return Scaffold(
-      backgroundColor: Colors.grey[300],
       body: Center(
         child: SafeArea(
           child: Center(
@@ -65,10 +64,7 @@ class _LoginPageState extends State<LoginPage> {
                   const SizedBox(height: 50),
                   Text(
                     'Log In to HomeasZ!',
-                    style: TextStyle(
-                      color: Colors.grey[700],
-                      fontSize: 16,
-                    ),
+                    style: Theme.of(context).textTheme.headlineMedium,
                   ),
                   const SizedBox(height: 25),
 
@@ -96,7 +92,9 @@ class _LoginPageState extends State<LoginPage> {
                       children: [
                         Text(
                           'Forgot Password?',
-                          style: TextStyle(color: Colors.grey[600]),
+                          style: Theme.of(context).textTheme.bodySmall?.apply(
+                            color: Theme.of(context).primaryColor,
+                          ),
                         ),
                       ],
                     ),
@@ -117,7 +115,7 @@ class _LoginPageState extends State<LoginPage> {
                         Expanded(
                           child: Divider(
                             thickness: 0.5,
-                            color: Colors.grey[400],
+                            color: Theme.of(context).primaryColor,
                           ),
                         ),
                         Padding(
@@ -128,16 +126,15 @@ class _LoginPageState extends State<LoginPage> {
                               children: [
                                 Text(
                                   'Not a member?',
-                                  style: TextStyle(color: Colors.grey[700]),
+                                  style: Theme.of(context).textTheme.bodySmall,
                                 ),
                                 const SizedBox(width: 4),
                                 GestureDetector(
                                   onTap: widget.onTap,
-                                  child: const Text(
+                                  child: Text(
                                     'Register now',
-                                    style: TextStyle(
-                                      color: Colors.blue,
-                                      fontWeight: FontWeight.bold,
+                                    style: Theme.of(context).textTheme.bodySmall?.apply(
+                                      color: Theme.of(context).primaryColor,
                                     ),
                                   ),
                                 ),
@@ -146,7 +143,7 @@ class _LoginPageState extends State<LoginPage> {
                         Expanded(
                           child: Divider(
                             thickness: 0.5,
-                            color: Colors.grey[400],
+                            color: Theme.of(context).primaryColor,
                           ),
                         ),
                       ],

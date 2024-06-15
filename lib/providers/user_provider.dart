@@ -1,23 +1,30 @@
 import 'package:flutter/material.dart';
-import 'package:homeasz/models/profile_model.dart';
 import 'package:homeasz/models/user_model.dart';
+import 'package:homeasz/models/auth_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:homeasz/services/user_service.dart';
 import 'package:provider/provider.dart';
 
 class UserProvider extends ChangeNotifier {
-  Profile? _profile;
+  User? _user;
 
-  Profile? get profile => _profile;
+  User? get user => _user;
+
+  final UserService userService = UserService();
 
   Future<void> getUser() async {
-    final userService = UserService();
     final user = await userService.getUser();
     if (user != null) {
-      _profile = user;
+      _user = user;
       notifyListeners();
     }
   }
 
-  
+  Future<void> updateUser(User user) async {
+    final updatedUser = await userService.updateUser(user);
+    if (updatedUser != null) {
+      _user = updatedUser;
+      notifyListeners();
+    }
+  }
 }

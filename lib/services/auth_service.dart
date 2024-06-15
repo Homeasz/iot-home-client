@@ -1,10 +1,9 @@
 // lib/services/auth_service.dart
-import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import '../models/user_model.dart';
-import '../utils/constants.dart';
+import 'package:homeasz/models/auth_model.dart';
+import 'package:homeasz/utils/constants.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 
 class AuthService {
@@ -22,7 +21,7 @@ class AuthService {
     return prefs.getString('token');
   }
 
-  Future<User?> login(String email, String password) async {
+  Future<AuthUser?> login(String email, String password) async {
     final response = await http.post(
       Uri.parse('$BASE_URL/auth/login'),
       body: jsonEncode({'email': email, 'password': password}),
@@ -31,13 +30,13 @@ class AuthService {
     if (response.statusCode == 200) {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       prefs.setString('token', response.headers['set-cookie']!);
-      return User.fromJson(response.body);
+      return AuthUser.fromJson(response.body);
     } else {
       return null;
     }
   }
 
-  Future<User?> signup(String email, String password) async {
+  Future<AuthUser?> signup(String email, String password) async {
     final response = await http.post(
       Uri.parse('$BASE_URL/auth/signup'),
       body: jsonEncode({'email': email, 'password': password}),
@@ -45,7 +44,7 @@ class AuthService {
     );
 
     if (response.statusCode == 201) {
-      return User.fromJson(response.body);
+      return AuthUser.fromJson(response.body);
     } else {
       throw Exception('User already exists, try signing in');
     }
