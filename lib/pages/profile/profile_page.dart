@@ -12,20 +12,23 @@ import 'package:provider/provider.dart';
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({Key? key}) : super(key: key);
 
-  
-
   @override
   Widget build(BuildContext context) {
     final ThemeProvider themeProvider = Provider.of<ThemeProvider>(context);
     final UserProvider userProvider = Provider.of<UserProvider>(context);
     final AuthProvider authProvider = Provider.of<AuthProvider>(context);
+
+    if (userProvider.user == null) {
+      userProvider.getUser();
+    }
+
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
             onPressed: () => Navigator.pop(context),
             icon: const Icon(LineAwesomeIcons.angle_left_solid)),
-        title:
-            Text("User Profile", style: Theme.of(context).textTheme.headlineSmall),
+        title: Text("User Profile",
+            style: Theme.of(context).textTheme.headlineSmall),
         actions: [
           IconButton(
               onPressed: () {
@@ -50,15 +53,17 @@ class ProfileScreen extends StatelessWidget {
                       child: Container(
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(100),
-                          border: Border.all(color: Theme.of(context).primaryColor, width: 2),
+                          border: Border.all(
+                              color: Theme.of(context).primaryColor, width: 2),
                         ),
                         child: ClipRRect(
-                            borderRadius: BorderRadius.circular(100),
-                            // child: const Image(image: AssetImage(tProfileImage))),
-                            child: const Icon(
-                                LineAwesomeIcons.user_astronaut_solid,
-                                size: 60),
-                              ),
+                          borderRadius: BorderRadius.circular(100),
+                          // child: const Image(image: AssetImage(tProfileImage))),
+                          child: const Icon(
+                            LineAwesomeIcons.user_astronaut_solid,
+                            size: 60,
+                          ),
+                        ),
                       )),
                   Positioned(
                     bottom: 0,
@@ -80,14 +85,15 @@ class ProfileScreen extends StatelessWidget {
               ),
               const SizedBox(height: 10),
               Consumer<UserProvider>(
-                builder: (context, userProvider, child){
-                  return Text("${userProvider.user!.firstName} ${userProvider.user!.lastName}",
+                builder: (context, userProvider, child) {
+                  return Text(
+                      "${userProvider.user!.firstName} ${userProvider.user!.lastName}",
                       style: Theme.of(context).textTheme.headlineSmall);
                 },
               ),
-              Text(userProvider.user!.email,
-                  style: Theme.of(context).textTheme.bodySmall),
-              const SizedBox(height: 20),
+              // Text(userProvider.user!.email,
+              //     style: Theme.of(context).textTheme.bodySmall),
+              // const SizedBox(height: 20),
 
               /// -- BUTTON
               SizedBox(

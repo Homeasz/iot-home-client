@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:homeasz/models/room_model.dart';
 import 'package:homeasz/models/user_model.dart';
-import 'package:homeasz/models/auth_model.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:homeasz/services/user_service.dart';
-import 'package:provider/provider.dart';
 
 class UserProvider extends ChangeNotifier {
   User? _user;
@@ -27,4 +25,6 @@ class UserProvider extends ChangeNotifier {
       notifyListeners();
     }
   }
+
+
 }

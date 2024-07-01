@@ -1,31 +1,34 @@
-import 'package:flutter/material.dart';
-
-class Room {
+class SwitchModel {
   final int id;
   final String name;
-  final int userId;
+  bool state;
+  final int espId;
   final DateTime createdAt;
   final DateTime updatedAt;
 
-  Room({
+  SwitchModel({
     required this.id,
     required this.name,
-    required this.userId,
+    required this.state,
+    required this.espId,
     required this.createdAt,
     required this.updatedAt,
   });
 
-  factory Room.fromMap(Map<String, dynamic> map) {
-    return Room(
+  factory SwitchModel.fromMap(Map<String, dynamic> map) {
+    return SwitchModel(
       id: map['id'] ?? 0,
       name: map['name'] ?? '',
-      userId: map['userId'] ?? 0,
+      state: map['state'] ?? false,
+      espId: map['espId'] ?? 0,
       createdAt: DateTime.parse(map['createdAt']),
       updatedAt: DateTime.parse(map['updatedAt']),
     );
   }
 
-  factory Room.fromJson(Map<String, dynamic> json) {
-    return Room.fromMap(json);
+  bool get status => state;
+
+  set status(bool status) {
+    state = status;
   }
 }

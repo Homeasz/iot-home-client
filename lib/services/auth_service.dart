@@ -10,6 +10,7 @@ class AuthService {
   Future<bool?> isAuthenticated() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('token');
+    // print(token);
     if (token == null) return false;
 
     final isExpired = JwtDecoder.isExpired(token);
@@ -29,7 +30,12 @@ class AuthService {
     );
     if (response.statusCode == 200) {
       SharedPreferences prefs = await SharedPreferences.getInstance();
-      prefs.setString('token', response.headers['set-cookie']!);
+      final String? rawCookie = response.headers['set-cookie'];
+      if (rawCookie != null) {
+        final jwt = rawCookie.split(';').firstWhere((element) => element.contains('jwt='));
+        prefs.setString('token', jwt);
+      }
+      // prefs.setString('token', response.headers['set-cookie']!);
       return AuthUser.fromJson(response.body);
     } else {
       return null;

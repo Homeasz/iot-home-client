@@ -45,7 +45,9 @@ dependencies:
   path: ^1.9.0
   wifi_scan: ^0.4.1
   line_awesome_flutter: ^3.0.1
-  get: ^4.6.6
+  # get: ^4.6.6
+  qr_code_scanner: ^1.0.1
+
 
 dev_dependencies:
   flutter_test:

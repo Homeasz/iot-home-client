@@ -47,9 +47,13 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Explanation on why the microphone access is needed.</string>
+	<key>io.flutter.embedded_views_preview</key>
+	<true/>
 	<key>NSCameraUsageDescription</key>
-<string>Explanation on why the camera access is needed.</string>
-<key>NSMicrophoneUsageDescription</key>
-<string>Explanation on why the microphone access is needed.</string>
+	<string>This app needs camera access to scan QR codes</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Explanation on why the camera access is needed.</string>
 </dict>
 </plist>
