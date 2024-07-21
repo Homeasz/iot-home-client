@@ -7,6 +7,7 @@ import 'package:homeasz/utils/constants.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 
 class AuthService {
+  
   Future<bool?> isAuthenticated() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('token');
@@ -38,6 +39,7 @@ class AuthService {
       // prefs.setString('token', response.headers['set-cookie']!);
       return AuthUser.fromJson(response.body);
     } else {
+      print(response.body);
       return null;
     }
   }
@@ -60,4 +62,5 @@ class AuthService {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.remove('token');
   }
+
 }

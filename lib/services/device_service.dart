@@ -29,7 +29,8 @@ class DeviceService {
       }
     }
   }
-  Future <bool> switchStatus(String switchId) async {
+
+  Future<bool> switchStatus(String switchId) async {
     final token = await _authService.getToken();
     if (token != null) {
       final response = await http.post(
@@ -49,7 +50,7 @@ class DeviceService {
     return false;
   }
 
-  Future <void> toggleSwitch(String switchId, bool newState) async {
+  Future<void> toggleSwitch(String switchId, bool newState) async {
     final token = await _authService.getToken();
     if (token != null) {
       final response = await http.post(
@@ -58,10 +59,8 @@ class DeviceService {
           'Cookie': token,
           'Content-Type': 'application/json',
         },
-        body: jsonEncode(<String, dynamic>{
-          'switchId': switchId,
-          'toggleState': newState
-        }),
+        body: jsonEncode(
+            <String, dynamic>{'switchId': switchId, 'toggleState': newState}),
       );
       if (response.statusCode == 200) {
         print('Switch toggled successfully');
@@ -70,5 +69,21 @@ class DeviceService {
       }
     }
   }
-  
+
+  // Future<void> deleteSwitch(String switchId) async {
+  //   final token = await _authService.getToken();
+  //   if (token == null) return;
+  //   final response = await http.delete(
+  //     Uri.parse('$DEVICE_BASE_URL/switch/$switchId'),
+  //     headers: <String, String>{
+  //       'Cookie': token,
+  //       'Content-Type': 'application/json',
+  //     },
+  //   );
+  //   if (response.statusCode == 200) {
+  //     print('Switch deleted successfully');
+  //   } else {
+  //     print('Failed to delete switch');
+  //   }
+  // }
 }

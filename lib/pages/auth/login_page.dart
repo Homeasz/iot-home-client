@@ -34,6 +34,7 @@ class _LoginPageState extends State<LoginPage> {
     if (authProvider.user != null) {
       Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
     } else {
+      Navigator.pop(context);
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Invalid email or password'),

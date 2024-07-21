@@ -85,7 +85,9 @@ class RoomService {
       if (response.statusCode == 200) {
         final Map<String, dynamic> body = jsonDecode(response.body);
         final List<dynamic> switches = body['data'];
-        return switches.map((switchData) => SwitchModel.fromMap(switchData)).toList();
+        return switches
+            .map((switchData) => SwitchModel.fromMap(switchData))
+            .toList();
       } else {
         print(response.body);
       }
@@ -115,5 +117,48 @@ class RoomService {
       }
     }
     return false;
+  }
+
+  Future<bool> deleteSwitch(String switchId) async {
+    final token = await _authService.getToken();
+    if (token == null) return false;
+    final response = await http.delete(
+      Uri.parse('$DEVICE_BASE_URL/switch/$switchId'),
+      headers: <String, String>{
+        'Cookie': token,
+        'Content-Type': 'application/json',
+      },
+    );
+    if (response.statusCode == 200) {
+      print('Switch deleted successfully');
+      return true;
+    } else {
+      print('Failed to delete switch');
+    }
+    return false;
+  }
+
+  Future<SwitchModel?> editSwitch(String switchId, String switchName) async {
+    final token = await _authService.getToken();
+    if (token != null) {
+      final response = await http.put(
+        Uri.parse('$DEVICE_BASE_URL/switch/$switchId'),
+        headers: <String, String>{
+          'Cookie': token,
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode(<String, String>{
+          'switchId': switchId,
+          'switchName': switchName,
+        }),
+      );
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> body = jsonDecode(response.body);
+        return SwitchModel.fromMap(body['switch']);
+      } else {
+        print(response.body);
+      }
+    }
+    return null;
   }
 }

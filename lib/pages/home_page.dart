@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:homeasz/components/room_tile.dart';
 import 'package:homeasz/models/user_model.dart';
 import 'package:homeasz/models/room_model.dart';
@@ -6,6 +7,7 @@ import 'package:homeasz/providers/auth_provider.dart';
 import 'package:homeasz/providers/data_provider.dart';
 import 'package:homeasz/providers/user_provider.dart';
 import 'package:provider/provider.dart';
+// import 'package:network_info_plus/network_info_plus.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -16,6 +18,8 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   bool _isLoading = true;
+
+  // final info = NetworkInfo();
 
   @override
   void initState() {
@@ -31,11 +35,9 @@ class _HomePageState extends State<HomePage> {
 
     await userProvider.getUser();
 
-
     final AuthProvider authProvider =
         Provider.of<AuthProvider>(context, listen: false);
 
-    
     if (userProvider.user == null) {
       await authProvider.logout();
       Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
@@ -49,6 +51,8 @@ class _HomePageState extends State<HomePage> {
     setState(() {
       _isLoading = false;
     });
+    // final wifiName = await info.getWifiName();
+    // print(wifiName);
   }
 
   void logout(AuthProvider authProvider) async {
@@ -110,7 +114,16 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final UserProvider userProvider = Provider.of<UserProvider>(context);
     final List<Room> rooms = Provider.of<DataProvider>(context).rooms;
+
+    if (_isLoading || userProvider.user == null) {
+      return const Scaffold(
+        body: Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
 
     return Scaffold(
       key: scaffoldKey,
@@ -129,51 +142,84 @@ class _HomePageState extends State<HomePage> {
         //         colors: <Color>[Colors.blue, Colors.black]),
         //   ),
         // ),
-        // elevation: 10,
+        elevation: 10,
 
         actions: [
-          // text with gesture detector and icon
-          GestureDetector(
-            onTap: openCreateRoomPage,
-            child: const Padding(
-              padding: EdgeInsets.all(8.0),
-              child: Row(
-                children: [
-                  Text(
-                    'Add Room',
-                    style: TextStyle(color: Colors.white, fontSize: 15),
-                  ),
-                ],
-              ),
-            ),
+          // drop down menu
+          PopupMenuButton(
+
+            icon: const Icon(Icons.add),
+            itemBuilder: (context) {
+              return [
+                const PopupMenuItem(
+                  value: 'add_esp',
+                  textStyle: TextStyle(color: Colors.blue),
+                  child: Text('Add ESP'),
+                ),
+                const PopupMenuItem(
+                  value: 'list_esp',
+                  child: Text('List ESPs'),
+                ),
+                const PopupMenuItem(
+                  value: 'add_room',
+                  child: Text('Add Room'),
+                ),
+              ];
+            },
+            onSelected: (value) {
+              if (value == 'add_esp') {
+                openAddESPPage();
+              } else if (value == 'list_esp') {
+                openListESPPage();
+              } else if (value == 'add_room') {
+                openCreateRoomPage();
+              }
+            },
           ),
         ],
       ),
-      body: _isLoading
+
+      body: rooms.isEmpty
           ? const Center(
-              child: CircularProgressIndicator(),
+              child: Text('No rooms found, add room'),
             )
-          : rooms.length == 0
-              ? const Center(
-                  child: Text('No rooms found'),
-                )
-              : SizedBox(
-                  height: MediaQuery.of(context).size.height,
-                  child: GridView.builder(
-                    shrinkWrap: true,
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      crossAxisSpacing: 10,
-                      mainAxisSpacing: 10,
-                    ),
-                    itemBuilder: (context, index) {
-                      return RoomCard(
-                          index: index, roomName: rooms[index].name);
-                    },
-                    itemCount: rooms.length,
-                  ),
+          : SizedBox(
+              height: MediaQuery.of(context).size.height,
+              child: GridView.builder(
+                shrinkWrap: true,
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  crossAxisSpacing: 10,
+                  mainAxisSpacing: 10,
                 ),
+                itemBuilder: (context, index) {
+                  return RoomCard(index: index, roomName: rooms[index].name);
+                },
+                itemCount: rooms.length,
+              ),
+            ),
+      // bottomNavigationBar: BottomNavigationBar(
+      //   items: const [
+      //     BottomNavigationBarItem(
+      //       icon: Icon(Icons.add),
+      //       label: 'Add Room',
+      //     ),
+      //     BottomNavigationBarItem(
+      //       icon: const Icon(Icons.person),
+      //       label: 'Profile',
+      //     ),
+      //   ],
+      //   onTap: (index) {
+      //     if (index == 0) {
+      //       openCreateRoomPage();
+      //     } else {
+      //       openProfilePage();
+      //     }
+      //     // else if (index == 3) {
+      //     //   openCreateRoomPage();
+      //     // }
+      //   },
+      // ),
     );
   }
 }

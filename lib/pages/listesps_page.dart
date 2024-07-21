@@ -102,6 +102,10 @@ class _ListESPsPageState extends State<ListESPsPage> {
       home: Scaffold(
         appBar: AppBar(
           title: const Text('Plugin example app'),
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back),
+            onPressed: () => Navigator.pop(context),
+          ),
           actions: [
             _buildToggle(
                 label: "Check can?",

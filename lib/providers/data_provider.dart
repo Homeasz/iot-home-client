@@ -63,4 +63,28 @@ class DataProvider extends ChangeNotifier {
       }
     }
   }
+  Future addSwitchBoard(int roomId, String name) async {
+    
+  }
+
+  Future deleteSwitch(String switchId) async {
+    final response = await roomService.deleteSwitch(switchId);
+    if (response) {
+      switches.removeWhere((element) => element.id.toString() == switchId);
+      notifyListeners();
+    }
+  }
+
+  Future editSwitch(String switchId, String switchName) async {
+    final response = await roomService.editSwitch(switchId, switchName);
+    if (response != null) {
+      final switchIndex =
+          switches.indexWhere((element) => element.id.toString() == switchId);
+      if (switchIndex != -1) {
+        switches[switchIndex] = response;
+        notifyListeners();
+      }
+    }
+  }
+
 }

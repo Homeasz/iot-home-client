@@ -8,6 +8,9 @@ final ThemeData customTheme = ThemeData(
     shadowColor: Colors.black,
     scrolledUnderElevation: 5,
   ),
+  bottomAppBarTheme: const BottomAppBarTheme(
+    color: Color.fromARGB(255, 202, 189, 168),
+  ),
   secondaryHeaderColor: const Color(0xFFF1E6FF),
   scaffoldBackgroundColor: const Color(0xFFF8F8F8),
   fontFamily: 'Roboto',
@@ -42,6 +45,9 @@ final ThemeData lightTheme = customTheme.copyWith(
     shadowColor: Colors.black,
     scrolledUnderElevation: 5,
   ),
+  bottomAppBarTheme: const BottomAppBarTheme(
+    color: Color.fromARGB(255, 202, 189, 168),
+  ),
   scaffoldBackgroundColor: const Color(0xFFF8F8F8),
   secondaryHeaderColor: const Color(0xFFF1E6FF),
   textTheme: const TextTheme(
@@ -74,6 +80,14 @@ final ThemeData darkTheme = customTheme.copyWith(
     actionsIconTheme: IconThemeData(color: Colors.white),
     iconTheme: IconThemeData(color: Colors.white),
     titleTextStyle: TextStyle(color: Color.fromARGB(255, 181, 169, 169), fontSize: 20, fontWeight: FontWeight.bold),
+  ),
+  bottomAppBarTheme: const BottomAppBarTheme(
+    color: Color.fromARGB(255, 48, 30, 66),
+  ),
+  bottomNavigationBarTheme: BottomNavigationBarThemeData(
+    backgroundColor: Color.fromARGB(255, 48, 30, 66),
+    selectedItemColor: Color(0xFFBB86FC),
+    unselectedItemColor: Color(0xFFBB86FC),
   ),
   textSelectionTheme: const TextSelectionThemeData(
     cursorColor: Color(0xFFBB86FC),

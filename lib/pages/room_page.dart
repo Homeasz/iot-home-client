@@ -48,6 +48,40 @@ class _RoomPageState extends State<RoomPage> {
     dataProvider.toggleSwitch(switchModel.id.toString(), !switchModel.state);
   }
 
+  Future openDialog (BuildContext context) async {
+    final DataProvider dataProvider = Provider.of<DataProvider>(context, listen: false);
+    final TextEditingController switchBoardNameController = TextEditingController();
+    return showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Add Switch Board'),
+          content:  TextField(
+            decoration: const InputDecoration(
+
+            ),
+            controller: switchBoardNameController,
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text('Cancel'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                dataProvider.addSwitchBoard(widget.roomIndex, switchBoardNameController.text);
+                Navigator.pop(context);
+              },
+              child: const Text('Add'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final DataProvider dataProvider = Provider.of<DataProvider>(context);
@@ -97,13 +131,13 @@ class _RoomPageState extends State<RoomPage> {
                   return Dismissible(
                     key: Key(switchModel.id.toString()),
                     onDismissed: (direction) {
-                      // dataProvider.deleteSwitch(switchModel.id.toString());
+                      dataProvider.deleteSwitch(switchModel.id.toString());
                     },
                     background: Container(
                       color: Colors.red,
-                      child: const Icon(Icons.delete),
                       alignment: Alignment.centerRight,
                       padding: const EdgeInsets.only(right: 20),
+                      child: const Icon(Icons.delete),
                     ),
                     child: ListTile(
                       title: Text(
@@ -121,19 +155,19 @@ class _RoomPageState extends State<RoomPage> {
                 },
               ),
             ),
-
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 ElevatedButton(
                   onPressed: () {
                     // dataProvider.addSwitchBoard(widget.roomIndex);
+                    openDialog(context);
                   },
                   child: const Text('Add Switch Board'),
                 ),
               ],
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
 
             Text(
               'Created at: ${room.createdAt}',
@@ -143,7 +177,7 @@ class _RoomPageState extends State<RoomPage> {
               'Updated at: ${room.updatedAt}',
               style: Theme.of(context).textTheme.bodyLarge,
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
           ],
         ),
       ),

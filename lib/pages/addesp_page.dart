@@ -105,50 +105,48 @@ class _AddESPPageState extends State<AddESPPage> {
     );
   }
 
-  Container _sendCredsToESP(BuildContext context) {
-    return Container(
-      child: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Text('Connected to ESP'),
-            Text('IP: $_ip',
-                style: Theme.of(context).textTheme.bodyLarge
+  Center _sendCredsToESP(BuildContext context) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const Text('Connected to ESP'),
+          Text('IP: $_ip',
+              style: Theme.of(context).textTheme.bodyLarge
+          ),
+          const SizedBox(height: 20),
+          // get wifi creds for ESP
+          TextField(
+            controller: ssidController,
+            decoration: const InputDecoration(
+              hintText: 'SSID',
             ),
-            const SizedBox(height: 20),
-            // get wifi creds for ESP
-            TextField(
-              controller: ssidController,
-              decoration: const InputDecoration(
-                hintText: 'SSID',
+          ),
+          const SizedBox(height: 20),
+          TextField(
+            controller: passwordController,
+            decoration: const InputDecoration(
+              hintText: 'Password',
+            ),
+          ),
+          GestureDetector(
+            onTap: sendSSIDPasswordToESP,
+            child: Container(
+              padding: const EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                color: Colors.blue,
+                borderRadius: BorderRadius.circular(10),
               ),
-            ),
-            const SizedBox(height: 20),
-            TextField(
-              controller: passwordController,
-              decoration: const InputDecoration(
-                hintText: 'Password',
-              ),
-            ),
-            GestureDetector(
-              onTap: sendSSIDPasswordToESP,
-              child: Container(
-                padding: const EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  color: Colors.blue,
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: const Text(
-                  'Send Creds to ESP',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 20,
-                  ),
+              child: const Text(
+                'Send Creds to ESP',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 20,
                 ),
               ),
-            )
-          ],
-        ),
+            ),
+          )
+        ],
       ),
     );
   }
