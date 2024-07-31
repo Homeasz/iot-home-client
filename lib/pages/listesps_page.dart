@@ -21,7 +21,7 @@ class _ListESPsPageState extends State<ListESPsPage> {
     // check if "can" startScan
     if (shouldCheckCan) {
       // check if can-startScan
-      final can = await WiFiScan.instance.canStartScan();
+      final can = await WiFiScan.instance.canStartScan(askPermissions: true);
       // if can-not, then show error
       if (can != CanStartScan.yes) {
         if (mounted) kShowSnackBar(context, "Cannot start scan: $can");
@@ -101,7 +101,8 @@ class _ListESPsPageState extends State<ListESPsPage> {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
-          title: const Text('Plugin example app'),
+          title: const Text('Plugin App'),
+          centerTitle: false,
           leading: IconButton(
             icon: const Icon(Icons.arrow_back),
             onPressed: () => Navigator.pop(context),

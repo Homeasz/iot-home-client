@@ -37,7 +37,13 @@ class _RoomPageState extends State<RoomPage> {
     });
   }
 
-  void toggleEditRoomName() {
+  void toggleEditRoomName() async {
+    if(editRoomName){
+      final DataProvider dataProvider = Provider.of<DataProvider>(context, listen: false);
+    String roomId = dataProvider.rooms[widget.roomIndex].id.toString();
+    await dataProvider.editRoom(roomId, roomNameController.text);
+    }
+    
     setState(() {
       editRoomName = !editRoomName;
     });
@@ -112,6 +118,7 @@ class _RoomPageState extends State<RoomPage> {
           )
         ],
       ),
+      
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(

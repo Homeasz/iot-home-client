@@ -1,4 +1,6 @@
 // // lib/services/api_service.dart
+import 'dart:ffi';
+
 import 'package:homeasz/models/room_model.dart';
 import 'package:homeasz/models/switch_model.dart';
 import 'package:homeasz/services/auth_service.dart';
@@ -66,13 +68,63 @@ class RoomService {
         final Map<String, dynamic> data = jsonDecode(response.body);
         return Room.fromMap(data['room']);
       } else {
+        print(response.statusCode);
         print(response.body);
       }
     }
     return null;
   }
 
-  Future<List<SwitchModel>?> getSwitches(String roomId) async {
+  Future<Room?> editRoom(String roomId, String roomName) async {
+    final token = await _authService.getToken();
+    if (token != null) {
+      final response = await http.put(
+        Uri.parse('$ROOM_BASE_URL/room/'),
+        headers: <String, String>{
+          'Cookie': token,
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode(<String, dynamic>{
+          'roomId': int.parse(roomId),
+          'roomName': roomName,
+        }),
+      );
+
+      if (response.statusCode == 201) {
+        final Map<String, dynamic> data = jsonDecode(response.body);
+        data.forEach((key, value) {
+          print('$key: $value');
+        });
+        return Room.fromMap(data["room"]);
+      } else {
+        print(response.statusCode);
+        print(response.body);
+      }
+    }
+    return null;
+  }
+
+  Future<Room?> deleteRoom(String roomId) async {
+    final token = await _authService.getToken();
+    if (token != null) {
+      final response = await http.delete(
+        Uri.parse('$ROOM_BASE_URL/room/$roomId'),
+        headers: <String, String>{
+          'Cookie': token,
+          'Content-Type': 'application/json',
+        },
+      );
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> data = jsonDecode(response.body);
+        return Room.fromMap(data['room']);
+      } else {
+        print(response.body);
+      }
+    }
+    return null;
+  }
+
+  Future<List<SwitchModel>> getSwitches(String roomId) async {
     final token = await _authService.getToken();
     if (token != null) {
       final response = await http.get(
@@ -90,75 +142,10 @@ class RoomService {
             .toList();
       } else {
         print(response.body);
+        return [];
       }
     }
-    return null;
+    return [];
   }
 
-  Future<bool> toggleSwitch(String switchId, bool state) async {
-    final token = await _authService.getToken();
-    if (token != null) {
-      final response = await http.put(
-        Uri.parse('$DEVICE_BASE_URL/switch/toggle'),
-        headers: <String, String>{
-          'Cookie': token,
-          'Content-Type': 'application/json',
-        },
-        body: jsonEncode(<String, dynamic>{
-          'switchId': switchId,
-          'toggleState': state,
-        }),
-      );
-      if (response.statusCode == 200) {
-        final Map<String, dynamic> body = jsonDecode(response.body);
-        return body['status'];
-      } else {
-        print(response.body);
-      }
-    }
-    return false;
-  }
-
-  Future<bool> deleteSwitch(String switchId) async {
-    final token = await _authService.getToken();
-    if (token == null) return false;
-    final response = await http.delete(
-      Uri.parse('$DEVICE_BASE_URL/switch/$switchId'),
-      headers: <String, String>{
-        'Cookie': token,
-        'Content-Type': 'application/json',
-      },
-    );
-    if (response.statusCode == 200) {
-      print('Switch deleted successfully');
-      return true;
-    } else {
-      print('Failed to delete switch');
-    }
-    return false;
-  }
-
-  Future<SwitchModel?> editSwitch(String switchId, String switchName) async {
-    final token = await _authService.getToken();
-    if (token != null) {
-      final response = await http.put(
-        Uri.parse('$DEVICE_BASE_URL/switch/$switchId'),
-        headers: <String, String>{
-          'Cookie': token,
-          'Content-Type': 'application/json',
-        },
-        body: jsonEncode(<String, String>{
-          'switchId': switchId,
-          'switchName': switchName,
-        }),
-      );
-      if (response.statusCode == 200) {
-        final Map<String, dynamic> body = jsonDecode(response.body);
-        return SwitchModel.fromMap(body['switch']);
-      } else {
-        print(response.body);
-      }
-    }
-    return null;
-  }
 }

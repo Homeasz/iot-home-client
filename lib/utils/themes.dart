@@ -39,7 +39,7 @@ final ThemeData customTheme = ThemeData(
 
 
 final ThemeData lightTheme = customTheme.copyWith(
-  primaryColor: Color.fromARGB(255, 202, 189, 168),
+  primaryColor: const Color.fromARGB(255, 202, 189, 168),
   appBarTheme: const AppBarTheme(
     backgroundColor: Color.fromARGB(255, 202, 189, 168),
     shadowColor: Colors.black,
@@ -48,6 +48,7 @@ final ThemeData lightTheme = customTheme.copyWith(
   bottomAppBarTheme: const BottomAppBarTheme(
     color: Color.fromARGB(255, 202, 189, 168),
   ),
+  cardColor: const Color(0xFFF1E6FF),
   scaffoldBackgroundColor: const Color(0xFFF8F8F8),
   secondaryHeaderColor: const Color(0xFFF1E6FF),
   textTheme: const TextTheme(
@@ -84,11 +85,12 @@ final ThemeData darkTheme = customTheme.copyWith(
   bottomAppBarTheme: const BottomAppBarTheme(
     color: Color.fromARGB(255, 48, 30, 66),
   ),
-  bottomNavigationBarTheme: BottomNavigationBarThemeData(
+  bottomNavigationBarTheme: const BottomNavigationBarThemeData(
     backgroundColor: Color.fromARGB(255, 48, 30, 66),
     selectedItemColor: Color(0xFFBB86FC),
     unselectedItemColor: Color(0xFFBB86FC),
   ),
+  cardColor: const Color(0xFF1F1F1F),
   textSelectionTheme: const TextSelectionThemeData(
     cursorColor: Color(0xFFBB86FC),
     selectionColor: Color(0xFFBB86FC),

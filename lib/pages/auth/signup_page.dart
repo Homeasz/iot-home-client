@@ -58,7 +58,6 @@ class _SignUpPageState extends State<SignUpPage> {
   Widget build(BuildContext context) {
     final authProvider = Provider.of<AuthProvider>(context);
     return Scaffold(
-      backgroundColor: Colors.grey[300],
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(
@@ -125,12 +124,11 @@ class _SignUpPageState extends State<SignUpPage> {
                               const SizedBox(width: 4),
                               GestureDetector(
                                 onTap: widget.onTap,
-                                child: const Text(
+                                child:  Text(
                                   'Sign In',
-                                  style: TextStyle(
-                                    color: Colors.blue,
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                                  style: Theme.of(context).textTheme.bodySmall?.apply(
+                                      color: Theme.of(context).primaryColor,
+                                    ),
                                 ),
                               ),
                             ],

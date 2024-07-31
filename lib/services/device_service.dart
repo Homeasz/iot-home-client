@@ -3,6 +3,7 @@ import 'package:homeasz/models/device_model.dart';
 import 'package:homeasz/services/auth_service.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:homeasz/models/switch_model.dart';
 import '../utils/constants.dart';
 
 class DeviceService {
@@ -50,40 +51,73 @@ class DeviceService {
     return false;
   }
 
-  Future<void> toggleSwitch(String switchId, bool newState) async {
+  Future<bool> toggleSwitch(String switchId, bool state) async {
     final token = await _authService.getToken();
+    print( 'toggleSwitch: $switchId, $state');
     if (token != null) {
-      final response = await http.post(
+      final response = await http.put(
         Uri.parse('$DEVICE_BASE_URL/switch/toggle'),
         headers: <String, String>{
           'Cookie': token,
           'Content-Type': 'application/json',
         },
-        body: jsonEncode(
-            <String, dynamic>{'switchId': switchId, 'toggleState': newState}),
+        body: jsonEncode(<String, dynamic>{
+          'switchId': switchId,
+          'toggleState': state,
+        }),
       );
       if (response.statusCode == 200) {
-        print('Switch toggled successfully');
+        final Map<String, dynamic> body = jsonDecode(response.body);
+        print(response.body);
+        return body['status'];
       } else {
-        print('Failed to toggle switch');
+        print(response.body);
       }
     }
+    return false;
   }
 
-  // Future<void> deleteSwitch(String switchId) async {
-  //   final token = await _authService.getToken();
-  //   if (token == null) return;
-  //   final response = await http.delete(
-  //     Uri.parse('$DEVICE_BASE_URL/switch/$switchId'),
-  //     headers: <String, String>{
-  //       'Cookie': token,
-  //       'Content-Type': 'application/json',
-  //     },
-  //   );
-  //   if (response.statusCode == 200) {
-  //     print('Switch deleted successfully');
-  //   } else {
-  //     print('Failed to delete switch');
-  //   }
-  // }
+  Future<bool> deleteSwitch(String switchId) async {
+    final token = await _authService.getToken();
+    if (token == null) return false;
+    final response = await http.delete(
+      Uri.parse('$DEVICE_BASE_URL/switch/$switchId'),
+      headers: <String, String>{
+        'Cookie': token,
+        'Content-Type': 'application/json',
+      },
+    );
+    if (response.statusCode == 200) {
+      print('Switch deleted successfully');
+      return true;
+    } else {
+      print('Failed to delete switch');
+    }
+    return false;
+  }
+
+  Future<SwitchModel?> editSwitch(String switchId, String switchName) async {
+    final token = await _authService.getToken();
+    if (token != null) {
+      final response = await http.put(
+        Uri.parse('$DEVICE_BASE_URL/switch/$switchId'),
+        headers: <String, String>{
+          'Cookie': token,
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode(<String, String>{
+          'switchId': switchId,
+          'switchName': switchName,
+        }),
+      );
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> body = jsonDecode(response.body);
+        return SwitchModel.fromMap(body['switch']);
+      } else {
+        print(response.body);
+      }
+    }
+    return null;
+  }
+
 }

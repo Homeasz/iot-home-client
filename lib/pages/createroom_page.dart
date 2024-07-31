@@ -22,7 +22,7 @@ class _CreateRoomState extends State<CreateRoom> {
     await dataProvider.addRoom(roomName);
 
     setState(() {
-      _isLoading = false;
+      _isLoading = true;
     });
 
     Navigator.pop(context);
