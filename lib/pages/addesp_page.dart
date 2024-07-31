@@ -3,6 +3,8 @@ import 'package:homeasz/components/my_textfield.dart';
 import 'package:homeasz/components/qr_scanner.dart';
 import 'package:homeasz/services/esp_service.dart';
 import 'package:wifi_iot/wifi_iot.dart';
+import "dart:convert";
+import 'testWifiPrefix.dart';
 
 
 class AddESPPage extends StatefulWidget {
@@ -16,7 +18,8 @@ class _AddESPPageState extends State<AddESPPage> {
   final TextEditingController ssidController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final EspService espService = EspService();
-  String _ssidPassword = '';
+  String _ssid = '';
+  String _password = '';
   String _connectionStatus = '';
   bool _isConnected = false;
 
@@ -24,11 +27,11 @@ class _AddESPPageState extends State<AddESPPage> {
   String _ip = '';
 
 
-  void ssidPassword(String value) async {
-    setState(() {
-      _ssidPassword = value;
-    });
-
+  void parseQR(String QrPayload) async {
+    final parsedQR = jsonDecode(QrPayload);
+    _ssid = parsedQR['SSID'] as String;
+    _password = parsedQR['PASSWORD'] as String;
+    connect();
     // start loading circle
     // showDialog(context: context, builder: (context) => const CircularProgressIndicator());
 
@@ -38,6 +41,10 @@ class _AddESPPageState extends State<AddESPPage> {
   @override
   void initState() {
     super.initState();
+  }
+
+  void connectToNearestESP() {
+    
   }
 
   void sendSSIDPasswordToESP() async {
@@ -58,8 +65,8 @@ class _AddESPPageState extends State<AddESPPage> {
   }
 
   Future<bool> connect() async {
-    final ssid = ssidController.text;
-    final password = passwordController.text;
+    final ssid = _ssid;
+    final password = _password;
     bool? connected = await WiFiForIoTPlugin.connect(
       ssid,
       password: password,
@@ -162,7 +169,7 @@ class _AddESPPageState extends State<AddESPPage> {
                   height: 300,
                   width: 300,
                   child: QRScanner(
-                    callback: ssidPassword,
+                    callback: parseQR,
                   )),
 
               // horizontal divider with or text and border padding
@@ -196,10 +203,6 @@ class _AddESPPageState extends State<AddESPPage> {
                 ),
               ),
               Text(
-                _ssidPassword,
-                style: Theme.of(context).textTheme.bodyLarge,
-              ),
-              Text(
                 _connectionStatus,
                 style: Theme.of(context).textTheme.bodyLarge,
               ),
@@ -216,7 +219,7 @@ class _AddESPPageState extends State<AddESPPage> {
               ),
               const SizedBox(height: 20),
               GestureDetector(
-                onTap: connect,
+                onTap: (){ ConnectWifiPrefix(); /*_ssid = ssidController.text; _password = passwordController.text; connect();*/},
                 child: Container(
                   padding: const EdgeInsets.all(10),
                   decoration: BoxDecoration(
