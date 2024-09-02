@@ -13,7 +13,7 @@ class DeviceService {
     final token = await _authService.getToken();
     if (token != null) {
       final response = await http.post(
-        Uri.parse('$DEVICE_BASE_URL/devices/register'),
+        Uri.parse('$DEVICE_BASE_URL/device/register'),
         headers: <String, String>{
           'Cookie': token,
           'Content-Type': 'application/json',
