@@ -37,8 +37,7 @@ class RoomService {
 
   Future<Room?> getRoom(String roomId) async {
     try {
-      final response =
-          await http.get(Uri.parse('$ROOM_BASE_URL/rooms/$roomId'));
+      final response = await http.get(Uri.parse('$BASE_URL/rooms/$roomId'));
       if (response.statusCode == 200) {
         final Map<String, dynamic> data = jsonDecode(response.body);
         return Room.fromJson(data['room']);
@@ -55,7 +54,7 @@ class RoomService {
     final token = await _authService.getToken();
     if (token != null) {
       final response = await http.post(
-        Uri.parse('$ROOM_BASE_URL/room/'),
+        Uri.parse('$BASE_URL/room/'),
         headers: <String, String>{
           'Cookie': token,
           'Content-Type': 'application/json',
@@ -79,7 +78,7 @@ class RoomService {
     final token = await _authService.getToken();
     if (token != null) {
       final response = await http.put(
-        Uri.parse('$ROOM_BASE_URL/room/'),
+        Uri.parse('$BASE_URL/room/'),
         headers: <String, String>{
           'Cookie': token,
           'Content-Type': 'application/json',
@@ -108,7 +107,7 @@ class RoomService {
     final token = await _authService.getToken();
     if (token != null) {
       final response = await http.delete(
-        Uri.parse('$ROOM_BASE_URL/room/$roomId'),
+        Uri.parse('$BASE_URL/room/$roomId'),
         headers: <String, String>{
           'Cookie': token,
           'Content-Type': 'application/json',
@@ -128,7 +127,7 @@ class RoomService {
     final token = await _authService.getToken();
     if (token != null) {
       final response = await http.get(
-        Uri.parse('$ROOM_BASE_URL/room/switches/$roomId'),
+        Uri.parse('$BASE_URL/room/switches/$roomId'),
         headers: <String, String>{
           'Cookie': token,
           'Content-Type': 'application/json',
@@ -147,5 +146,4 @@ class RoomService {
     }
     return [];
   }
-
 }

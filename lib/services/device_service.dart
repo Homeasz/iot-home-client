@@ -13,7 +13,7 @@ class DeviceService {
     final token = await _authService.getToken();
     if (token != null) {
       final response = await http.post(
-        Uri.parse('$DEVICE_BASE_URL/device/register'),
+        Uri.parse('$BASE_URL/device/register'),
         headers: <String, String>{
           'Cookie': token,
           'Content-Type': 'application/json',
@@ -35,7 +35,7 @@ class DeviceService {
     final token = await _authService.getToken();
     if (token != null) {
       final response = await http.post(
-        Uri.parse('$DEVICE_BASE_URL/switch/status/$switchId'),
+        Uri.parse('$BASE_URL/switch/status/$switchId'),
         headers: <String, String>{
           'Cookie': token,
           'Content-Type': 'application/json',
@@ -53,10 +53,10 @@ class DeviceService {
 
   Future<bool> toggleSwitch(String switchId, bool state) async {
     final token = await _authService.getToken();
-    print( 'toggleSwitch: $switchId, $state');
+    print('toggleSwitch: $switchId, $state');
     if (token != null) {
       final response = await http.put(
-        Uri.parse('$DEVICE_BASE_URL/switch/toggle'),
+        Uri.parse('$BASE_URL/switch/toggle'),
         headers: <String, String>{
           'Cookie': token,
           'Content-Type': 'application/json',
@@ -81,7 +81,7 @@ class DeviceService {
     final token = await _authService.getToken();
     if (token == null) return false;
     final response = await http.delete(
-      Uri.parse('$DEVICE_BASE_URL/switch/$switchId'),
+      Uri.parse('$BASE_URL/switch/$switchId'),
       headers: <String, String>{
         'Cookie': token,
         'Content-Type': 'application/json',
@@ -100,7 +100,7 @@ class DeviceService {
     final token = await _authService.getToken();
     if (token != null) {
       final response = await http.put(
-        Uri.parse('$DEVICE_BASE_URL/switch/$switchId'),
+        Uri.parse('$BASE_URL/switch/$switchId'),
         headers: <String, String>{
           'Cookie': token,
           'Content-Type': 'application/json',
@@ -119,5 +119,4 @@ class DeviceService {
     }
     return null;
   }
-
 }

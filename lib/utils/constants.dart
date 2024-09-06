@@ -1,12 +1,18 @@
 import 'package:flutter/material.dart';
 
-const String BASE_URL = 'http://ec2-13-126-105-228.ap-south-1.compute.amazonaws.com';
-const String ROOM_BASE_URL = 'http://ec2-13-126-105-228.ap-south-1.compute.amazonaws.com';
-const String DEVICE_BASE_URL = 'http://ec2-13-126-105-228.ap-south-1.compute.amazonaws.com';
+const String BASE_URL =
+    'http://ec2-3-109-126-105.ap-south-1.compute.amazonaws.com';
+// const String BASE_URL =
+//     'https://ec2-3-109-126-105.ap-south-1.compute.amazonaws.com';
+// const String BASE_URL =
+//     'https://ec2-3-109-126-105.ap-south-1.compute.amazonaws.com/';
+
+// const String BASE_URL =
+//     'http://localhost:8080';
 
 // const String BASE_URL = 'https://iot-home-web.onrender.com';
-// const String ROOM_BASE_URL = 'https://iot-home-web-room-service.onrender.com';
-// const String DEVICE_BASE_URL = 'https://iot-home-web-device-service.onrender.com';
+// const String BASE_URL = 'https://iot-home-web-room-service.onrender.com';
+// const String BASE_URL = 'https://iot-home-web-device-service.onrender.com';
 const String ESP_URL = 'http://192.168.0.1';
 
 // const String tProfileImage = "assets/images/profile.jpg";

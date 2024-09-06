@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:homeasz/pages/auth/auth_page.dart';
 import 'package:homeasz/pages/createroom_page.dart';
+import 'package:homeasz/pages/home_page.dart';
 import 'package:homeasz/pages/profile/profile_page.dart';
 import 'package:homeasz/providers/data_provider.dart';
 import 'package:homeasz/providers/theme_provider.dart';
@@ -29,10 +30,11 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Homeasz',
       debugShowCheckedModeBanner: false,
-      theme: themeProvider.isDarkMode ? darkTheme : lightTheme,
+      // theme: themeProvider.isDarkMode ? darkTheme : lightTheme,
       initialRoute: '/',
       routes: {
-        '/': (context) => const AuthPage(),
+        // '/': (context) => const AuthPage(),
+        '/': (context) => const HomePage(),
         '/create_room': (context) => const CreateRoom(),
         '/add_esp': (context) => const AddESPPage(),
         '/list_esp': (context) => const ListESPsPage(),
