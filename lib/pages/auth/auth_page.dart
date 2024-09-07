@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:homeasz/pages/auth/app_start.dart';
 import 'package:homeasz/pages/home_page.dart';
 import 'package:homeasz/providers/auth_provider.dart';
 import 'package:homeasz/services/auth_service.dart';
 import 'package:homeasz/pages/auth/login_or_singup_page.dart';
 import 'package:provider/provider.dart';
+import 'dart:async';
 
 class AuthPage extends StatefulWidget {
-  const AuthPage({Key? key}) : super(key: key);
+  const AuthPage({super.key});
 
   @override
   State<AuthPage> createState() => _AuthPageState();
@@ -14,10 +16,16 @@ class AuthPage extends StatefulWidget {
 
 class _AuthPageState extends State<AuthPage> {
   bool _isAuthenticated = false;
+  bool _displaySplash = true;
 
   @override
   void initState() {
     super.initState();
+    Timer(const Duration(seconds: 2), () {
+      setState(() {
+        _displaySplash = false;
+      });
+    });
   }
 
   @override
@@ -36,6 +44,9 @@ class _AuthPageState extends State<AuthPage> {
 
   @override
   Widget build(BuildContext context) {
+    if(_displaySplash){
+      return AppStart();
+    }
     if (_isAuthenticated) {
       return  const HomePage();
     } else {
