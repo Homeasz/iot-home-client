@@ -12,6 +12,7 @@ import 'package:homeasz/providers/data_provider.dart';
 import 'package:homeasz/providers/user_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:homeasz/components/appliance_button.dart';
 // import 'package:network_info_plus/network_info_plus.dart';
 
 class HomePage extends StatefulWidget {
@@ -32,7 +33,7 @@ class _HomePageState extends State<HomePage>
   @override
   void initState() {
     super.initState();
-    Future.delayed(Duration(milliseconds: 400), () {
+    Future.delayed(const Duration(milliseconds: 400), () {
       setState(() {
         _isBottomWidgetVisible = true;
       });
@@ -45,21 +46,20 @@ class _HomePageState extends State<HomePage>
     final screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
       backgroundColor: const Color(0xFFE6F8FF),
-      body: SafeArea(
-          child: Stack(
+      body: Stack(
         children: [
           AnimatedPositioned(
             duration: const Duration(milliseconds: 400),
             top: _isBottomWidgetVisible
-                ? screenHeight / 5
+                ? screenHeight / 3 - 50
                 : screenHeight, // adjust values as needed
             left: 0,
-            child: MainWindow(),
+            child: const MainWindow(),
           ),
           AnimatedPositioned(
             duration: const Duration(milliseconds: 400),
             top: _isBottomWidgetVisible
-                ? -80
+                ? -20
                 : screenHeight / 2 - 250, // adjust values as needed
             left: screenWidth / 2 - 170, // Center horizontally
             child: Image.asset(
@@ -70,16 +70,21 @@ class _HomePageState extends State<HomePage>
           ),
           // Bottom widget sliding in
         ],
-      )),
+      ),
     );
   }
 }
 
-class MainWindow extends StatelessWidget {
+class MainWindow extends StatefulWidget {
   const MainWindow({
     super.key,
   });
 
+  @override
+  State<MainWindow> createState() => _MainWindowState();
+}
+
+class _MainWindowState extends State<MainWindow> {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -99,19 +104,68 @@ class MainWindow extends StatelessWidget {
           ],
         ),
         child: Container(
+          padding: const EdgeInsets.only(top: 5),
           // height should be to the bottom of the screen
           child: Column(
+            // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
+              const Text(
                 'Hi Priyansh',
+                textAlign: TextAlign.center,
                 style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  textBaseline: TextBaseline.alphabetic,
-                  
+                  color: Colors.black,
+                  fontSize: 24,
+                  fontFamily: 'Poppins',
+                  fontWeight: FontWeight.w600,
+                  height: 0.04,
+                  letterSpacing: -0.72,
                 ),
-                
-              )
+              ),
+              const SizedBox(height: 20),
+              const Text(
+                'what would you like to do?',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Color(0xFF907C7C),
+                  fontSize: 13,
+                  fontFamily: 'Poppins',
+                  fontWeight: FontWeight.w400,
+                  height: 0.08,
+                  letterSpacing: -0.39,
+                ),
+              ),
+              const SizedBox(height: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  InkWell(
+                    onTap: () {
+                      print("Rooms");
+                    },
+                    child: const Text("Rooms"),
+                  ),
+                  const Text("Home"),
+                  const Text("Routines"),
+                  const Text("Profile"),
+                ],
+              ),
+              const SizedBox(height: 20),
+              // horizontal scroll list
+              Container(
+                height: 200,
+                child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: 10,
+                  itemBuilder: (context, index) {
+                    return ApplianceButton(
+                        index: index,
+                        applianceName: 'Switch $index',
+                        applianceState: false
+                      );
+                  },
+                ),
+              ),
             ],
           ),
         ));
