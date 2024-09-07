@@ -27,6 +27,7 @@ class _HomePageState extends State<HomePage>
   bool _isLoading = true;
   bool _isBottomWidgetVisible = false;
   int currentRoom = 0;
+  int currentAnimationPos = 0;
 
   // final info = NetworkInfo();
 
@@ -36,7 +37,14 @@ class _HomePageState extends State<HomePage>
     Future.delayed(const Duration(milliseconds: 400), () {
       setState(() {
         _isBottomWidgetVisible = true;
+        currentAnimationPos = 1;
       });
+    });
+  }
+
+  void _fullPage(int pos) {
+    setState(() {
+      currentAnimationPos = pos;
     });
   }
 
@@ -44,30 +52,65 @@ class _HomePageState extends State<HomePage>
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
+    final List<double> _sofaPos = [screenHeight / 2 - 250, 55, -500];
+    final List<double> _mainWindow = [screenHeight, screenHeight / 3 - 50, 120];
+    final List<double> _navBar = [screenHeight, 300, 90];
     return Scaffold(
       backgroundColor: const Color(0xFFE6F8FF),
       body: Stack(
         children: [
           AnimatedPositioned(
             duration: const Duration(milliseconds: 400),
-            top: _isBottomWidgetVisible
-                ? screenHeight / 3 - 50
-                : screenHeight, // adjust values as needed
+            top: _mainWindow[currentAnimationPos],
             left: 0,
-            child: const MainWindow(),
+            child: MainWindow(),
           ),
           AnimatedPositioned(
             duration: const Duration(milliseconds: 400),
-            top: _isBottomWidgetVisible
-                ? -20
-                : screenHeight / 2 - 250, // adjust values as needed
+            top: _sofaPos[currentAnimationPos],
             left: screenWidth / 2 - 170, // Center horizontally
             child: Image.asset(
               'lib/assets/sofa.png',
               width: 350,
-              height: 350,
+              height: 200,
             ),
           ),
+          
+          AnimatedPositioned(
+            duration: const Duration(milliseconds: 400),
+            top: _navBar[currentAnimationPos],
+            left: 0,
+            child: Container(
+              height: 20,
+              width: screenWidth,
+              decoration: BoxDecoration(
+                color: Colors.transparent,
+                
+              ),
+              child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    InkWell(
+                      child: const Text("Rooms"),
+                      onTap: () {
+                          _fullPage(2);
+                        },
+                      ),
+                    InkWell(
+                        onTap: () {
+                          _fullPage(1);
+                        },
+                        child: const Text("Home")),
+                    InkWell(
+                      onTap: () => _fullPage(2),
+                      child: const Text("Routines")
+                      ),
+                    const Text("Profile"),
+                  ],
+                ),
+            ),
+          )
+          
           // Bottom widget sliding in
         ],
       ),
@@ -76,6 +119,7 @@ class _HomePageState extends State<HomePage>
 }
 
 class MainWindow extends StatefulWidget {
+
   const MainWindow({
     super.key,
   });
@@ -107,6 +151,8 @@ class _MainWindowState extends State<MainWindow> {
           padding: const EdgeInsets.only(top: 5),
           // height should be to the bottom of the screen
           child: Column(
+            textBaseline: TextBaseline
+                .alphabetic, // this is to make the text align to the top
             // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -135,25 +181,11 @@ class _MainWindowState extends State<MainWindow> {
                   letterSpacing: -0.39,
                 ),
               ),
-              const SizedBox(height: 20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  InkWell(
-                    onTap: () {
-                      print("Rooms");
-                    },
-                    child: const Text("Rooms"),
-                  ),
-                  const Text("Home"),
-                  const Text("Routines"),
-                  const Text("Profile"),
-                ],
-              ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 50),
+            
               // horizontal scroll list
               Container(
-                height: 200,
+                height: 100,
                 child: ListView.builder(
                   scrollDirection: Axis.horizontal,
                   itemCount: 10,
@@ -161,8 +193,7 @@ class _MainWindowState extends State<MainWindow> {
                     return ApplianceButton(
                         index: index,
                         applianceName: 'Switch $index',
-                        applianceState: false
-                      );
+                        applianceState: false);
                   },
                 ),
               ),
