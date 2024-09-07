@@ -10,7 +10,7 @@ import '../../providers/auth_provider.dart';
 
 class LoginPage extends StatefulWidget {
   final Function()? onTap;
-  LoginPage({Key? key, this.onTap}) : super(key: key);
+  const LoginPage({super.key, this.onTap});
 
   @override
   State<LoginPage> createState() => _LoginPageState();
