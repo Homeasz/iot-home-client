@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 final ThemeData customTheme = ThemeData(
-  primaryColor: const Color(0xFF6F35A5),
+  primaryColor: const Color(0xff87ceeb),
   appBarTheme: const AppBarTheme(
-    backgroundColor: Color.fromARGB(255, 202, 189, 168),
+    backgroundColor: Color.fromARGB(255, 255, 255, 255),
     shadowColor: Colors.black,
     scrolledUnderElevation: 5,
   ),
@@ -12,7 +12,7 @@ final ThemeData customTheme = ThemeData(
     color: Color.fromARGB(255, 202, 189, 168),
   ),
   secondaryHeaderColor: const Color(0xFFF1E6FF),
-  scaffoldBackgroundColor: const Color(0xFFF8F8F8),
+  scaffoldBackgroundColor: Color(0xFFFFFFFF),
   fontFamily: 'Roboto',
   textTheme: const TextTheme(
       headlineLarge: TextStyle(
@@ -22,17 +22,17 @@ final ThemeData customTheme = ThemeData(
       bodyLarge: TextStyle(color: Colors.black54, fontSize: 16),
       bodySmall: TextStyle(color: Colors.black, fontSize: 12)),
   buttonTheme: const ButtonThemeData(
-    buttonColor: Color(0xFF6F35A5),
+    buttonColor: Color(0xff87ceeb),
     textTheme: ButtonTextTheme.primary,
   ),
   inputDecorationTheme: InputDecorationTheme(
     border: OutlineInputBorder(
       borderRadius: BorderRadius.circular(8.0),
-      borderSide: const BorderSide(color: Color(0xFF6F35A5)),
+      borderSide: const BorderSide(color: Color(0xff87ceeb)),
     ),
     focusedBorder: OutlineInputBorder(
       borderRadius: BorderRadius.circular(8.0),
-      borderSide: const BorderSide(color: Color(0xFF6F35A5)),
+      borderSide: const BorderSide(color: Color(0xff87ceeb)),
     ),
   ),
 );

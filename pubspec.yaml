@@ -48,6 +48,7 @@ dependencies:
   # get: ^4.6.6
   qr_code_scanner: ^1.0.1
   flutter_svg: ^1.0.0
+  google_fonts: ^6.2.1
 
 
 dev_dependencies:
@@ -76,7 +77,9 @@ flutter:
   assets:
     - lib/assets/apple.svg
     - lib/assets/sofa.png
-    - lib/images/
+    - lib/assets/Mail.png
+    - lib/assets/Lock.png
+    - lib/assets/User.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
