@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:homeasz/pages/auth/app_start.dart';
+import 'package:homeasz/pages/auth/splash_screen.dart';
 import 'package:homeasz/pages/home_page.dart';
 import 'package:homeasz/providers/auth_provider.dart';
 import 'package:homeasz/services/auth_service.dart';
@@ -45,7 +45,7 @@ class _AuthPageState extends State<AuthPage> {
   @override
   Widget build(BuildContext context) {
     if(_displaySplash){
-      return AppStart();
+      return const SplashScreen();
     }
     if (_isAuthenticated) {
       return  const HomePage();

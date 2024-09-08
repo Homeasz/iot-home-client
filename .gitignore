@@ -25,7 +25,7 @@ migrate_working_dir/
 **/doc/api/
 **/ios/Flutter/.last_build_id
 /ios/Podfile.lock
-/pubspec.lock
+pubspec.lock
 /linux/flutter/generated*
 /macos/Flutter/Generated*
 /windows/flutter/generated*

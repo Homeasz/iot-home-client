@@ -1,62 +1,79 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class ApplianceButton extends StatefulWidget {
   const ApplianceButton({
     super.key,
     required this.index,
     required this.applianceName,
-    required this.applianceState,
   });
 
   final int index;
   final String applianceName;
-  final bool applianceState;
 
   @override
   State<ApplianceButton> createState() => _ApplianceButtonState();
 }
 
 class _ApplianceButtonState extends State<ApplianceButton> {
-  
+  bool state = false;
   // change state of appliance
-  void onTap(int index) {
-    print('Appliance $index is turned ${widget.applianceState ? 'off' : 'on'}');
-
+  void onTap() {
+    setState(() {
+      state = !state;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: () {
-        onTap(widget.index);
-      },
+    return 
+    InkWell(
+      onTap: onTap,
       child: Container(
-        margin: const EdgeInsets.only(right: 10),
-        padding: const EdgeInsets.all(10),
-        decoration: BoxDecoration(
-          color: widget.applianceState ? const Color(0xFFE6F8FF) : const Color(0xFFE6F8FF),
+      height: 74,
+      width: 94,
+      decoration: BoxDecoration(
+          color: state? Color(0xFF87CEEB): Color(0xFFE6E6E6),
           borderRadius: BorderRadius.circular(10),
-        ),
-        width: 100,
-        child: Column(
-          children: [
-            
-            Icon(
-              widget.applianceState ? Icons.lightbulb : Icons.lightbulb_outline,
-              color: widget.applianceState ? const Color(0xFF00BFA6) : Colors.grey,
-              size: 30,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.shade600,
+              spreadRadius: 0,
+              blurRadius: 5,
+              offset: const Offset(2, 2),
             ),
-            Text(
-              widget.applianceName,
-              style: const TextStyle(
+            const BoxShadow(
+                color: Color(0xffffffff),
+                offset: Offset(-3, -3),
+                blurRadius: 5)
+          ]),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Image.asset(
+            'lib/assets/appliances/chandelier$state.png',
+            height: 30,
+          ),
+          Text(
+            'Living Room\'s \nFan',
+            textAlign: TextAlign.center,
+            style: GoogleFonts.poppins(
+                fontSize: 13,
                 color: Colors.black,
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ],
-        ),
-      )
-    );
+                fontWeight: FontWeight.w400,
+                height: 1.2,
+                letterSpacing: -0.39),
+          )
+        ],
+      ),
+    ));
+    /////////////////////////
+    // return InkWell(
+
+    //   child:Card(
+    //   color: state? Color(0xFF87CEEB):Color.fromARGB(255, 0, 0, 0)
+
+    // ));
   }
 }

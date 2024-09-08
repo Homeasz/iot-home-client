@@ -53,7 +53,7 @@ class _HomePageState extends State<HomePage>
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
     final List<double> _sofaPos = [screenHeight / 2 - 250, 55, -500];
-    final List<double> _mainWindow = [screenHeight, screenHeight / 3 - 50, 120];
+    final List<double> _mainWindow = [screenHeight, screenHeight / 3 - 65, 120];
     final List<double> _navBar = [screenHeight, 300, 90];
     return Scaffold(
       backgroundColor: const Color(0xFFE6F8FF),
@@ -83,7 +83,7 @@ class _HomePageState extends State<HomePage>
             child: Container(
               height: 20,
               width: screenWidth,
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 color: Colors.transparent,
                 
               ),
@@ -168,7 +168,7 @@ class _MainWindowState extends State<MainWindow> {
                   letterSpacing: -0.72,
                 ),
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 30),
               const Text(
                 'what would you like to do?',
                 textAlign: TextAlign.center,
@@ -185,15 +185,18 @@ class _MainWindowState extends State<MainWindow> {
             
               // horizontal scroll list
               Container(
-                height: 100,
-                child: ListView.builder(
+                height: 86,
+                child: ListView.separated(
                   scrollDirection: Axis.horizontal,
                   itemCount: 10,
+                  separatorBuilder: (BuildContext context, int index) {
+                    return SizedBox(width: 10);
+                  },
                   itemBuilder: (context, index) {
-                    return ApplianceButton(
+                    return Padding(padding: EdgeInsets.only(bottom: 4),child: ApplianceButton(
                         index: index,
                         applianceName: 'Switch $index',
-                        applianceState: false);
+                    ));
                   },
                 ),
               ),
