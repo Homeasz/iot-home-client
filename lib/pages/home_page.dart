@@ -1,9 +1,7 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter/widgets.dart';
 import 'package:homeasz/pages/windows/home_window.dart';
-// import 'package:network_info_plus/network_info_plus.dart';
+import 'package:homeasz/pages/windows/rooms_window.dart';
+import 'package:homeasz/pages/windows/routine_window.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -17,7 +15,8 @@ class _HomePageState extends State<HomePage>
   bool _isLoading = true;
   bool _isBottomWidgetVisible = false;
   int currentRoom = 0;
-  int currentAnimationPos = 0;
+  int currentAnimationPos = 0; // 0 for loading, 1 for home view, 2 for others
+  int currentWindow = 0;
 
   // final info = NetworkInfo();
 
@@ -38,6 +37,12 @@ class _HomePageState extends State<HomePage>
     });
   }
 
+  void _changeWindow(int window) {
+    setState(() {
+      currentWindow = window;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
@@ -45,6 +50,11 @@ class _HomePageState extends State<HomePage>
     final List<double> _sofaPos = [screenHeight / 2 - 250, 55, -500];
     final List<double> _mainWindow = [screenHeight, screenHeight / 3 - 65, 120];
     final List<double> _navBar = [screenHeight, 300, 90];
+    final List<dynamic> _window = [
+      HomeWindow(),
+      RoomsWindow(),
+      RoutineWindow(),
+    ];
     return Scaffold(
       backgroundColor: const Color(0xFFE6F8FF),
       body: Stack(
@@ -53,7 +63,7 @@ class _HomePageState extends State<HomePage>
             duration: const Duration(milliseconds: 400),
             top: _mainWindow[currentAnimationPos],
             left: 0,
-            child: HomeWindow(),
+            child: _window[currentWindow],
           ),
           AnimatedPositioned(
             duration: const Duration(milliseconds: 400),
@@ -65,7 +75,7 @@ class _HomePageState extends State<HomePage>
               height: 200,
             ),
           ),
-          
+
           AnimatedPositioned(
             duration: const Duration(milliseconds: 400),
             top: _navBar[currentAnimationPos],
@@ -75,36 +85,40 @@ class _HomePageState extends State<HomePage>
               width: screenWidth,
               decoration: const BoxDecoration(
                 color: Colors.transparent,
-                
               ),
               child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    InkWell(
-                      child: const Text("Rooms"),
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  InkWell(
+                    child: const Text("Rooms"),
+                    onTap: () {
+                      _fullPage(2);
+                      _changeWindow(1);
+                    },
+                  ),
+                  InkWell(
                       onTap: () {
-                          _fullPage(2);
-                        },
-                      ),
-                    InkWell(
-                        onTap: () {
-                          _fullPage(1);
-                        },
-                        child: const Text("Home")),
-                    InkWell(
-                      onTap: () => _fullPage(2),
+                        _fullPage(1);
+                        _changeWindow(0);
+                      },
+                      child: const Text("Home")),
+                  InkWell(
+                      onTap: () {
+                        _fullPage(2);
+                        _changeWindow(2);
+                      
+                      },
                       child: const Text("Routines")
-                      ),
-                    const Text("Profile"),
-                  ],
-                ),
+                    ),
+                  const Text("Profile"),
+                ],
+              ),
             ),
           )
-          
+
           // Bottom widget sliding in
         ],
       ),
     );
   }
 }
-
