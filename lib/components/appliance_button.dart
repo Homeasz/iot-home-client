@@ -68,12 +68,5 @@ class _ApplianceButtonState extends State<ApplianceButton> {
         ],
       ),
     ));
-    /////////////////////////
-    // return InkWell(
-
-    //   child:Card(
-    //   color: state? Color(0xFF87CEEB):Color.fromARGB(255, 0, 0, 0)
-
-    // ));
   }
 }
