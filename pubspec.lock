@@ -29,7 +29,7 @@ packages:
     dependency: transitive
     description:
       name: camera_android_camerax
-      sha256: "7d84815edbb8304b51c10deba3c20f44eef80aa46ff156ec45428ed16600b49a"
+      sha256: "5e3c3556784513cbdf18092b2873623cc7de3d1c0fffd83e2bbc8189ad0ee645"
       url: "https://pub.dev"
     source: hosted
     version: "0.6.5+3"
@@ -574,5 +574,5 @@ packages:
     source: hosted
     version: "6.5.0"
 sdks:
-  dart: ">=3.5.0 <4.0.0"
-  flutter: ">=3.24.0"
+  dart: ">=3.4.0 <4.0.0"
+  flutter: ">=3.22.0"
