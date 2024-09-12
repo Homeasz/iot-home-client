@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:homeasz/components/room_tile.dart';
 
 class RoomsWindow extends StatefulWidget {
   const RoomsWindow({super.key});
@@ -11,12 +12,14 @@ class _RoomsWindowState extends State<RoomsWindow> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: MediaQuery.of(context).size.height,
+        height: MediaQuery.of(context).size.height,
         width: MediaQuery.of(context).size.width,
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.fromLTRB(10, 0, 10, 20),
+        margin: const EdgeInsets.all(0),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(20),
+          // border: Border.all(color: Colors.black, width: 1),
           boxShadow: [
             BoxShadow(
               color: Colors.grey.withOpacity(0.5),
@@ -26,7 +29,19 @@ class _RoomsWindowState extends State<RoomsWindow> {
             ),
           ],
         ),
-      child: Text("Rooms Window"),
-    );
+        child: Column(
+          children: [
+            Expanded(
+              child: GridView.builder(
+                padding: const EdgeInsets.only(top: 30, left: 5, right: 5),
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2, crossAxisSpacing: 10, mainAxisSpacing: 10),
+                  itemCount: 6,
+                  itemBuilder: (context, index) {
+                    return RoomTile(index: index, roomName: "Balcony",roomImage: "balconyfalse",);
+              }),
+            ),
+          ],
+        ));
   }
 }
