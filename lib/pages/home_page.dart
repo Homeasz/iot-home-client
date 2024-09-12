@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
+import 'package:homeasz/components/add_button.dart';
 import 'package:homeasz/pages/windows/home_window.dart';
 // import 'package:network_info_plus/network_info_plus.dart';
 
@@ -99,8 +100,11 @@ class _HomePageState extends State<HomePage>
                   ],
                 ),
             ),
-          )
-          
+          ),
+          const Positioned(
+            bottom: 20,
+            right: 20,
+            child: AddButton()),
           // Bottom widget sliding in
         ],
       ),

@@ -29,6 +29,8 @@ pubspec.lock
 /linux/flutter/generated*
 /macos/Flutter/Generated*
 /windows/flutter/generated*
+/windows/flutter/CMakeLists.txt
+/windows/runner/flutter_window.cpp
 .dart_tool/
 .flutter-plugins
 .flutter-plugins-dependencies
