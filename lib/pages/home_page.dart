@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
+import 'package:flutter/widgets.dart';
+import 'package:homeasz/components/add_button.dart';
 import 'package:homeasz/pages/windows/home_window.dart';
 import 'package:homeasz/pages/windows/rooms_window.dart';
 import 'package:homeasz/pages/windows/routine_window.dart';
@@ -114,8 +117,11 @@ class _HomePageState extends State<HomePage>
                 ],
               ),
             ),
-          )
-
+          ),
+          const Positioned(
+            bottom: 20,
+            right: 20,
+            child: AddButton()),
           // Bottom widget sliding in
         ],
       ),
