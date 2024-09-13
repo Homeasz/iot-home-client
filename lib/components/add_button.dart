@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:homeasz/components/add_to_home.dart';
+import 'package:homeasz/components/add_room_icons_grid.dart';
+import 'package:homeasz/components/modal_sheets/add_room.dart';
+import 'package:homeasz/components/modal_sheets/add_to_home.dart';
 
 class AddButton extends StatelessWidget {
   const AddButton({super.key});
@@ -22,12 +24,16 @@ class AddButton extends StatelessWidget {
         ),
         onTap: () {
           showModalBottomSheet(
+              isScrollControlled: true,
               context: context,
               useSafeArea: true,
-              backgroundColor: Color(0xFFE7F8FF),
+              backgroundColor: const Color(0xFFE7F8FF),
               builder: (context) {
-                return const Wrap(children: [AddToHome()]);
-              });
+                return SingleChildScrollView(
+                    child: Wrap(children: [AddRoom()]));
+              }).whenComplete(() {
+            AddRoomIconsGrid.activeState = -1;
+          });
         });
   }
 }

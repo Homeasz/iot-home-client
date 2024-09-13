@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:homeasz/components/dropdown.dart';
+import 'package:homeasz/components/modal_confirm_button.dart';
 
 class AddToHome extends StatelessWidget {
   const AddToHome({super.key});
@@ -39,8 +40,8 @@ class AddToHome extends StatelessWidget {
             const SizedBox(
               height: 40,
             ),
-            SizedBox(
-              width: MediaQuery.of(context).size.width - 66,
+            Align(
+              alignment: Alignment(-0.95, 0),
               child: Text(
                 'Room',
                 textAlign: TextAlign.left,
@@ -59,6 +60,10 @@ class AddToHome extends StatelessWidget {
             const Dropdown(),
             const SizedBox(
               height: 20,
+            ),
+            const ModalConfirmButton(buttonText: "Add"),
+            const SizedBox(
+              height: 15,
             ),
             SizedBox(
               width: MediaQuery.of(context).size.width - 66,
@@ -81,27 +86,7 @@ class AddToHome extends StatelessWidget {
             const SizedBox(
               height: 15,
             ),
-            Align(
-              alignment: const Alignment(0.85, 1),
-              child: SizedBox(
-                width: 89,
-                height: 36,
-                child: ElevatedButton(
-                  style: const ButtonStyle(
-                      elevation: WidgetStatePropertyAll(4),
-                      backgroundColor: WidgetStatePropertyAll(Colors.white)),
-                  child: Text("Add",
-                      style: GoogleFonts.poppins(
-                        height: 2,
-                        color: Colors.black,
-                        letterSpacing: -0.54,
-                      )),
-                  onPressed: () {
-                    return Navigator.pop(context);
-                  },
-                ),
-              ),
-            ),
+            const ModalConfirmButton(buttonText: "Add"),
             const SizedBox(
               height: 30,
             )
