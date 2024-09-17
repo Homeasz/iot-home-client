@@ -32,7 +32,7 @@ class TextInput extends StatelessWidget {
             height: 0.06,
             letterSpacing: -0.54,
           ),
-          showCursor: false,
+          showCursor: true,
           controller: input,
           decoration: InputDecoration(
               hintText: "Enter room name",
@@ -43,9 +43,9 @@ class TextInput extends StatelessWidget {
                 height: 0.06,
                 letterSpacing: -0.54,
               ),
-              enabledBorder: UnderlineInputBorder(
+              enabledBorder: const UnderlineInputBorder(
                   borderSide: BorderSide(width: 3, color: Color(0xFFC2BCBC))),
-              focusedBorder: UnderlineInputBorder(
+              focusedBorder: const UnderlineInputBorder(
                   borderSide: BorderSide(width: 3, color: Color(0xFFC2BCBC))),
               border: InputBorder.none),
         ),

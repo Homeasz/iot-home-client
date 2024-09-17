@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:homeasz/components/add_room_icons_grid.dart';
 import 'package:homeasz/components/modal_sheets/add_room.dart';
 import 'package:homeasz/components/modal_sheets/add_to_home.dart';
+import 'package:homeasz/components/modal_sheets/setup_routine.dart';
 
 class AddButton extends StatelessWidget {
   const AddButton({super.key});
@@ -30,7 +31,7 @@ class AddButton extends StatelessWidget {
               backgroundColor: const Color(0xFFE7F8FF),
               builder: (context) {
                 return SingleChildScrollView(
-                    child: Wrap(children: [AddRoom()]));
+                    child: Wrap(children: [SetupRoutine()]));
               }).whenComplete(() {
             AddRoomIconsGrid.activeState = -1;
           });
