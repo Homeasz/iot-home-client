@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:homeasz/components/appliance_button.dart';
 
 
-
-
 class HomeWindow extends StatefulWidget {
 
   const HomeWindow({
