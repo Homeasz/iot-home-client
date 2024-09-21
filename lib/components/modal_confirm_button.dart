@@ -9,7 +9,6 @@ class ModalConfirmButton extends StatelessWidget {
     return Align(
       alignment: const Alignment(0.85, 1),
       child: SizedBox(
-        width: 89,
         height: 36,
         child: ElevatedButton(
           style: const ButtonStyle(

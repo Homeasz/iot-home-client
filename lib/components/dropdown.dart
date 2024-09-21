@@ -2,7 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class Dropdown extends StatefulWidget {
-  const Dropdown({super.key});
+  Dropdown({super.key,this.fontSize = 18, required this.hint,required this.title});
+  final double? fontSize;
+  final String hint;
+  final String title;
+
 
   @override
   State<StatefulWidget> createState() => _Dropdown();
@@ -10,44 +14,29 @@ class Dropdown extends StatefulWidget {
 
 class _Dropdown extends State<Dropdown> {
   final List<String> items = [
-    'Option 1',
-    'Option 2',
+    'Turn On',
+    'Turn Off',
     'Option 3',
     'Option 4',
   ];
   String? selectedValue;
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: 275, // Updated width
-      height: 60,
-      padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-
-      decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(6),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.shade400,
-              spreadRadius: 0.2,
-              blurRadius: 2,
-              offset: const Offset(0.1, 0.1),
-            ),
-            const BoxShadow(
-                color: Color(0xffffffff), offset: Offset(-3, -3), blurRadius: 0)
-          ]),
-
-      child: Stack(
+    return Stack(
         children: [
           // Grey border container
           Positioned(
               left: 0,
               right: 0,
               top: 7,
-              child: Container(
-                height: 42,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(6),
-                  border: Border.all(color: Color(0xFFC2BCBC), width: 3),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                child: Container(
+                  height: 36,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(6),
+                    border: Border.all(color: Color(0xFFC2BCBC), width: 3),
+                  ),
                 ),
               )),
           Positioned(
@@ -59,9 +48,9 @@ class _Dropdown extends State<Dropdown> {
               child: DropdownButtonFormField<String>(
                 menuMaxHeight: 150,
                 hint: Text(
-                  'Select Room',
+                  widget.hint,
                   style: GoogleFonts.poppins(
-                      fontSize: 18, color: Color(0xFFC2BCBC)),
+                      fontSize: widget.fontSize, color: Color(0xFFC2BCBC)),
                 ),
                 isDense: true,
                 iconDisabledColor: Color(0x00000000),
@@ -80,7 +69,7 @@ class _Dropdown extends State<Dropdown> {
                 isExpanded: true,
                 dropdownColor: Colors.white,
                 style: GoogleFonts.poppins(
-                  fontSize: 18, // Font size for dropdown items
+                  fontSize: widget.fontSize, // Font size for dropdown items
                   color: Colors.black,
                 ),
                 onChanged: (String? newValue) {
@@ -94,7 +83,7 @@ class _Dropdown extends State<Dropdown> {
                     child: Text(
                       value,
                       style: GoogleFonts.poppins(
-                          fontSize: 18), // Font size for dropdown items
+                          fontSize: widget.fontSize), // Font size for dropdown items
                     ),
                   );
                 }).toList(),
@@ -102,24 +91,24 @@ class _Dropdown extends State<Dropdown> {
             ),
           ),
 
-          const Positioned(
-            top: 18,
-            left: 220,
-            child: Icon(
+          Positioned(
+            top: 15,
+            left:  widget.fontSize! > 15 ? 250 : 100,
+            child: const Icon(
               Icons.arrow_drop_down,
               color: Color(0xFFC2BCBC),
             ),
           ),
           // "Rooms" label with white background
           Positioned(
-            left: 16,
+            left: 14,
             top: 0,
             child: Container(
               color: Colors.white,
               padding: EdgeInsets.symmetric(horizontal: 4),
-              child: const Text(
-                'Rooms',
-                style: TextStyle(
+              child: Text(
+                widget.title,
+                style: const TextStyle(
                   color: Colors.black,
                   fontSize: 12, // Font size for "Rooms" label
                 ),
@@ -127,7 +116,6 @@ class _Dropdown extends State<Dropdown> {
             ),
           ),
         ],
-      ),
-    );
+      );
   }
 }

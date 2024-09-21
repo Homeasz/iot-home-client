@@ -1,18 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:homeasz/components/device_routine_row.dart';
 import 'package:homeasz/components/dropdown.dart';
-import 'package:homeasz/components/dropdown_row.dart';
 import 'package:homeasz/components/modal_confirm_button.dart';
+import 'package:homeasz/components/repeat_schedule_input.dart';
+import 'package:homeasz/components/text_input.dart';
 
-class AddToHome extends StatelessWidget {
-  const AddToHome({super.key});
+class SetupRoutine extends StatelessWidget{
+  SetupRoutine({super.key});
+  final TextEditingController routineName = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
       width: double.infinity,
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 25),
+        padding: EdgeInsets.only(left: 25, right: 25,bottom: MediaQuery.of(context).viewInsets.bottom),
         child: Column(
           children: [
             const SizedBox(
@@ -29,7 +32,7 @@ class AddToHome extends StatelessWidget {
               height: 25,
             ),
             Text(
-              "Add to Home",
+              "Setup Routine",
               style: GoogleFonts.poppins(
                 color: Color(0xFF000000),
                 fontSize: 22,
@@ -39,12 +42,12 @@ class AddToHome extends StatelessWidget {
               ),
             ),
             const SizedBox(
-              height: 40,
+              height: 60,
             ),
             Align(
               alignment: Alignment(-0.95, 0),
               child: Text(
-                'Room',
+                'Routine Name',
                 textAlign: TextAlign.left,
                 style: GoogleFonts.poppins(
                   color: Colors.black,
@@ -58,39 +61,47 @@ class AddToHome extends StatelessWidget {
             const SizedBox(
               height: 20,
             ),
-            DropdownRow(title: "Rooms", hint: "Select Rooms",),
-            const SizedBox(
-              height: 20,
-            ),
-            const ModalConfirmButton(buttonText: "Add"),
-            const SizedBox(
-              height: 15,
-            ),
-            SizedBox(
-              width: MediaQuery.of(context).size.width - 66,
-              child: Text(
-                'Routine',
-                textAlign: TextAlign.left,
-                style: GoogleFonts.poppins(
-                  color: Colors.black,
-                  fontSize: 18,
-                  fontWeight: FontWeight.w400,
-                  height: 0.06,
-                  letterSpacing: -0.54,
-                ),
-              ),
-            ),
-            const SizedBox(
-              height: 18,
-            ),
-            DropdownRow(title: "Routine",hint: "Select routine"),
-            const SizedBox(
-              height: 15,
-            ),
-            const ModalConfirmButton(buttonText: "Add"),
+            SizedBox(width: 313, child: TextInput(input: routineName)),
             const SizedBox(
               height: 30,
-            )
+            ),
+            Align(
+              alignment: Alignment(-0.95, 0),
+              child: Text(
+                'Repeat',
+                textAlign: TextAlign.left,
+                style: GoogleFonts.poppins(
+                  color: Colors.black,
+                  fontSize: 18,
+                  fontWeight: FontWeight.w400,
+                  height: 0.06,
+                  letterSpacing: -0.54,
+                ),
+              ),
+            ),
+            const SizedBox(height: 20,),
+            const RepeatScheduleInput(),
+            const SizedBox(height: 30,),
+            Align(
+              alignment: Alignment(-0.95, 0),
+              child: Text(
+                'Devices',
+                textAlign: TextAlign.left,
+                style: GoogleFonts.poppins(
+                  color: Colors.black,
+                  fontSize: 18,
+                  fontWeight: FontWeight.w400,
+                  height: 0.06,
+                  letterSpacing: -0.54,
+                ),
+              ),
+            ),
+            SizedBox(height: 20,),
+            DeviceRoutineRow(),
+            SizedBox(height: 20,),
+            ModalConfirmButton(buttonText: "Confirm"),
+            SizedBox(height: 80,)
+
           ],
         ),
       ),
