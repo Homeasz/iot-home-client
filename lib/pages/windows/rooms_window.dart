@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:homeasz/components/room_tile.dart';
 
+import 'package:homeasz/components/switch_tile.dart';
+
 class RoomsWindow extends StatefulWidget {
   const RoomsWindow({super.key});
 

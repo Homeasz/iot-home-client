@@ -114,11 +114,11 @@ class _HomePageState extends State<HomePage>
                       child: const Text("Routines")
                     ),
                   InkWell(
-                    onTap: () {
-                      
-                    },
-                    child: const Text("Profile")
-                    ),
+                     onTap: () {
+
+                     },
+                     child: const Text("Profile")
+                     ),
                 ],
               ),
             ),
