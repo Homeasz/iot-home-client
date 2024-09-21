@@ -24,6 +24,14 @@ const String tEditProfile = "Edit Profile";
 const String tJoined = "Joined ";
 const String tJoinedAt = "12-12-2021";
 const String tDelete = "Delete Account";
+
+const String roomImagePath = "lib/assets/rooms/";
+const String applianceImagePath = "lib/assets/appliances/";
+
+const String BALCONY = "balcony";
+
+
+
 Color tPrimaryColor = Colors.amber[100]!;
 Color tAccentColor = Colors.amber[300]!;
 Color tDarkColor = Colors.black54;
