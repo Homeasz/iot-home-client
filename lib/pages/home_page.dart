@@ -5,6 +5,9 @@ import 'package:homeasz/components/add_button.dart';
 import 'package:homeasz/pages/windows/home_window.dart';
 import 'package:homeasz/pages/windows/rooms_window.dart';
 import 'package:homeasz/pages/windows/routine_window.dart';
+import 'package:homeasz/providers/data_provider.dart';
+import 'package:homeasz/providers/user_provider.dart';
+import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -19,13 +22,16 @@ class _HomePageState extends State<HomePage>
   bool _isBottomWidgetVisible = false;
   int currentRoom = 0;
   int currentAnimationPos = 0; // 0 for loading, 1 for home view, 2 for others
-  int currentWindow = 0;
+  int currentWindow = 0; // 0 for home, 1 for rooms, 2 for routines
 
   // final info = NetworkInfo();
 
   @override
   void initState() {
     super.initState();
+    Provider.of<UserProvider>(context, listen: false).getUser();
+    Provider.of<DataProvider>(context, listen: false).getUserRooms();
+    
     Future.delayed(const Duration(milliseconds: 400), () {
       setState(() {
         _isBottomWidgetVisible = true;
@@ -54,9 +60,9 @@ class _HomePageState extends State<HomePage>
     final List<double> _mainWindow = [screenHeight, screenHeight / 3 - 65, 120];
     final List<double> _navBar = [screenHeight, 300, 90];
     final List<dynamic> _window = [
-      HomeWindow(),
-      RoomsWindow(),
-      RoutineWindow(),
+      const HomeWindow(),
+      const RoomsWindow(),
+      const RoutineWindow(),
     ];
     return Scaffold(
       backgroundColor: const Color(0xFFE6F8FF),
@@ -123,10 +129,10 @@ class _HomePageState extends State<HomePage>
               ),
             ),
           ),
-          const Positioned(
+          Positioned(
             bottom: 20,
             right: 20,
-            child: AddButton()),
+            child: AddButton(window: currentWindow,)),
           // Bottom widget sliding in
         ],
       ),

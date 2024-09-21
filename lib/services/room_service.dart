@@ -50,7 +50,10 @@ class RoomService {
     }
   }
 
-  Future<Room?> addRoom(String name) async {
+  Future<Room?> addRoom(String name, String type) async {
+
+    // TODO: make call based on type
+
     final token = await _authService.getToken();
     if (token != null) {
       final response = await http.post(

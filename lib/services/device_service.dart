@@ -24,9 +24,7 @@ class DeviceService {
         }),
       );
       if (response.statusCode == 200) {
-        print('Device added successfully');
       } else {
-        print('Failed to add device');
       }
     }
   }
@@ -45,7 +43,6 @@ class DeviceService {
         final status = jsonDecode(response.body)['status'];
         return status;
       } else {
-        print('Failed to get switch status');
       }
     }
     return false;
@@ -53,7 +50,6 @@ class DeviceService {
 
   Future<bool> toggleSwitch(String switchId, bool state) async {
     final token = await _authService.getToken();
-    print('toggleSwitch: $switchId, $state');
     if (token != null) {
       final response = await http.put(
         Uri.parse('$BASE_URL/switch/toggle'),
@@ -68,10 +64,8 @@ class DeviceService {
       );
       if (response.statusCode == 200) {
         final Map<String, dynamic> body = jsonDecode(response.body);
-        print(response.body);
         return body['status'];
       } else {
-        print(response.body);
       }
     }
     return false;
@@ -88,10 +82,8 @@ class DeviceService {
       },
     );
     if (response.statusCode == 200) {
-      print('Switch deleted successfully');
       return true;
     } else {
-      print('Failed to delete switch');
     }
     return false;
   }
@@ -114,7 +106,6 @@ class DeviceService {
         final Map<String, dynamic> body = jsonDecode(response.body);
         return SwitchModel.fromMap(body['switch']);
       } else {
-        print(response.body);
       }
     }
     return null;

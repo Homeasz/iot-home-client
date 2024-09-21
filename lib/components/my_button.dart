@@ -23,7 +23,7 @@ class MyButton extends StatelessWidget {
           child: Text(
             text,
             style: GoogleFonts.inriaSerif(
-              color: Color.fromARGB(255, 0, 0, 0),
+              color: const Color.fromARGB(255, 0, 0, 0),
               fontWeight: FontWeight.bold,
               fontSize: 24,
             ),

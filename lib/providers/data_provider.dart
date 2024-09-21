@@ -39,8 +39,8 @@ class DataProvider extends ChangeNotifier {
     return room;
   }
 
-  Future addRoom(String name) async {
-    final room = await roomService.addRoom(name);
+  Future addRoom(String name, String type) async {
+    final room = await roomService.addRoom(name, type);
     if (room != null) {
       rooms.add(room);
       notifyListeners();

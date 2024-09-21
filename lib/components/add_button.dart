@@ -1,15 +1,27 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:homeasz/components/add_room_icons_grid.dart';
-import 'package:homeasz/components/modal_sheets/add_room.dart';
-import 'package:homeasz/components/modal_sheets/add_to_home.dart';
-import 'package:homeasz/components/modal_sheets/setup_routine.dart';
+import 'package:homeasz/components/modal_sheets/rooms/add_room_icons_grid.dart';
+import 'package:homeasz/components/modal_sheets/rooms/add_room.dart';
+import 'package:homeasz/components/modal_sheets/home/add_to_home.dart';
+import 'package:homeasz/components/modal_sheets/routines/setup_routine.dart';
 
-class AddButton extends StatelessWidget {
-  const AddButton({super.key});
+class AddButton extends StatefulWidget {
+  final int window;
+
+  const AddButton({super.key, required this.window});
 
   @override
+  State<AddButton> createState() => _AddButtonState();
+}
+
+class _AddButtonState extends State<AddButton> {
+  @override
   Widget build(BuildContext context) {
+    final List<Widget> actions = [
+      const AddToHome(),
+      AddRoom(),
+      SetupRoutine(),
+    ];
+
     return InkWell(
         splashColor: const Color(0xFFB1E8FF),
         child: Container(
@@ -18,7 +30,7 @@ class AddButton extends StatelessWidget {
           padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(boxShadow: const [
             BoxShadow(color: Colors.grey, blurRadius: 2, offset: Offset(2, 2))
-          ], borderRadius: BorderRadius.circular(50), color: Color(0xFFB1E8FF)),
+          ], borderRadius: BorderRadius.circular(50), color: const Color(0xFFB1E8FF)),
           child: Image.asset(
             'lib/assets/add.png',
           ),
@@ -31,7 +43,7 @@ class AddButton extends StatelessWidget {
               backgroundColor: const Color(0xFFE7F8FF),
               builder: (context) {
                 return SingleChildScrollView(
-                    child: Wrap(children: [SetupRoutine()]));
+                    child: Wrap(children: [actions[widget.window]]));
               }).whenComplete(() {
             AddRoomIconsGrid.activeState = -1;
           });

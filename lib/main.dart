@@ -19,7 +19,7 @@ void main() {
     ChangeNotifierProvider(create: (context) => DataProvider()),
     ChangeNotifierProvider(create: (context) => UserProvider()),
     ChangeNotifierProvider(create: (context) => ThemeProvider()),
-  ], child:  MyApp()));
+  ], child:  const MyApp()));
 }
 
 class MyApp extends StatelessWidget {
@@ -34,8 +34,7 @@ class MyApp extends StatelessWidget {
       theme: themeProvider.isDarkMode ? darkTheme : customTheme,
       initialRoute: '/',
       routes: {
-        // '/': (context) => const AuthPage(),
-        '/': (context) => const HomePage(),
+        '/': (context) => const AuthPage(),
         '/create_room': (context) => const CreateRoom(),
         '/add_esp': (context) => const AddESPPage(),
         '/list_esp': (context) => const ListESPsPage(),

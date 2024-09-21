@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:homeasz/components/device_routine_row.dart';
-import 'package:homeasz/components/dropdown.dart';
-import 'package:homeasz/components/modal_confirm_button.dart';
-import 'package:homeasz/components/repeat_schedule_input.dart';
+import 'package:homeasz/components/modal_sheets/routines/device_routine_row.dart';
+import 'package:homeasz/components/modal_sheets/dropdown.dart';
+import 'package:homeasz/components/modal_sheets/modal_confirm_button.dart';
+import 'package:homeasz/components/modal_sheets/routines/repeat_schedule_input.dart';
 import 'package:homeasz/components/text_input.dart';
 
 class SetupRoutine extends StatelessWidget{
@@ -34,7 +34,7 @@ class SetupRoutine extends StatelessWidget{
             Text(
               "Setup Routine",
               style: GoogleFonts.poppins(
-                color: Color(0xFF000000),
+                color: const Color(0xFF000000),
                 fontSize: 22,
                 height: 0.05,
                 letterSpacing: -0.66,
@@ -45,7 +45,7 @@ class SetupRoutine extends StatelessWidget{
               height: 60,
             ),
             Align(
-              alignment: Alignment(-0.95, 0),
+              alignment: const Alignment(-0.95, 0),
               child: Text(
                 'Routine Name',
                 textAlign: TextAlign.left,
@@ -66,7 +66,7 @@ class SetupRoutine extends StatelessWidget{
               height: 30,
             ),
             Align(
-              alignment: Alignment(-0.95, 0),
+              alignment: const Alignment(-0.95, 0),
               child: Text(
                 'Repeat',
                 textAlign: TextAlign.left,
@@ -83,7 +83,7 @@ class SetupRoutine extends StatelessWidget{
             const RepeatScheduleInput(),
             const SizedBox(height: 30,),
             Align(
-              alignment: Alignment(-0.95, 0),
+              alignment: const Alignment(-0.95, 0),
               child: Text(
                 'Devices',
                 textAlign: TextAlign.left,
@@ -96,11 +96,11 @@ class SetupRoutine extends StatelessWidget{
                 ),
               ),
             ),
-            SizedBox(height: 20,),
-            DeviceRoutineRow(),
-            SizedBox(height: 20,),
-            ModalConfirmButton(buttonText: "Confirm"),
-            SizedBox(height: 80,)
+            const SizedBox(height: 20,),
+            const DeviceRoutineRow(),
+            const SizedBox(height: 20,),
+            ModalConfirmButton(buttonText: "Confirm", onPressed: (){},),
+            const SizedBox(height: 80,)
 
           ],
         ),

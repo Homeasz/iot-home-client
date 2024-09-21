@@ -26,7 +26,7 @@ class _RoutineWindowState extends State<RoutineWindow> {
             ),
           ],
         ),
-      child: Text("Routine Window"),
+      child: const Text("Routine Window"),
     );
   }
 }

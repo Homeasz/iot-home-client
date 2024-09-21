@@ -12,7 +12,7 @@ final ThemeData customTheme = ThemeData(
     color: Color.fromARGB(255, 202, 189, 168),
   ),
   secondaryHeaderColor: const Color(0xFFF1E6FF),
-  scaffoldBackgroundColor: Color(0xFFFFFFFF),
+  scaffoldBackgroundColor: const Color(0xFFFFFFFF),
   fontFamily: 'Roboto',
   textTheme: const TextTheme(
       headlineLarge: TextStyle(

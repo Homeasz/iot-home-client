@@ -36,3 +36,5 @@ Color tPrimaryColor = Colors.amber[100]!;
 Color tAccentColor = Colors.amber[300]!;
 Color tDarkColor = Colors.black54;
 
+List<String> roomNames = ["balcony","bed","door","kitchen","living-room","office-desk","sink","table"];
+

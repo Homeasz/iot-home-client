@@ -72,7 +72,7 @@ class _LoginPageState extends State<LoginPage> {
                     'Welcome back. Use your email and \npassword to log in.!',
                     textAlign: TextAlign.center,
                     style: GoogleFonts.inriaSerif
-                     (color: Color(0xFF907C7C),
+                     (color: const Color(0xFF907C7C),
                       fontSize: 16,
                       fontWeight: FontWeight.w400,
                       height: 1.05,

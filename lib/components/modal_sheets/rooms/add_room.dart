@@ -1,12 +1,24 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:homeasz/components/add_room_icons_grid.dart';
+import 'package:homeasz/components/modal_sheets/modal_confirm_button.dart';
+import 'package:homeasz/components/modal_sheets/rooms/add_room_icons_grid.dart';
 import 'package:homeasz/components/text_input.dart';
+import 'package:homeasz/providers/data_provider.dart';
+import 'package:homeasz/utils/constants.dart';
+import 'package:provider/provider.dart';
 
 class AddRoom extends StatelessWidget {
   AddRoom({super.key});
   final TextEditingController _textEditingController = TextEditingController();
+  
+
+
+  void _addRoomIcon(BuildContext context) {
+    final dataProvider = Provider.of<DataProvider>(context, listen: false);
+    int iconIndex = AddRoomIconsGrid.activeState;
+    dataProvider.addRoom(_textEditingController.text, roomNames[iconIndex]);
+  }
+
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -35,7 +47,7 @@ class AddRoom extends StatelessWidget {
             Text(
               "Add Room",
               style: GoogleFonts.poppins(
-                color: Color(0xFF000000),
+                color: const Color(0xFF000000),
                 fontSize: 22,
                 height: 0.05,
                 letterSpacing: -0.66,
@@ -69,6 +81,16 @@ class AddRoom extends StatelessWidget {
               height: 20,
             ),
             AddRoomIconsGrid(),
+            ModalConfirmButton(
+              buttonText: "Add",
+              onPressed: (){
+                _addRoomIcon(context);
+                Navigator.pop(context);
+              },
+            ),
+            const SizedBox(
+              height: 30,
+            )
           ],
         ),
       ),

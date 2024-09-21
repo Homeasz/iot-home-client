@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class Dropdown extends StatefulWidget {
-  Dropdown({super.key,this.fontSize = 18, required this.hint,required this.title});
+  const Dropdown({super.key,this.fontSize = 18, required this.hint,required this.title});
   final double? fontSize;
   final String hint;
   final String title;
@@ -35,7 +35,7 @@ class _Dropdown extends State<Dropdown> {
                   height: 36,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(6),
-                    border: Border.all(color: Color(0xFFC2BCBC), width: 3),
+                    border: Border.all(color: const Color(0xFFC2BCBC), width: 3),
                   ),
                 ),
               )),
@@ -50,11 +50,11 @@ class _Dropdown extends State<Dropdown> {
                 hint: Text(
                   widget.hint,
                   style: GoogleFonts.poppins(
-                      fontSize: widget.fontSize, color: Color(0xFFC2BCBC)),
+                      fontSize: widget.fontSize, color: const Color(0xFFC2BCBC)),
                 ),
                 isDense: true,
-                iconDisabledColor: Color(0x00000000),
-                iconEnabledColor: Color(0x00000000),
+                iconDisabledColor: const Color(0x00000000),
+                iconEnabledColor: const Color(0x00000000),
                 value: selectedValue,
                 decoration: InputDecoration(
                   enabledBorder: OutlineInputBorder(
@@ -105,7 +105,7 @@ class _Dropdown extends State<Dropdown> {
             top: 0,
             child: Container(
               color: Colors.white,
-              padding: EdgeInsets.symmetric(horizontal: 4),
+              padding: const EdgeInsets.symmetric(horizontal: 4),
               child: Text(
                 widget.title,
                 style: const TextStyle(

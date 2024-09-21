@@ -82,7 +82,7 @@ class _SignUpPageState extends State<SignUpPage> {
                     'Happy to get you onboarded!',
                     textAlign: TextAlign.center,
                     style: GoogleFonts.inriaSerif
-                     (color: Color(0xFF907C7C),
+                     (color: const Color(0xFF907C7C),
                       fontSize: 16,
                       fontWeight: FontWeight.w400,
                       height: 1.05,

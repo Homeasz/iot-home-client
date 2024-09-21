@@ -1,29 +1,29 @@
 import 'package:flutter/material.dart';
-import 'package:homeasz/components/modal_confirm_button.dart';
-import 'package:homeasz/components/room_icon.dart';
-import 'package:homeasz/components/switch_tile.dart';
+import 'package:homeasz/components/modal_sheets/rooms/room_icon.dart';
+import 'package:homeasz/utils/constants.dart';
 
 typedef MyBuilder = void Function(
     BuildContext context, void Function() methodFromChild);
 
 class AddRoomIconsGrid extends StatelessWidget {
-
   AddRoomIconsGrid({super.key});
   late void Function() toggleRoomIcon;
   static int activeState = -1;
+  
 
   @override
   Widget build(BuildContext context) {
     List<void Function()> RoomIconToggleFn = [];
-    return Column(
-      children: [SizedBox(
+    
+    return Column(children: [
+      SizedBox(
         width: 211,
         height: 470,
         child: GridView.count(
           crossAxisCount: 2,
           crossAxisSpacing: 20,
           mainAxisSpacing: 20,
-          children: List.generate(8, (index) {
+          children: List.generate(roomNames.length, (index) {
             return GestureDetector(
               onTap: () {
                 if (index == activeState) {
@@ -40,7 +40,7 @@ class AddRoomIconsGrid extends StatelessWidget {
                 width: 83,
                 height: 83,
                 child: RoomIcon(
-                    roomId: index,
+                    roomType: roomNames[index],
                     builder: (context, toggle) {
                       RoomIconToggleFn.add(toggle);
                     }),
@@ -49,9 +49,7 @@ class AddRoomIconsGrid extends StatelessWidget {
           }),
         ),
       ),
-      ModalConfirmButton(buttonText: "Add"),
-      SizedBox(height: 30,)
-      ]
-    );
+      
+    ]);
   }
 }

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class ApplianceButton extends StatefulWidget {
@@ -34,7 +33,7 @@ class _ApplianceButtonState extends State<ApplianceButton> {
       height: 74,
       width: 94,
       decoration: BoxDecoration(
-          color: state? Color(0xFF87CEEB): Color(0xFFE6E6E6),
+          color: state? const Color(0xFF87CEEB): const Color(0xFFE6E6E6),
           borderRadius: BorderRadius.circular(10),
           boxShadow: [
             BoxShadow(

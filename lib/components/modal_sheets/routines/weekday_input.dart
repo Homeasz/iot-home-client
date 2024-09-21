@@ -37,7 +37,7 @@ class _WeekdayInputState extends State<WeekdayInput> {
             alignment: Alignment.center,
             child: Text(
               widget.Weekdays[index],
-              style: TextStyle(
+              style: const TextStyle(
                 color: Colors.black,
                 fontSize: 18,
                 fontWeight: FontWeight.w400,
@@ -46,17 +46,17 @@ class _WeekdayInputState extends State<WeekdayInput> {
             ),
             decoration: BoxDecoration(
                   borderRadius: index == 0
-                    ? BorderRadius.only(
+                    ? const BorderRadius.only(
                         topLeft: Radius.circular(4),
                         bottomLeft: Radius.circular(4))
                     : index == 6
-                        ? BorderRadius.only(
+                        ? const BorderRadius.only(
                             topRight: Radius.circular(4),
                             bottomRight: Radius.circular(4))
-                        : BorderRadius.all(Radius.zero),
+                        : const BorderRadius.all(Radius.zero),
                 color: WeekdaySelected[index]
-                    ? Color(0xFFB1E8FF)
-                    : Color(0XFFD9D9D9)),
+                    ? const Color(0xFFB1E8FF)
+                    : const Color(0XFFD9D9D9)),
           ),
           onTap: () => setState(() {
             WeekdaySelected[index] = !WeekdaySelected[index];

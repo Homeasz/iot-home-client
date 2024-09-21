@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:homeasz/components/dropdown.dart';
-import 'package:homeasz/components/mini_dropdown.dart';
+import 'package:homeasz/components/modal_sheets/dropdown.dart';
+import 'package:homeasz/components/modal_sheets/mini_dropdown.dart';
 import 'package:http/http.dart';
 
 class DropdownRow extends StatelessWidget{
-  DropdownRow({super.key, required this.hint, required this.title});
+  const DropdownRow({super.key, required this.hint, required this.title});
   final String hint;
   final String title;
 
@@ -14,7 +14,7 @@ class DropdownRow extends StatelessWidget{
     return Container(
       width: 313, // Updated width
       height: 52,
-      padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+      padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
 
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(6),

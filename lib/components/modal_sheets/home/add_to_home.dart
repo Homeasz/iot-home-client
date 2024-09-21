@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:homeasz/components/dropdown.dart';
-import 'package:homeasz/components/dropdown_row.dart';
-import 'package:homeasz/components/modal_confirm_button.dart';
+import 'package:homeasz/components/modal_sheets/dropdown.dart';
+import 'package:homeasz/components/modal_sheets/dropdown_row.dart';
+import 'package:homeasz/components/modal_sheets/modal_confirm_button.dart';
 
 class AddToHome extends StatelessWidget {
   const AddToHome({super.key});
@@ -31,7 +31,7 @@ class AddToHome extends StatelessWidget {
             Text(
               "Add to Home",
               style: GoogleFonts.poppins(
-                color: Color(0xFF000000),
+                color: const Color(0xFF000000),
                 fontSize: 22,
                 height: 0.05,
                 letterSpacing: -0.66,
@@ -42,7 +42,7 @@ class AddToHome extends StatelessWidget {
               height: 40,
             ),
             Align(
-              alignment: Alignment(-0.95, 0),
+              alignment: const Alignment(-0.95, 0),
               child: Text(
                 'Room',
                 textAlign: TextAlign.left,
@@ -58,11 +58,11 @@ class AddToHome extends StatelessWidget {
             const SizedBox(
               height: 20,
             ),
-            DropdownRow(title: "Rooms", hint: "Select Rooms",),
+            const DropdownRow(title: "Rooms", hint: "Select Rooms",),
             const SizedBox(
               height: 20,
             ),
-            const ModalConfirmButton(buttonText: "Add"),
+            ModalConfirmButton(buttonText: "Add", onPressed: (){},),
             const SizedBox(
               height: 15,
             ),
@@ -83,11 +83,11 @@ class AddToHome extends StatelessWidget {
             const SizedBox(
               height: 18,
             ),
-            DropdownRow(title: "Routine",hint: "Select routine"),
+            const DropdownRow(title: "Routine",hint: "Select routine"),
             const SizedBox(
               height: 15,
             ),
-            const ModalConfirmButton(buttonText: "Add"),
+            ModalConfirmButton(buttonText: "Add", onPressed: (){}),
             const SizedBox(
               height: 30,
             )

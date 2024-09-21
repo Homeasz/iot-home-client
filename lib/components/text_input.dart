@@ -23,7 +23,7 @@ class TextInput extends StatelessWidget {
                 color: Color(0xffffffff), offset: Offset(-3, -3), blurRadius: 0)
           ]),
       child: Padding(
-        padding: EdgeInsets.fromLTRB(15, 2, 17, 10),
+        padding: const EdgeInsets.fromLTRB(15, 2, 17, 10),
         child: TextField(
           style: GoogleFonts.poppins(
             color: Colors.black,

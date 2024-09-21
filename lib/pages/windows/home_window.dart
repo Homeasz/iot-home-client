@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:homeasz/components/appliance_button.dart';
-
+import 'package:homeasz/providers/user_provider.dart';
+import 'package:provider/provider.dart';
 
 class HomeWindow extends StatefulWidget {
-
   const HomeWindow({
     super.key,
   });
@@ -13,6 +13,14 @@ class HomeWindow extends StatefulWidget {
 }
 
 class _HomeWindowState extends State<HomeWindow> {
+
+  // call the user provider to get the user
+  @override
+  void initState() {
+    super.initState();
+    
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -34,57 +42,62 @@ class _HomeWindowState extends State<HomeWindow> {
         child: Container(
           padding: const EdgeInsets.only(top: 5),
           // height should be to the bottom of the screen
-          child: Column(
-            textBaseline: TextBaseline
-                .alphabetic, // this is to make the text align to the top
-            // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text(
-                'Hi Priyansh',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 24,
-                  fontFamily: 'Poppins',
-                  fontWeight: FontWeight.w600,
-                  height: 0.04,
-                  letterSpacing: -0.72,
+          child: Consumer<UserProvider>(
+            builder: (context, userProvider, child) =>
+              Column(
+              textBaseline: TextBaseline
+                  .alphabetic, // this is to make the text align to the top
+              // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Hi ${userProvider.user?.firstName},',
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    color: Colors.black,
+                    fontSize: 24,
+                    fontFamily: 'Poppins',
+                    fontWeight: FontWeight.w600,
+                    height: 0.04,
+                    letterSpacing: -0.72,
+                  ),
                 ),
-              ),
-              const SizedBox(height: 30),
-              const Text(
-                'what would you like to do?',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: Color(0xFF907C7C),
-                  fontSize: 13,
-                  fontFamily: 'Poppins',
-                  fontWeight: FontWeight.w400,
-                  height: 0.08,
-                  letterSpacing: -0.39,
+                const SizedBox(height: 30),
+                const Text(
+                  'what would you like to do?',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Color(0xFF907C7C),
+                    fontSize: 13,
+                    fontFamily: 'Poppins',
+                    fontWeight: FontWeight.w400,
+                    height: 0.08,
+                    letterSpacing: -0.39,
+                  ),
                 ),
-              ),
-              const SizedBox(height: 50),
-            
-              // horizontal scroll list
-              Container(
-                height: 86,
-                child: ListView.separated(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: 10,
-                  separatorBuilder: (BuildContext context, int index) {
-                    return SizedBox(width: 10);
-                  },
-                  itemBuilder: (context, index) {
-                    return Padding(padding: EdgeInsets.only(bottom: 4),child: ApplianceButton(
-                        index: index,
-                        applianceName: 'Switch $index',
-                    ));
-                  },
+                const SizedBox(height: 50),
+
+                // horizontal scroll list
+                Container(
+                  height: 86,
+                  child: ListView.separated(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: 10,
+                    separatorBuilder: (BuildContext context, int index) {
+                      return const SizedBox(width: 10);
+                    },
+                    itemBuilder: (context, index) {
+                      return Padding(
+                          padding: const EdgeInsets.only(bottom: 4),
+                          child: ApplianceButton(
+                            index: index,
+                            applianceName: 'Switch $index',
+                          ));
+                    },
+                  ),
                 ),
-              ),
-            ],
+              ],
+            )
           ),
         ));
   }

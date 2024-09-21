@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:homeasz/components/time_input.dart';
-import 'package:homeasz/components/weekday_input.dart';
+import 'package:homeasz/components/modal_sheets/routines/time_input.dart';
+import 'package:homeasz/components/modal_sheets/routines/weekday_input.dart';
 
 class RepeatScheduleInput extends StatelessWidget {
   const RepeatScheduleInput({super.key});
@@ -26,11 +26,11 @@ class RepeatScheduleInput extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          SizedBox(
+          const SizedBox(
             width: 10,
           ),
-          TimeInput(),
-          SizedBox(width: 15,),
+          const TimeInput(),
+          const SizedBox(width: 15,),
           WeekdayInput()
         ],
       ),
