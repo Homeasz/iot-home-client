@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:homeasz/components/modal_sheets/modal_confirm_button.dart';
-import 'package:homeasz/components/modal_sheets/rooms/add_room_icons_grid.dart';
+import 'package:homeasz/components/modal_sheets/create_room/add_room_icons_grid.dart';
 import 'package:homeasz/components/text_input.dart';
 import 'package:homeasz/providers/data_provider.dart';
 import 'package:homeasz/utils/constants.dart';
@@ -10,8 +10,6 @@ import 'package:provider/provider.dart';
 class AddRoom extends StatelessWidget {
   AddRoom({super.key});
   final TextEditingController _textEditingController = TextEditingController();
-  
-
 
   void _addRoomIcon(BuildContext context) {
     final dataProvider = Provider.of<DataProvider>(context, listen: false);
@@ -76,6 +74,7 @@ class AddRoom extends StatelessWidget {
             ),
             TextInput(
               input: _textEditingController,
+              hintText: "Enter Room Name",
             ),
             const SizedBox(
               height: 20,
@@ -83,7 +82,7 @@ class AddRoom extends StatelessWidget {
             AddRoomIconsGrid(),
             ModalConfirmButton(
               buttonText: "Add",
-              onPressed: (){
+              onPressed: () {
                 _addRoomIcon(context);
                 Navigator.pop(context);
               },

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:homeasz/components/my_textfield.dart';
 import 'package:homeasz/components/my_button.dart';
-import 'package:homeasz/utils/utils.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
@@ -23,7 +22,7 @@ class _LoginPageState extends State<LoginPage> {
   void signIn(AuthProvider authProvider) async {
     final String email = emailController.text;
     final String password = passwordController.text;
-    
+
     showDialog(
         context: context,
         builder: (context) {
@@ -32,7 +31,7 @@ class _LoginPageState extends State<LoginPage> {
           );
         });
     await authProvider.login(context, email, password);
-    
+
     if (authProvider.user != null) {
       Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
     } else {
@@ -47,7 +46,7 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    final height = MediaQuery.of(context).size.height;
+    final height = MediaQuery.sizeOf(context).height;
     final authProvider = Provider.of<AuthProvider>(context);
     return Scaffold(
       body: Center(
@@ -59,28 +58,28 @@ class _LoginPageState extends State<LoginPage> {
                 children: [
                   Text(
                     'Hello there!',
-                    style: GoogleFonts.alice
-                     (color: Colors.black,
-                     fontSize: 48,
-                     fontWeight: FontWeight.w400,
-                     height: 0.02,
-                     letterSpacing: -1.44,
-                     ),
+                    style: GoogleFonts.alice(
+                      color: Colors.black,
+                      fontSize: 48,
+                      fontWeight: FontWeight.w400,
+                      height: 0.02,
+                      letterSpacing: -1.44,
+                    ),
                   ),
-                  SizedBox(height: height*0.05),
+                  SizedBox(height: height * 0.05),
                   Text(
                     'Welcome back. Use your email and \npassword to log in.!',
                     textAlign: TextAlign.center,
-                    style: GoogleFonts.inriaSerif
-                     (color: const Color(0xFF907C7C),
+                    style: GoogleFonts.inriaSerif(
+                      color: const Color(0xFF907C7C),
                       fontSize: 16,
                       fontWeight: FontWeight.w400,
                       height: 1.05,
                       letterSpacing: -0.48,
-                     ),
+                    ),
                   ),
                   // email textfield
-                  SizedBox(height: height*0.08),
+                  SizedBox(height: height * 0.08),
                   MyTextField(
                     controller: emailController,
                     hintText: 'Email',
@@ -132,10 +131,10 @@ class _LoginPageState extends State<LoginPage> {
                         Text(
                           'Don\'t have an account?',
                           style: GoogleFonts.inriaSerif(
-                          fontSize: 15,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.black,
-                        ),
+                            fontSize: 15,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.black,
+                          ),
                         ),
                         const SizedBox(width: 4),
                         GestureDetector(
@@ -143,10 +142,10 @@ class _LoginPageState extends State<LoginPage> {
                           child: Text(
                             'Sign up',
                             style: GoogleFonts.inriaSerif(
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.w900,
-                                    color: Colors.black,
-                                  ),
+                              fontSize: 15,
+                              fontWeight: FontWeight.w900,
+                              color: Colors.black,
+                            ),
                           ),
                         ),
                       ],

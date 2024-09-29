@@ -22,7 +22,7 @@ class _HomePageState extends State<HomePage>
   bool _isBottomWidgetVisible = false;
   int currentRoom = 0;
   int currentAnimationPos = 0; // 0 for loading, 1 for home view, 2 for others
-  int currentWindow = 0; // 0 for home, 1 for rooms, 2 for routines
+  int currentWindow = 0; // 0 for home, 1 for rooms, 2 for routines, 3 for add device
 
   // final info = NetworkInfo();
 
@@ -31,7 +31,7 @@ class _HomePageState extends State<HomePage>
     super.initState();
     Provider.of<UserProvider>(context, listen: false).getUser();
     Provider.of<DataProvider>(context, listen: false).getUserRooms();
-    
+
     Future.delayed(const Duration(milliseconds: 400), () {
       setState(() {
         _isBottomWidgetVisible = true;
@@ -54,8 +54,8 @@ class _HomePageState extends State<HomePage>
 
   @override
   Widget build(BuildContext context) {
-    final screenHeight = MediaQuery.of(context).size.height;
-    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.sizeOf(context).height;
+    final screenWidth = MediaQuery.sizeOf(context).width;
     final List<double> _sofaPos = [screenHeight / 2 - 250, 55, -500];
     final List<double> _mainWindow = [screenHeight, screenHeight / 3 - 65, 120];
     final List<double> _navBar = [screenHeight, 300, 90];
@@ -115,24 +115,21 @@ class _HomePageState extends State<HomePage>
                       onTap: () {
                         _fullPage(2);
                         _changeWindow(2);
-                      
                       },
-                      child: const Text("Routines")
-                    ),
-                  InkWell(
-                     onTap: () {
-
-                     },
-                     child: const Text("Profile")
-                     ),
+                      child: const Text("Routines")),
+                  InkWell(onTap: () {
+                    Navigator.pushNamed(context, '/profile');
+                  }, child: const Text("Profile")),
                 ],
               ),
             ),
           ),
           Positioned(
-            bottom: 20,
-            right: 20,
-            child: AddButton(window: currentWindow,)),
+              bottom: 20,
+              right: 20,
+              child: AddButton(
+                window: currentWindow,
+              )),
           // Bottom widget sliding in
         ],
       ),

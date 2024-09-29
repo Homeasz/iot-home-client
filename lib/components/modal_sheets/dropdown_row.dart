@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:homeasz/components/modal_sheets/dropdown.dart';
-import 'package:homeasz/components/modal_sheets/mini_dropdown.dart';
-import 'package:http/http.dart';
 
 class DropdownRow extends StatelessWidget{
   const DropdownRow({super.key, required this.hint, required this.title});

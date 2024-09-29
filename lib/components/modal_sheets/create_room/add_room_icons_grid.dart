@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:homeasz/components/modal_sheets/rooms/room_icon.dart';
+import 'package:homeasz/components/modal_sheets/create_room/room_icon.dart';
 import 'package:homeasz/utils/constants.dart';
 
 typedef MyBuilder = void Function(

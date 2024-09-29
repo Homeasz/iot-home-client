@@ -2,13 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class TextInput extends StatelessWidget {
-  const TextInput({super.key, required this.input});
+  const TextInput({super.key, required this.input, required this.hintText});
   final TextEditingController input;
+  final String hintText;
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 273,
-      height: 52,
+      width: double.infinity,
+      height: 60,
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(8),
           color: Colors.white,
@@ -34,8 +35,11 @@ class TextInput extends StatelessWidget {
           ),
           showCursor: true,
           controller: input,
+          cursorHeight: 20,
+          // onclicking doesnt open keyboard
+
           decoration: InputDecoration(
-              hintText: "Enter room name",
+              hintText: hintText,
               hintStyle: GoogleFonts.poppins(
                 color: Colors.grey,
                 fontSize: 18,
@@ -44,7 +48,7 @@ class TextInput extends StatelessWidget {
                 letterSpacing: -0.54,
               ),
               enabledBorder: const UnderlineInputBorder(
-                  borderSide: BorderSide(width: 3, color: Color(0xFFC2BCBC))),
+                  borderSide: BorderSide(width: 1, color: Color(0xFFC2BCBC))),
               focusedBorder: const UnderlineInputBorder(
                   borderSide: BorderSide(width: 3, color: Color(0xFFC2BCBC))),
               border: InputBorder.none),

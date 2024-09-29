@@ -1,16 +1,15 @@
-import 'package:flutter/material.dart';
 
 class Room {
   final int id;
   final String name;
-  final int userId;
+  final String type;
   final DateTime createdAt;
   final DateTime updatedAt;
 
   Room({
     required this.id,
     required this.name,
-    required this.userId,
+    required this.type,
     required this.createdAt,
     required this.updatedAt,
   });
@@ -19,9 +18,9 @@ class Room {
     return Room(
       id: map['id'] ?? 0,
       name: map['name'] ?? '',
-      userId: map['userId'] ?? 0,
+      type: map['type'] ?? 'BEDROOM',
       createdAt: DateTime.parse(map['createdAt']),
-      updatedAt: DateTime.parse(map['updatedAt']),
+      updatedAt: DateTime.parse(map['updatedAt'] ?? map['createdAt']),
     );
   }
 

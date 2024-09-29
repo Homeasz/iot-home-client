@@ -1,5 +1,4 @@
 // // lib/services/api_service.dart
-import 'dart:ffi';
 
 import 'package:homeasz/models/room_model.dart';
 import 'package:homeasz/models/switch_model.dart';
@@ -25,7 +24,7 @@ class RoomService {
         // deserialize the response which has message and rooms
         final Map<String, dynamic> data = jsonDecode(response.body);
         // get the rooms from the response by parsing the json
-        final List<dynamic> rooms = data['rooms'];
+        final List<dynamic> rooms = data['data'];
         // return the list of rooms
         return rooms.map((room) => Room.fromMap(room)).toList();
       } else {
@@ -51,7 +50,6 @@ class RoomService {
   }
 
   Future<Room?> addRoom(String name, String type) async {
-
     // TODO: make call based on type
 
     final token = await _authService.getToken();
@@ -68,7 +66,8 @@ class RoomService {
       );
       if (response.statusCode == 200) {
         final Map<String, dynamic> data = jsonDecode(response.body);
-        return Room.fromMap(data['room']);
+        print(data['data']);
+        return Room.fromMap(data['data']);
       } else {
         print(response.statusCode);
         print(response.body);
@@ -126,7 +125,7 @@ class RoomService {
     return null;
   }
 
-  Future<List<SwitchModel>> getSwitches(String roomId) async {
+  Future<List<SwitchModel>> getSwitches(int roomId) async {
     final token = await _authService.getToken();
     if (token != null) {
       final response = await http.get(

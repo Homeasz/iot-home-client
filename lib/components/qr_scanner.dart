@@ -133,8 +133,8 @@ class _QRScannerState extends State<QRScanner> {
 
   Widget _buildQrView(BuildContext context) {
     // For this example we check how width or tall the device is and change the scanArea and overlay accordingly.
-    var scanArea = (MediaQuery.of(context).size.width < 400 ||
-            MediaQuery.of(context).size.height < 400)
+    var scanArea = (MediaQuery.sizeOf(context).width < 400 ||
+            MediaQuery.sizeOf(context).height < 400)
         ? 150.0
         : 300.0;
     // To ensure the Scanner view is properly sizes after rotation
@@ -161,7 +161,7 @@ class _QRScannerState extends State<QRScanner> {
         result = scanData;
         widget.callback(scanData.code!);
         // if (kDebugMode) {
-          
+
         // }
       });
     });

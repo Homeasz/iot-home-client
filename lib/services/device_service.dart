@@ -9,7 +9,7 @@ import '../utils/constants.dart';
 class DeviceService {
   final _authService = AuthService();
 
-  Future<void> addDevice(String deviceName, int roomId) async {
+  Future<DeviceModel?> addDevice(String deviceName, int roomId) async {
     final token = await _authService.getToken();
     if (token != null) {
       final response = await http.post(
@@ -24,7 +24,10 @@ class DeviceService {
         }),
       );
       if (response.statusCode == 200) {
+        final Map<String, dynamic> body = jsonDecode(response.body);
+        return DeviceModel.fromMap(body['device']);
       } else {
+        print(response.body);
       }
     }
   }
@@ -42,8 +45,7 @@ class DeviceService {
       if (response.statusCode == 200) {
         final status = jsonDecode(response.body)['status'];
         return status;
-      } else {
-      }
+      } else {}
     }
     return false;
   }
@@ -65,8 +67,7 @@ class DeviceService {
       if (response.statusCode == 200) {
         final Map<String, dynamic> body = jsonDecode(response.body);
         return body['status'];
-      } else {
-      }
+      } else {}
     }
     return false;
   }
@@ -83,12 +84,11 @@ class DeviceService {
     );
     if (response.statusCode == 200) {
       return true;
-    } else {
-    }
+    } else {}
     return false;
   }
 
-  Future<SwitchModel?> editSwitch(String switchId, String switchName) async {
+  Future<SwitchModel?> editSwitch(int switchId, String switchName, String roomName, String stringType) async {
     final token = await _authService.getToken();
     if (token != null) {
       final response = await http.put(
@@ -97,7 +97,7 @@ class DeviceService {
           'Cookie': token,
           'Content-Type': 'application/json',
         },
-        body: jsonEncode(<String, String>{
+        body: jsonEncode(<String, dynamic>{
           'switchId': switchId,
           'switchName': switchName,
         }),
@@ -105,8 +105,7 @@ class DeviceService {
       if (response.statusCode == 200) {
         final Map<String, dynamic> body = jsonDecode(response.body);
         return SwitchModel.fromMap(body['switch']);
-      } else {
-      }
+      } else {}
     }
     return null;
   }

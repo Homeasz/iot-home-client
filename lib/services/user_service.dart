@@ -1,9 +1,6 @@
 // a user service which fetches user data only if the user is authenticated
 import 'dart:async';
 import 'dart:core';
-
-import 'package:homeasz/models/auth_model.dart';
-import 'package:homeasz/models/room_model.dart';
 import 'package:homeasz/models/user_model.dart';
 import 'package:homeasz/services/auth_service.dart';
 import 'package:http/http.dart' as http;
@@ -27,6 +24,7 @@ class UserService {
       );
       if (response.statusCode == 200) {
         // if(true){
+        // print(jsonDecode(response.body)["data"]);
 
         return User.fromJson(jsonDecode(response.body));
         // return Profile.fromJson('{"name": "John Doe", "email": "johndoe@gmail.com", "phone": "1234567890", "address": "123 Main St, New York, NY", "bio": "I am a software engineer"}');

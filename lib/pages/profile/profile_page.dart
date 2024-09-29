@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:homeasz/models/auth_model.dart';
 import 'package:homeasz/pages/profile/profile_menu_page.dart';
 import 'package:homeasz/pages/profile/update_profile_page.dart';
 import 'package:homeasz/providers/auth_provider.dart';

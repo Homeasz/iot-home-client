@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:homeasz/utils/image_paths.dart';
 
 typedef MyBuilder = void Function(
     BuildContext context, void Function() methodFromChild);
@@ -28,7 +29,7 @@ class _RoomIconState extends State<RoomIcon> {
     return SizedBox(
       width: 83,
       height: 83,
-      child: Image.asset('lib/assets/rooms/${widget.roomType}$state.png'),
+      child: Image.asset('$roomImagePath/${widget.roomType}$state.png'),
     );
   }
 }

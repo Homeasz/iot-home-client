@@ -34,7 +34,7 @@ class User {
   }
 
   factory User.fromJson(Map<String, dynamic> json){
-    return User.fromMap(json['profileDetails']);
+    return User.fromMap(json['data']);
   }
   String toJson() => json.encode(toMap());
 }

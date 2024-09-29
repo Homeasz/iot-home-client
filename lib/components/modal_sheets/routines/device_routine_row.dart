@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:homeasz/components/modal_sheets/dropdown.dart';
 import 'package:homeasz/components/modal_sheets/mini_dropdown.dart';
 
 class DeviceRoutineRow extends StatefulWidget {

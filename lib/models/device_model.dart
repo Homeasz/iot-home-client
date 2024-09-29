@@ -4,7 +4,7 @@ class DeviceModel {
   final int id;
   final String name;
   final int roomId;
-  final int numberOfSwitches;
+  final String deviceType;
   final List<SwitchModel> switches;
   final DateTime createdAt;
   final DateTime updatedAt;
@@ -13,7 +13,7 @@ class DeviceModel {
     required this.id,
     required this.name,
     required this.roomId,
-    required this.numberOfSwitches,
+    required this.deviceType,
     required this.switches,
     required this.createdAt,
     required this.updatedAt,
@@ -24,7 +24,7 @@ class DeviceModel {
       id: map['id'] ?? 0,
       name: map['name'] ?? '',
       roomId: map['roomId'] ?? 0,
-      numberOfSwitches: map['numberOfSwitches'] ?? 0,
+      deviceType: map['deviceType'] ?? '',
       switches: List<SwitchModel>.from(
         map['switches'].map((x) => SwitchModel.fromMap(x)),
       ),

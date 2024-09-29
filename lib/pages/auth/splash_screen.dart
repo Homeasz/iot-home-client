@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:homeasz/pages/auth/auth_page.dart';
-import 'dart:async';
 
 class SplashScreen extends StatelessWidget {
   const SplashScreen({super.key});

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:homeasz/components/modal_sheets/dropdown.dart';
 import 'package:homeasz/components/modal_sheets/dropdown_row.dart';
 import 'package:homeasz/components/modal_sheets/modal_confirm_button.dart';
 
@@ -58,16 +57,22 @@ class AddToHome extends StatelessWidget {
             const SizedBox(
               height: 20,
             ),
-            const DropdownRow(title: "Rooms", hint: "Select Rooms",),
+            const DropdownRow(
+              title: "Rooms",
+              hint: "Select Rooms",
+            ),
             const SizedBox(
               height: 20,
             ),
-            ModalConfirmButton(buttonText: "Add", onPressed: (){},),
+            ModalConfirmButton(
+              buttonText: "Add",
+              onPressed: () {},
+            ),
             const SizedBox(
               height: 15,
             ),
             SizedBox(
-              width: MediaQuery.of(context).size.width - 66,
+              width: MediaQuery.sizeOf(context).width - 66,
               child: Text(
                 'Routine',
                 textAlign: TextAlign.left,
@@ -83,11 +88,11 @@ class AddToHome extends StatelessWidget {
             const SizedBox(
               height: 18,
             ),
-            const DropdownRow(title: "Routine",hint: "Select routine"),
+            const DropdownRow(title: "Routine", hint: "Select routine"),
             const SizedBox(
               height: 15,
             ),
-            ModalConfirmButton(buttonText: "Add", onPressed: (){}),
+            ModalConfirmButton(buttonText: "Add", onPressed: () {}),
             const SizedBox(
               height: 30,
             )

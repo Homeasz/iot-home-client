@@ -25,16 +25,39 @@ const String tJoined = "Joined ";
 const String tJoinedAt = "12-12-2021";
 const String tDelete = "Delete Account";
 
-const String roomImagePath = "lib/assets/rooms/";
-const String applianceImagePath = "lib/assets/appliances/";
-
 const String BALCONY = "balcony";
-
-
 
 Color tPrimaryColor = Colors.amber[100]!;
 Color tAccentColor = Colors.amber[300]!;
 Color tDarkColor = Colors.black54;
 
-List<String> roomNames = ["balcony","bed","door","kitchen","living-room","office-desk","sink","table"];
-
+List<String> roomNames = [
+  "balcony",
+  "bed",
+  "door",
+  "kitchen",
+  "livingroom",
+  "officedesk",
+  "sink",
+  "table"
+];
+List<String> applianceNames = [
+  "airconditioner",
+  "airpurifier",
+  "chandelier",
+  "christmaslights",
+  "cooking",
+  "exhaustpipe",
+  "fan",
+  "heater",
+  "ledtv",
+  "lightbulb",
+  "light",
+  "lighting",
+  "outdoor",
+  "socket",
+  "tablefan",
+  "tablelamp",
+  "walllamp",
+  "waterpump"
+];

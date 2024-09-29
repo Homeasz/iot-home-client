@@ -1,12 +1,9 @@
-import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:homeasz/models/auth_model.dart';
 import 'package:homeasz/models/room_model.dart';
 import 'package:homeasz/models/switch_model.dart';
 import 'package:homeasz/services/device_service.dart';
 import 'package:homeasz/services/room_service.dart';
-import 'package:homeasz/services/user_service.dart';
 
 class DataProvider extends ChangeNotifier {
   final RoomService roomService = RoomService();
@@ -15,8 +12,10 @@ class DataProvider extends ChangeNotifier {
   List<Room> _rooms = [];
   List<SwitchModel> _switches = [];
   String? _errorMessage;
+  late int _currentRoom;
 
   String? get errorMessage => _errorMessage;
+  int? get currentRoom => _currentRoom;
   List<Room> get rooms => _rooms;
   List<SwitchModel> get switches => _switches;
 
@@ -30,6 +29,7 @@ class DataProvider extends ChangeNotifier {
       return rooms;
     } catch (e) {
       _errorMessage = e.toString();
+
       return null;
     }
   }
@@ -59,10 +59,11 @@ class DataProvider extends ChangeNotifier {
       }
     }
   }
-  
-  Future <List<SwitchModel>> getSwitches(String roomId) async {
+
+  Future<List<SwitchModel>> getSwitches(int roomId) async {
     final switches = await roomService.getSwitches(roomId);
     if (switches != null) {
+      _currentRoom = roomId;
       _switches = switches;
       notifyListeners();
     }
@@ -72,16 +73,22 @@ class DataProvider extends ChangeNotifier {
   Future toggleSwitch(String switchId, bool state) async {
     final switchStatus = await deviceService.toggleSwitch(switchId, state);
     if (switchStatus != null) {
-      final switchIndex = _switches.indexWhere((element) => element.id.toString() == switchId);
+      final switchIndex =
+          _switches.indexWhere((element) => element.id.toString() == switchId);
       if (switchIndex != -1) {
-        _switches[switchIndex].status = switchStatus; // Correctly update the state
+        _switches[switchIndex].status =
+            switchStatus; // Correctly update the state
         notifyListeners();
       }
     }
   }
-  
-  Future addSwitchBoard(int roomId, String name) async {
-    
+
+  Future addDevice(String switchName, int roomId) async {
+    final deviceModel = await deviceService.addDevice(switchName, roomId);
+    if (deviceModel != null) {
+      // _switches.add(deviceModel);
+      // notifyListeners();
+    }
   }
 
   Future deleteSwitch(String switchId) async {
@@ -92,8 +99,8 @@ class DataProvider extends ChangeNotifier {
     }
   }
 
-  Future editSwitch(String switchId, String switchName) async {
-    final response = await deviceService.editSwitch(switchId, switchName);
+  Future editSwitch(int switchId, String switchName, String roomName, String stringType) async {
+    final SwitchModel? response = await deviceService.editSwitch(switchId, switchName, roomName, stringType);
     if (response != null) {
       final switchIndex =
           _switches.indexWhere((element) => element.id.toString() == switchId);
@@ -103,5 +110,4 @@ class DataProvider extends ChangeNotifier {
       }
     }
   }
-
 }

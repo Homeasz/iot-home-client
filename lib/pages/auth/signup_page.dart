@@ -57,7 +57,7 @@ class _SignUpPageState extends State<SignUpPage> {
 
   @override
   Widget build(BuildContext context) {
-        final height = MediaQuery.of(context).size.height;
+    final height = MediaQuery.sizeOf(context).height;
     final authProvider = Provider.of<AuthProvider>(context);
     return Scaffold(
       body: Center(
@@ -69,28 +69,28 @@ class _SignUpPageState extends State<SignUpPage> {
                 children: [
                   Text(
                     'Hello there!',
-                    style: GoogleFonts.alice
-                     (color: Colors.black,
-                     fontSize: 48,
-                     fontWeight: FontWeight.w400,
-                     height: 0.02,
-                     letterSpacing: -1.44,
-                     ),
+                    style: GoogleFonts.alice(
+                      color: Colors.black,
+                      fontSize: 48,
+                      fontWeight: FontWeight.w400,
+                      height: 0.02,
+                      letterSpacing: -1.44,
+                    ),
                   ),
-                  SizedBox(height: height*0.05),
+                  SizedBox(height: height * 0.05),
                   Text(
                     'Happy to get you onboarded!',
                     textAlign: TextAlign.center,
-                    style: GoogleFonts.inriaSerif
-                     (color: const Color(0xFF907C7C),
+                    style: GoogleFonts.inriaSerif(
+                      color: const Color(0xFF907C7C),
                       fontSize: 16,
                       fontWeight: FontWeight.w400,
                       height: 1.05,
                       letterSpacing: -0.48,
-                     ),
+                    ),
                   ),
                   // email textfield
-                  SizedBox(height: height*0.05),
+                  SizedBox(height: height * 0.05),
                   MyTextField(
                     controller: usernameController,
                     hintText: 'Name',
@@ -139,10 +139,10 @@ class _SignUpPageState extends State<SignUpPage> {
                         Text(
                           'Have an account?',
                           style: GoogleFonts.inriaSerif(
-                          fontSize: 15,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.black,
-                        ),
+                            fontSize: 15,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.black,
+                          ),
                         ),
                         const SizedBox(width: 4),
                         GestureDetector(
@@ -150,10 +150,10 @@ class _SignUpPageState extends State<SignUpPage> {
                           child: Text(
                             'Sign in',
                             style: GoogleFonts.inriaSerif(
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.w900,
-                                    color: Colors.black,
-                                  ),
+                              fontSize: 15,
+                              fontWeight: FontWeight.w900,
+                              color: Colors.black,
+                            ),
                           ),
                         ),
                       ],
