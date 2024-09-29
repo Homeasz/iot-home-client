@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:homeasz/components/my_textfield.dart';
 import 'package:homeasz/components/qr_scanner.dart';
 import 'package:homeasz/components/text_input.dart';
 import 'package:homeasz/services/esp_service.dart';

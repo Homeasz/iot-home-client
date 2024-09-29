@@ -27,7 +27,6 @@ class DeviceService {
         final Map<String, dynamic> body = jsonDecode(response.body);
         return DeviceModel.fromMap(body['device']);
       } else {
-        print(response.body);
       }
     }
   }
@@ -88,24 +87,27 @@ class DeviceService {
     return false;
   }
 
-  Future<SwitchModel?> editSwitch(int switchId, String switchName, String roomName, String stringType) async {
+  Future<SwitchModel?> editSwitch(int switchId, String switchName, String roomName, String switchType) async {
     final token = await _authService.getToken();
     if (token != null) {
       final response = await http.put(
-        Uri.parse('$BASE_URL/switch/$switchId'),
+        Uri.parse('$BASE_URL/switch/'),
         headers: <String, String>{
           'Cookie': token,
           'Content-Type': 'application/json',
         },
         body: jsonEncode(<String, dynamic>{
           'switchId': switchId,
-          'switchName': switchName,
+          'newSwitchName': switchName,
+          'type': switchType.toUpperCase(),
         }),
       );
       if (response.statusCode == 200) {
         final Map<String, dynamic> body = jsonDecode(response.body);
-        return SwitchModel.fromMap(body['switch']);
-      } else {}
+        return SwitchModel.fromMap(body['data']);
+      } else {
+
+      }
     }
     return null;
   }

@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:http/http.dart' as http;
-import 'dart:convert';
 import '../utils/constants.dart';
 
 class EspService {
@@ -27,11 +26,9 @@ class EspService {
       }
     } on SocketException catch (e) {
       // Handle network-related errors
-      print('Network error: $e');
       return false;
     } catch (e) {
       // Handle other types of errors
-      print('Error: $e');
       return false;
     }
   }
@@ -40,10 +37,8 @@ class EspService {
     try {
       final response = await http.get(Uri.parse('$ESP_URL/switchStatus'));
       if (response.statusCode == 200) {
-        print(jsonDecode(response.body));
       }
     } catch (e) {
-      print('Error: $e');
     }
   }
 }

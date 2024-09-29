@@ -37,8 +37,7 @@ class _EditApplianceState extends State<EditAppliance> {
     selectedType = widget.applianceType;
   }
 
-  void updateAppliance() {
-    final dataProvider = Provider.of<DataProvider>(context, listen: false);
+  void updateAppliance( DataProvider dataProvider) {
     dataProvider.editSwitch(widget.applianceId, _textEditingController.text, selectedRoom, selectedType);
     Navigator.pop(context);
   }
@@ -48,6 +47,7 @@ class _EditApplianceState extends State<EditAppliance> {
   @override
   Widget build(BuildContext context) {
     // provider 
+    final smallCaseType = selectedType.toLowerCase();
     final dataProvider = Provider.of<DataProvider>(context);
     return Padding(
       padding: const EdgeInsets.only(
@@ -78,7 +78,7 @@ class _EditApplianceState extends State<EditAppliance> {
                 fit: FlexFit.tight,
                 child: Image(
                     image: AssetImage(
-                        '$applianceImagePath/${selectedType}true.png')),
+                        '$applianceImagePath/${smallCaseType}true.png')),
               ),
               const SizedBox(
                 width: 10,
@@ -98,7 +98,7 @@ class _EditApplianceState extends State<EditAppliance> {
           MyDropdownMenu(
             title: "Type",
             list: applianceNames,
-            initialSelection: widget.applianceType,
+            initialSelection: smallCaseType,
             onSelected: (String value) {
               setState(() {
                 selectedType = value;
@@ -122,7 +122,7 @@ class _EditApplianceState extends State<EditAppliance> {
           const SizedBox(
             height: 20,
           ),
-          ModalConfirmButton(buttonText: "Edit", onPressed: () {}),
+          ModalConfirmButton(buttonText: "Edit", onPressed: () => updateAppliance(dataProvider)),
           const SizedBox(
             height: 20,
           ),

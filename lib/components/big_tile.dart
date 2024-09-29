@@ -80,9 +80,6 @@ class _BigTileState extends State<BigTile> {
       decoration: BoxDecoration(
           color: state ? const Color(0xFF87CEEB) : const Color(0xFFE6E6E6),
           borderRadius: BorderRadius.circular(20),
-          // border: Border.all(
-          //   // color: Colors.black,
-          // ),
           boxShadow: [
             BoxShadow(
               color: Colors.grey.shade600,
@@ -97,11 +94,11 @@ class _BigTileState extends State<BigTile> {
             )
           ]),
       child: GestureDetector(
-        onLongPress: () => {
-          print('long press'),
-          HapticFeedback.vibrate(),
-          // give vibration feedback
-        },
+        // onLongPress: () => {
+        //   print('long press'),
+        //   HapticFeedback.vibrate(),
+        //   // give vibration feedback
+        // },
         onTap: () => widget.appliance
             ? _showApplianceModal(context)
             : _navigateToRoomPage(context),

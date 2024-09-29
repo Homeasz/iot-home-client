@@ -44,7 +44,6 @@ class RoomService {
         return null;
       }
     } catch (e) {
-      print('Error: $e');
       return null;
     }
   }
@@ -66,11 +65,8 @@ class RoomService {
       );
       if (response.statusCode == 200) {
         final Map<String, dynamic> data = jsonDecode(response.body);
-        print(data['data']);
         return Room.fromMap(data['data']);
       } else {
-        print(response.statusCode);
-        print(response.body);
       }
     }
     return null;
@@ -94,12 +90,9 @@ class RoomService {
       if (response.statusCode == 201) {
         final Map<String, dynamic> data = jsonDecode(response.body);
         data.forEach((key, value) {
-          print('$key: $value');
         });
         return Room.fromMap(data["room"]);
       } else {
-        print(response.statusCode);
-        print(response.body);
       }
     }
     return null;
@@ -119,7 +112,6 @@ class RoomService {
         final Map<String, dynamic> data = jsonDecode(response.body);
         return Room.fromMap(data['room']);
       } else {
-        print(response.body);
       }
     }
     return null;
@@ -142,7 +134,6 @@ class RoomService {
             .map((switchData) => SwitchModel.fromMap(switchData))
             .toList();
       } else {
-        print(response.body);
         return [];
       }
     }

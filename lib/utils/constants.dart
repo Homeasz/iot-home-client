@@ -33,7 +33,7 @@ Color tDarkColor = Colors.black54;
 
 List<String> roomNames = [
   "balcony",
-  "bed",
+  "bedroom",
   "door",
   "kitchen",
   "livingroom",
@@ -42,7 +42,7 @@ List<String> roomNames = [
   "table"
 ];
 List<String> applianceNames = [
-  "airconditioner",
+  "ac",
   "airpurifier",
   "chandelier",
   "christmaslights",

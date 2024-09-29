@@ -102,7 +102,7 @@ class _RoomPageState extends State<RoomPage> {
                                           id: switchModel.id,
                                           index: index,
                                           tileName: switchModel.name,
-                                          tileType: "fan",
+                                          tileType: switchModel.type,
                                           roomName: widget.roomName,
                                           appliance: true,
                                         );

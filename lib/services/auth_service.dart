@@ -39,7 +39,6 @@ class AuthService {
       // prefs.setString('token', response.headers['set-cookie']!);
       return AuthUser.fromJson(response.body);
     } else {
-      print(response.body);
       return null;
     }
   }

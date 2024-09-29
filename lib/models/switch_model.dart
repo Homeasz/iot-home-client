@@ -2,6 +2,7 @@ class SwitchModel {
   final int id;
   final String name;
   bool state;
+  final String type;
   final DateTime createdAt;
   final DateTime updatedAt;
 
@@ -9,6 +10,7 @@ class SwitchModel {
     required this.id,
     required this.name,
     required this.state,
+    required this.type,
     required this.createdAt,
     required this.updatedAt,
   });
@@ -18,8 +20,9 @@ class SwitchModel {
       id: map['id'] ?? 0,
       name: map['name'] ?? '',
       state: map['state'] ?? false,
+      type: map['type'] ?? '',
       createdAt: DateTime.parse(map['createdAt']),
-      updatedAt: DateTime.parse(map['updatedAt']??map['createdAt']),
+      updatedAt: DateTime.parse(map['updatedAt'] ?? map['createdAt']),
     );
   }
 

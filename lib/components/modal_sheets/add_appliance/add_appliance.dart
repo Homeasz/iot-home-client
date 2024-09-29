@@ -18,7 +18,6 @@ class AddAppliance extends StatefulWidget {
 class _AddApplianceState extends State<AddAppliance> {
   final TextEditingController _textEditingController = TextEditingController();
   int _selectedApplianceIndex = -1;
-  String _selectedApplianceName = "";
 
   void _addAppliance(context, DataProvider dataProvider) {
     if (_selectedApplianceIndex != -1) {
@@ -99,7 +98,6 @@ class _AddApplianceState extends State<AddAppliance> {
             ApplianceGrid(onApplianceSelected: (index, name) {
               setState(() {
                 _selectedApplianceIndex = index;
-                _selectedApplianceName = name;
               });
             }),
             ModalConfirmButton(

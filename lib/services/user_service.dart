@@ -1,5 +1,4 @@
 // a user service which fetches user data only if the user is authenticated
-import 'dart:async';
 import 'dart:core';
 import 'package:homeasz/models/user_model.dart';
 import 'package:homeasz/services/auth_service.dart';

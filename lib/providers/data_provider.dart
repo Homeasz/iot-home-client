@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:homeasz/models/room_model.dart';
 import 'package:homeasz/models/switch_model.dart';
@@ -99,15 +98,17 @@ class DataProvider extends ChangeNotifier {
     }
   }
 
-  Future editSwitch(int switchId, String switchName, String roomName, String stringType) async {
-    final SwitchModel? response = await deviceService.editSwitch(switchId, switchName, roomName, stringType);
+  Future editSwitch(int switchId, String switchName, String roomName,
+      String stringType) async {
+    final SwitchModel? response = await deviceService.editSwitch(
+        switchId, switchName, roomName, stringType);
     if (response != null) {
       final switchIndex =
-          _switches.indexWhere((element) => element.id.toString() == switchId);
+          _switches.indexWhere((element) => element.id == switchId);
       if (switchIndex != -1) {
         _switches[switchIndex] = response;
-        notifyListeners();
       }
+      notifyListeners();
     }
   }
 }
