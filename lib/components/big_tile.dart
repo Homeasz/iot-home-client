@@ -5,7 +5,9 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:homeasz/components/modal_sheets/edit_appliance.dart';
+import 'package:homeasz/providers/data_provider.dart';
 import 'package:homeasz/utils/image_paths.dart';
+import 'package:provider/provider.dart';
 
 import '../pages/room_page.dart';
 
@@ -38,6 +40,8 @@ class _BigTileState extends State<BigTile> {
     setState(() {
       state = !state;
     });
+    final dataProvider = Provider.of<DataProvider>(context, listen: false);
+    dataProvider.toggleSwitch(widget.id, state);
   }
 
   void _navigateToRoomPage(BuildContext context) {
@@ -117,7 +121,7 @@ class _BigTileState extends State<BigTile> {
                       // alignment: Alignment.topLeft,
                       // fit: FlexFit.tight,
                       child: Image.asset(
-                        '${widget.appliance ? applianceImagePath : roomImagePath}/${smallCaseTileType}${state ? 'true' : 'false'}.png',
+                        '${widget.appliance ? applianceImagePath : roomImagePath}/$smallCaseTileType${state ? 'true' : 'false'}.png',
                         // height: MediaQuery.sizeOf(context).height * 0.10,
                         // fit: BoxFit.contain,
                       ),

@@ -69,7 +69,7 @@ class DataProvider extends ChangeNotifier {
     return switches;
   }
 
-  Future toggleSwitch(String switchId, bool state) async {
+  Future toggleSwitch(int switchId, bool state) async {
     final switchStatus = await deviceService.toggleSwitch(switchId, state);
     if (switchStatus != null) {
       final switchIndex =

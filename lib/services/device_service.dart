@@ -49,7 +49,7 @@ class DeviceService {
     return false;
   }
 
-  Future<bool> toggleSwitch(String switchId, bool state) async {
+  Future<bool> toggleSwitch(int switchId, bool state) async {
     final token = await _authService.getToken();
     if (token != null) {
       final response = await http.put(
@@ -65,7 +65,7 @@ class DeviceService {
       );
       if (response.statusCode == 200) {
         final Map<String, dynamic> body = jsonDecode(response.body);
-        return body['status'];
+        return body['data']['state'];
       } else {}
     }
     return false;

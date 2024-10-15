@@ -45,7 +45,7 @@ List<String> applianceNames = [
   "ac",
   "airpurifier",
   "chandelier",
-  "christmaslights",
+  "christmaslight",
   "cooking",
   "exhaustpipe",
   "fan",
