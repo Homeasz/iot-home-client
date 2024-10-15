@@ -37,7 +37,8 @@ class AuthService {
         prefs.setString('token', jwt);
       }
       // prefs.setString('token', response.headers['set-cookie']!);
-      return AuthUser.fromJson(response.body);
+      final Map<String, dynamic> body = jsonDecode(response.body)["data"];
+      return AuthUser.fromMap(body);
     } else {
       return null;
     }
