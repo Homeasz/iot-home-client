@@ -4,11 +4,18 @@ import 'package:homeasz/models/room_model.dart';
 import 'package:homeasz/models/switch_model.dart';
 import 'package:homeasz/services/auth_service.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import '../utils/constants.dart';
 
 class RoomService {
   final _authService = AuthService();
+
+  Future<List<Room>?> getLocalUserRooms() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    List<Room> rooms = prefs.get('rooms') as List<Room>;
+    return rooms;
+  }
 
   Future<List<Room>?> getUserRooms() async {
     final token = await _authService.getToken();
@@ -61,6 +68,7 @@ class RoomService {
         },
         body: jsonEncode(<String, String>{
           'roomName': name,
+          'type': type.toUpperCase(),
         }),
       );
       if (response.statusCode == 200) {

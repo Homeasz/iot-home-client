@@ -38,6 +38,11 @@ class _RoomPageState extends State<RoomPage> {
   }
 
   @override
+  void dispose(){
+    Provider.of<DataProvider>(context, listen: false).clearSwitches();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final smallRoomType = widget.roomType.toLowerCase();
     return Scaffold(
