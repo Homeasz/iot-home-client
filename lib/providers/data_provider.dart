@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:homeasz/models/room_model.dart';
 import 'package:homeasz/models/switch_model.dart';
+import 'package:homeasz/pages/home_page.dart';
 import 'package:homeasz/services/device_service.dart';
 import 'package:homeasz/services/room_service.dart';
 
@@ -10,12 +11,14 @@ class DataProvider extends ChangeNotifier {
 
   List<Room> _rooms = [];
   List<SwitchModel> _switches = [];
+  List<SwitchModel> _homePageSwitches = [];
   String? _errorMessage;
   late int _currentRoom;
 
   String? get errorMessage => _errorMessage;
   int? get currentRoom => _currentRoom;
   List<Room> get rooms => _rooms;
+  List<SwitchModel> get HomePageSwitches => _homePageSwitches;
   List<SwitchModel> get switches => _switches;
 
   Future<List<Room>?> getUserRooms() async {
@@ -46,6 +49,12 @@ class DataProvider extends ChangeNotifier {
     }
   }
 
+  void addToHomePageSwitches(String RoomName, SwitchModel selectedSwitch){
+    selectedSwitch.roomName = RoomName;
+    _homePageSwitches.add(selectedSwitch);
+    notifyListeners();
+  }
+
   Future editRoom(String roomId, String roomName) async {
     final response = await roomService.editRoom(roomId, roomName);
     // print(response);
@@ -59,7 +68,8 @@ class DataProvider extends ChangeNotifier {
     }
   }
 
-  Future<List<SwitchModel>> getSwitches(int roomId) async {
+  Future<List<SwitchModel>> getSwitches({int? roomId, String? roomName}) async {
+    roomId ??= rooms[rooms.indexWhere((element) => element.name == roomName)].id;
     final switches = await roomService.getSwitches(roomId);
     if (switches != null) {
       _currentRoom = roomId;
@@ -69,17 +79,18 @@ class DataProvider extends ChangeNotifier {
     return switches;
   }
 
-  Future toggleSwitch(int switchId, bool state) async {
+  Future<bool> toggleSwitch(int switchId, bool state) async {
     final switchStatus = await deviceService.toggleSwitch(switchId, state);
     if (switchStatus != null) {
       final switchIndex =
-          _switches.indexWhere((element) => element.id.toString() == switchId);
+          _switches.indexWhere((element) => element.id == switchId);
       if (switchIndex != -1) {
         _switches[switchIndex].status =
             switchStatus; // Correctly update the state
         notifyListeners();
       }
     }
+    return switchStatus;
   }
 
   Future addDevice(String switchName, int roomId) async {
@@ -88,6 +99,10 @@ class DataProvider extends ChangeNotifier {
       // _switches.add(deviceModel);
       // notifyListeners();
     }
+  }
+
+  void addSwitchToHomePage(int index){
+    _homePageSwitches.add(_switches[index]);
   }
 
   Future deleteSwitch(String switchId) async {

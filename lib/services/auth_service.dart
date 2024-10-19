@@ -6,6 +6,7 @@ import 'package:homeasz/models/auth_model.dart';
 import 'package:homeasz/utils/constants.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 
+//TOdO: clear old tokens
 class AuthService {
   
   Future<bool?> isAuthenticated() async {

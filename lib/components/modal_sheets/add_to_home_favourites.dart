@@ -3,53 +3,33 @@ import 'package:homeasz/components/modal_sheets/modal_confirm_button.dart';
 import 'package:homeasz/components/my_dropdownmenu.dart';
 import 'package:homeasz/components/text_input.dart';
 import 'package:homeasz/models/room_model.dart';
+import 'package:homeasz/models/switch_model.dart';
 import 'package:homeasz/providers/data_provider.dart';
 import 'package:homeasz/utils/constants.dart';
 import 'package:homeasz/utils/image_paths.dart';
 import 'package:provider/provider.dart';
 
-class EditAppliance extends StatefulWidget {
-  const EditAppliance(
-      {super.key,
-      required this.applianceName,
-      required this.applianceType,
-      required this.roomName,
-      required this.applianceId});
-
-  final String applianceName;
-  final String applianceType;
-  final String roomName;
-  final int applianceId;
+class AddToHomeFavourites extends StatefulWidget {
+  const AddToHomeFavourites({super.key});
 
   @override
-  State<EditAppliance> createState() => _EditApplianceState();
+  State<AddToHomeFavourites> createState() => _AddToHomeFavouritesState();
 }
 
-class _EditApplianceState extends State<EditAppliance> {
-  final TextEditingController _textEditingController = TextEditingController();
+class _AddToHomeFavouritesState extends State<AddToHomeFavourites> {
   late String selectedRoom;
   late String selectedType;
-  
-  @override
-  void initState() {
-    super.initState();
-    _textEditingController.text = widget.applianceName;
-    selectedRoom = widget.roomName;
-    selectedType = widget.applianceType;
+  late SwitchModel selectedSwitch;
+  bool selectedSomething = false;
+
+  void updateHomePageSwitches(DataProvider dataProvider){
+    dataProvider.addToHomePageSwitches(selectedRoom,selectedSwitch);
   }
-
-  void updateAppliance( DataProvider dataProvider) {
-    dataProvider.editSwitch(widget.applianceId, _textEditingController.text, selectedRoom, selectedType);
-    Navigator.pop(context);
-  }
-
-
 
   @override
   Widget build(BuildContext context) {
     // provider 
-    final smallCaseType = selectedType.toLowerCase();
-    final dataProvider = Provider.of<DataProvider>(context);
+    final dataProvider = Provider.of<DataProvider>(context, listen: false);
     return Padding(
       padding: const EdgeInsets.only(
           // bottom: MediaQuery.sizeOf(context).viewInsets.bottom,
@@ -72,6 +52,7 @@ class _EditApplianceState extends State<EditAppliance> {
           const SizedBox(
             height: 20,
           ),
+          if(selectedSomething)
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -79,16 +60,15 @@ class _EditApplianceState extends State<EditAppliance> {
                 fit: FlexFit.tight,
                 child: Image(
                     image: AssetImage(
-                        '$applianceImagePath/${smallCaseType}true.png')),
+                        '$applianceImagePath/${selectedType.toLowerCase()}true.png')),
               ),
               const SizedBox(
                 width: 10,
               ),
               Flexible(
                 flex: 4,
-                child: TextInput(
-                  input: _textEditingController,
-                  hintText: "Enter device name",
+                child: Text(
+                   "${selectedRoom}'s ${selectedSwitch.name}",
                 ),
               ),
             ],
@@ -97,33 +77,35 @@ class _EditApplianceState extends State<EditAppliance> {
             height: 20,
           ),
           MyDropdownMenu(
-            title: "Type",
-            list: applianceNames,
-            initialSelection: smallCaseType,
-            onSelected: (String value) {
+            title: "Room",
+            list: dataProvider.rooms,
+            initialSelection: "Select room",
+            onSelected: (Room room) {
               setState(() {
-                selectedType = value;
+                selectedRoom = room.name;
+                dataProvider.getSwitches(roomName: selectedRoom);
               });
             },
-
           ),
           const SizedBox(
             height: 20,
           ),
           MyDropdownMenu(
-            title: "Choose Room",
-            list: dataProvider.rooms,
-            initialSelection: widget.roomName,
-            onSelected: (Room room) {
+            title: "Device",
+            list: dataProvider.switches,
+            initialSelection: "Select device",
+            onSelected: (SwitchModel switchSelection) {
               setState(() {
-                selectedRoom = room.name;
+                selectedType = switchSelection.type;
+                selectedSwitch = switchSelection;
+                selectedSomething = true;
               });
             },
           ),
           const SizedBox(
             height: 20,
           ),
-          ModalConfirmButton(buttonText: "Edit", onPressed: () => updateAppliance(dataProvider)),
+          ModalConfirmButton(buttonText: "Add", onPressed: () {updateHomePageSwitches(dataProvider);  Navigator.pop(context);}),
           const SizedBox(
             height: 20,
           ),

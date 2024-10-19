@@ -58,7 +58,7 @@ class _HomePageState extends State<HomePage>
     final screenWidth = MediaQuery.sizeOf(context).width;
     final List<double> _sofaPos = [screenHeight / 2 - 250, 55, -500];
     final List<double> _mainWindow = [screenHeight, screenHeight / 3 - 65, 120];
-    final List<double> _navBar = [screenHeight, 300, 90];
+    final List<double> _navBar = [screenHeight, 340, 90];
     final List<dynamic> _window = [
       const HomeWindow(),
       const RoomsWindow(),

@@ -3,6 +3,7 @@ class SwitchModel {
   final String name;
   bool state;
   final String type;
+  String? roomName;
   final DateTime createdAt;
   final DateTime updatedAt;
 
@@ -13,6 +14,7 @@ class SwitchModel {
     required this.type,
     required this.createdAt,
     required this.updatedAt,
+    this.roomName,
   });
 
   factory SwitchModel.fromMap(Map<String, dynamic> map) {

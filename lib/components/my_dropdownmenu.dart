@@ -38,7 +38,7 @@ class MyDropdownMenu extends StatelessWidget {
                   // backgroundColor: const Color(0xFFE7F8FF),
     
                 ),
-                label: item,
+                label: (item is String)? item : item.name,
                 // child: Text(roomName),
                 value: item,
               ))

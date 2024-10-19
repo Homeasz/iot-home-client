@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:homeasz/components/appliance_button.dart';
+import 'package:homeasz/pages/windows/home_window_favourite_switches.dart';
+import 'package:homeasz/providers/data_provider.dart';
 import 'package:homeasz/providers/user_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -17,8 +19,7 @@ class _HomeWindowState extends State<HomeWindow> {
   // call the user provider to get the user
   @override
   void initState() {
-    super.initState();
-    
+    super.initState();   
   }
 
   @override
@@ -50,6 +51,7 @@ class _HomeWindowState extends State<HomeWindow> {
               // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                const SizedBox(height: 20),
                 Text(
                   'Hi ${userProvider.user?.firstName},',
                   textAlign: TextAlign.center,
@@ -75,27 +77,9 @@ class _HomeWindowState extends State<HomeWindow> {
                     letterSpacing: -0.39,
                   ),
                 ),
-                const SizedBox(height: 50),
-
+                const SizedBox(height: 80),
                 // horizontal scroll list
-                Container(
-                  height: 86,
-                  child: ListView.separated(
-                    scrollDirection: Axis.horizontal,
-                    itemCount: 10,
-                    separatorBuilder: (BuildContext context, int index) {
-                      return const SizedBox(width: 10);
-                    },
-                    itemBuilder: (context, index) {
-                      return Padding(
-                          padding: const EdgeInsets.only(bottom: 4),
-                          child: ApplianceButton(
-                            index: index,
-                            applianceName: 'Switch $index',
-                          ));
-                    },
-                  ),
-                ),
+                HomeWindowFavouriteSwitches(),
               ],
             )
           ),

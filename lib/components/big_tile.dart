@@ -20,6 +20,7 @@ class BigTile extends StatefulWidget {
     required this.tileType,
     this.appliance = false,
     this.roomName = 'Living Room',
+    this.state = false,
   });
 
   final int id;
@@ -28,6 +29,7 @@ class BigTile extends StatefulWidget {
   final String tileType;
   final bool appliance;
   final String roomName;
+  final bool state;
 
   @override
   State<StatefulWidget> createState() => _BigTileState();
@@ -35,6 +37,11 @@ class BigTile extends StatefulWidget {
 
 class _BigTileState extends State<BigTile> {
   bool state = false;
+  @override
+  void initState(){
+    super.initState();
+    state = widget.state;
+  }
 
   void onPowerTap() {
     setState(() {
