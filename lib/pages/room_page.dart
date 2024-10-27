@@ -23,6 +23,7 @@ class RoomPage extends StatefulWidget {
 
 class _RoomPageState extends State<RoomPage> {
   bool state = false;
+  late DataProvider _dataProvider;
 
   void onPowerTap() {
     setState(() {
@@ -33,13 +34,14 @@ class _RoomPageState extends State<RoomPage> {
   @override
   void initState() {
     super.initState();
-    Provider.of<DataProvider>(context, listen: false)
-        .getSwitches(roomId: widget.roomId);
+    _dataProvider = Provider.of<DataProvider>(context, listen: false);
+    _dataProvider.getSwitches(roomId: widget.roomId);
   }
 
   @override
-  void dispose(){
-    Provider.of<DataProvider>(context, listen: false).clearSwitches();
+  void dispose() {
+    _dataProvider.clearSwitches();
+    super.dispose();
   }
 
   @override
@@ -49,6 +51,8 @@ class _RoomPageState extends State<RoomPage> {
         appBar: AppBar(
           backgroundColor: const Color(0xFFE6F8FF),
           toolbarHeight: 30,
+          // on scroll up dont change the appbar
+          scrolledUnderElevation: 0,
         ),
         backgroundColor: const Color(0xFFE6F8FF),
         floatingActionButton: const AddButton(
@@ -95,10 +99,10 @@ class _RoomPageState extends State<RoomPage> {
                                     return GridView.builder(
                                       gridDelegate:
                                           const SliverGridDelegateWithFixedCrossAxisCount(
-                                              crossAxisCount: 2,
-                                              crossAxisSpacing: 20,
-                                              mainAxisSpacing: 20,
-                                              ),
+                                        crossAxisCount: 2,
+                                        crossAxisSpacing: 20,
+                                        mainAxisSpacing: 20,
+                                      ),
                                       itemCount: value.switches.length,
                                       itemBuilder: (context, index) {
                                         final switchModel =

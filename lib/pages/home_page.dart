@@ -22,7 +22,8 @@ class _HomePageState extends State<HomePage>
   bool _isBottomWidgetVisible = false;
   int currentRoom = 0;
   int currentAnimationPos = 0; // 0 for loading, 1 for home view, 2 for others
-  int currentWindow = 0; // 0 for home, 1 for rooms, 2 for routines, 3 for add device
+  int currentWindow =
+      0; // 0 for home, 1 for rooms, 2 for routines, 3 for add device
 
   // final info = NetworkInfo();
 
@@ -33,10 +34,12 @@ class _HomePageState extends State<HomePage>
     Provider.of<DataProvider>(context, listen: false).getUserRooms();
 
     Future.delayed(const Duration(milliseconds: 400), () {
-      setState(() {
-        _isBottomWidgetVisible = true;
-        currentAnimationPos = 1;
-      });
+      if (mounted) {
+        setState(() {
+          _isBottomWidgetVisible = true;
+          currentAnimationPos = 1;
+        });
+      }
     });
   }
 
@@ -117,9 +120,11 @@ class _HomePageState extends State<HomePage>
                         _changeWindow(2);
                       },
                       child: const Text("Routines")),
-                  InkWell(onTap: () {
-                    Navigator.pushNamed(context, '/profile');
-                  }, child: const Text("Profile")),
+                  InkWell(
+                      onTap: () {
+                        Navigator.pushNamed(context, '/profile');
+                      },
+                      child: const Text("Profile")),
                 ],
               ),
             ),

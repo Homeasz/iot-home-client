@@ -17,100 +17,115 @@ class AddToHomeFavourites extends StatefulWidget {
 }
 
 class _AddToHomeFavouritesState extends State<AddToHomeFavourites> {
-  late String selectedRoom;
+  late String selectedRoom = "";
   late String selectedType;
   late SwitchModel selectedSwitch;
   bool selectedSomething = false;
 
-  void updateHomePageSwitches(DataProvider dataProvider){
-    dataProvider.addToHomePageSwitches(selectedRoom,selectedSwitch);
+  void updateHomePageSwitches(DataProvider dataProvider) {
+    if (selectedSomething)
+      dataProvider.addToHomePageSwitches(selectedRoom, selectedSwitch);
   }
 
   @override
   Widget build(BuildContext context) {
-    // provider 
+    // provider
     final dataProvider = Provider.of<DataProvider>(context, listen: false);
-    return Padding(
-      padding: const EdgeInsets.only(
-          // bottom: MediaQuery.sizeOf(context).viewInsets.bottom,
-          left: 20,
-          right: 20),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          const SizedBox(
-            height: 18,
-          ),
-          Container(
-            width: 80,
-            height: 4,
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(4),
-                color: const Color(0xFFE3E3E3)),
-          ),
-          const SizedBox(
-            height: 20,
-          ),
-          if(selectedSomething)
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
+    return Consumer<DataProvider>(
+      builder: (context, dataProvider, child) {
+        return Padding(
+          padding: const EdgeInsets.only(
+              // bottom: MediaQuery.sizeOf(context).viewInsets.bottom,
+              left: 20,
+              right: 20),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Flexible(
-                fit: FlexFit.tight,
-                child: Image(
-                    image: AssetImage(
-                        '$applianceImagePath/${selectedType.toLowerCase()}true.png')),
+              const SizedBox(
+                height: 18,
+              ),
+              Container(
+                width: 80,
+                height: 4,
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(4),
+                    color: const Color(0xFFE3E3E3)),
               ),
               const SizedBox(
-                width: 10,
+                height: 20,
               ),
-              Flexible(
-                flex: 4,
-                child: Text(
-                   "${selectedRoom}'s ${selectedSwitch.name}",
+              if (selectedSomething)
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Flexible(
+                      fit: FlexFit.tight,
+                      child: Image(
+                          image: AssetImage(
+                              '$applianceImagePath/${selectedType.toLowerCase()}true.png')),
+                    ),
+                    const SizedBox(
+                      width: 10,
+                    ),
+                    Flexible(
+                      flex: 4,
+                      child: Text(
+                        "${selectedRoom}'s ${selectedSwitch.name}",
+                      ),
+                    ),
+                  ],
                 ),
+              const SizedBox(
+                height: 20,
+              ),
+              MyDropdownMenu(
+                title: "Room",
+                list: dataProvider.rooms,
+                initialSelection: "Select room",
+                onSelected: (Room room) {
+                  setState(() {
+                    if (selectedSomething) {
+                      selectedSomething = false;
+                      dataProvider.clearSwitches();
+                    }
+                    selectedRoom = room.name;
+                    dataProvider.getSwitches(roomName: selectedRoom);
+                  });
+                },
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              MyDropdownMenu(
+                title: "Device",
+                list: dataProvider.switches,
+                initialSelection: "Select device",
+                enabled: selectedRoom != "",
+                onSelected: (SwitchModel switchSelection) {
+                  setState(() {
+                    selectedType = switchSelection.type;
+                    selectedSwitch = switchSelection;
+                    selectedSomething = true;
+                  });
+                },
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              ModalConfirmButton(
+                  buttonText: "Add",
+                  onPressed: () {
+                    updateHomePageSwitches(dataProvider);
+                    Navigator.pop(context);
+                  }),
+              const SizedBox(
+                height: 20,
               ),
             ],
           ),
-          const SizedBox(
-            height: 20,
-          ),
-          MyDropdownMenu(
-            title: "Room",
-            list: dataProvider.rooms,
-            initialSelection: "Select room",
-            onSelected: (Room room) {
-              setState(() {
-                selectedRoom = room.name;
-                dataProvider.getSwitches(roomName: selectedRoom);
-              });
-            },
-          ),
-          const SizedBox(
-            height: 20,
-          ),
-          MyDropdownMenu(
-            title: "Device",
-            list: dataProvider.switches,
-            initialSelection: "Select device",
-            onSelected: (SwitchModel switchSelection) {
-              setState(() {
-                selectedType = switchSelection.type;
-                selectedSwitch = switchSelection;
-                selectedSomething = true;
-              });
-            },
-          ),
-          const SizedBox(
-            height: 20,
-          ),
-          ModalConfirmButton(buttonText: "Add", onPressed: () {updateHomePageSwitches(dataProvider);  Navigator.pop(context);}),
-          const SizedBox(
-            height: 20,
-          ),
-        ],
-      ),
+        );
+      },
     );
   }
 }

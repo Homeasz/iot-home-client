@@ -130,4 +130,9 @@ class DataProvider extends ChangeNotifier {
       notifyListeners();
     }
   }
+
+  void deleteFavourite(int switchId) {
+    _homePageSwitches.removeWhere((element) => element.id == switchId);
+    notifyListeners();
+  }
 }

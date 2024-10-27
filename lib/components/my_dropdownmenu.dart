@@ -5,6 +5,7 @@ class MyDropdownMenu extends StatelessWidget {
   final String title;
   final dynamic initialSelection;
   final Function onSelected;
+  final bool enabled;
 
   const MyDropdownMenu({
     super.key,
@@ -12,11 +13,13 @@ class MyDropdownMenu extends StatelessWidget {
     required this.title,
     required this.initialSelection,
     required this.onSelected,
+    this.enabled = true,
   });
 
   @override
   Widget build(BuildContext context) {
     return DropdownMenu<dynamic>(
+      enabled: enabled,
       width: MediaQuery.sizeOf(context).width * 0.7,
       hintText: "Select Room",
       label: Text(title),
