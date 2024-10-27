@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:homeasz/components/appliance_button.dart';
 import 'package:homeasz/pages/windows/home_window_favourite_switches.dart';
-import 'package:homeasz/providers/data_provider.dart';
 import 'package:homeasz/providers/user_provider.dart';
 import 'package:provider/provider.dart';
 

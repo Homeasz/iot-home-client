@@ -50,7 +50,6 @@ class _ApplianceButtonState extends State<ApplianceButton> {
 
   void onLongPress() {
     // delete from favourites
-    print('long press');
     setState(() {
       deleteButtonVisible = !deleteButtonVisible;
     });

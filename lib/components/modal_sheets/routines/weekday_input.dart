@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 
 class WeekdayInput extends StatefulWidget {
   WeekdayInput({super.key});
-  final Weekdays = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
+  final weekdays = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
   @override
   State<StatefulWidget> createState() => _WeekdayInputState();
 }
 
 class _WeekdayInputState extends State<WeekdayInput> {
-  List<bool> WeekdaySelected = [
+  List<bool> weekdaySelected = [
     false,
     false,
     false,
@@ -35,15 +35,6 @@ class _WeekdayInputState extends State<WeekdayInput> {
             width: 25,
             height: 30,
             alignment: Alignment.center,
-            child: Text(
-              widget.Weekdays[index],
-              style: const TextStyle(
-                color: Colors.black,
-                fontSize: 18,
-                fontWeight: FontWeight.w400,
-                height: 0.06,
-              ),
-            ),
             decoration: BoxDecoration(
                   borderRadius: index == 0
                     ? const BorderRadius.only(
@@ -54,12 +45,21 @@ class _WeekdayInputState extends State<WeekdayInput> {
                             topRight: Radius.circular(4),
                             bottomRight: Radius.circular(4))
                         : const BorderRadius.all(Radius.zero),
-                color: WeekdaySelected[index]
+                color: weekdaySelected[index]
                     ? const Color(0xFFB1E8FF)
                     : const Color(0XFFD9D9D9)),
+            child: Text(
+              widget.weekdays[index],
+              style: const TextStyle(
+                color: Colors.black,
+                fontSize: 18,
+                fontWeight: FontWeight.w400,
+                height: 0.06,
+              ),
+            ),
           ),
           onTap: () => setState(() {
-            WeekdaySelected[index] = !WeekdaySelected[index];
+            weekdaySelected[index] = !weekdaySelected[index];
           }),
         );
       })),

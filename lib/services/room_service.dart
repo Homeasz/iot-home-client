@@ -56,8 +56,6 @@ class RoomService {
   }
 
   Future<Room?> addRoom(String name, String type) async {
-    // TODO: make call based on type
-
     final token = await _authService.getToken();
     if (token != null) {
       final response = await http.post(
@@ -125,7 +123,7 @@ class RoomService {
     return null;
   }
 
-  Future<List<SwitchModel>> getSwitches(int roomId) async {
+  Future<List<PowerSwitch>> getSwitches(int roomId) async {
     final token = await _authService.getToken();
     if (token != null) {
       final response = await http.get(
@@ -139,7 +137,7 @@ class RoomService {
         final Map<String, dynamic> body = jsonDecode(response.body);
         final List<dynamic> switches = body['data'];
         return switches
-            .map((switchData) => SwitchModel.fromMap(switchData))
+            .map((switchData) => PowerSwitch.fromMap(switchData))
             .toList();
       } else {
         return [];
@@ -147,6 +145,7 @@ class RoomService {
     }
     return [];
   }
+  
   Future<bool> toggleRoom(int roomId, bool state) async {
     final token = await _authService.getToken();
     if (token != null) {

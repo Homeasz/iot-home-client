@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter/widgets.dart';
 import 'package:homeasz/components/add_button.dart';
 import 'package:homeasz/pages/windows/home_window.dart';
 import 'package:homeasz/pages/windows/rooms_window.dart';
@@ -18,8 +16,6 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage>
     with SingleTickerProviderStateMixin {
-  bool _isLoading = true;
-  bool _isBottomWidgetVisible = false;
   int currentRoom = 0;
   int currentAnimationPos = 0; // 0 for loading, 1 for home view, 2 for others
   int currentWindow =
@@ -32,11 +28,11 @@ class _HomePageState extends State<HomePage>
     super.initState();
     Provider.of<UserProvider>(context, listen: false).getUser();
     Provider.of<DataProvider>(context, listen: false).getUserRooms();
+    Provider.of<DataProvider>(context, listen: false).getUserRoutines();
 
     Future.delayed(const Duration(milliseconds: 400), () {
       if (mounted) {
         setState(() {
-          _isBottomWidgetVisible = true;
           currentAnimationPos = 1;
         });
       }
@@ -59,10 +55,10 @@ class _HomePageState extends State<HomePage>
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.sizeOf(context).height;
     final screenWidth = MediaQuery.sizeOf(context).width;
-    final List<double> _sofaPos = [screenHeight / 2 - 250, 55, -500];
-    final List<double> _mainWindow = [screenHeight, screenHeight / 3 - 65, 120];
-    final List<double> _navBar = [screenHeight, 340, 90];
-    final List<dynamic> _window = [
+    final List<double> sofaPos = [screenHeight / 2 - 250, 55, -500];
+    final List<double> mainWindow = [screenHeight, screenHeight / 3 - 65, 120];
+    final List<double> navBar = [screenHeight, 340, 90];
+    final List<dynamic> window = [
       const HomeWindow(),
       const RoomsWindow(),
       const RoutineWindow(),
@@ -73,13 +69,13 @@ class _HomePageState extends State<HomePage>
         children: [
           AnimatedPositioned(
             duration: const Duration(milliseconds: 400),
-            top: _mainWindow[currentAnimationPos],
+            top: mainWindow[currentAnimationPos],
             left: 0,
-            child: _window[currentWindow],
+            child: window[currentWindow],
           ),
           AnimatedPositioned(
             duration: const Duration(milliseconds: 400),
-            top: _sofaPos[currentAnimationPos],
+            top: sofaPos[currentAnimationPos],
             left: screenWidth / 2 - 170, // Center horizontally
             child: Image.asset(
               'lib/assets/sofa.png',
@@ -90,7 +86,7 @@ class _HomePageState extends State<HomePage>
 
           AnimatedPositioned(
             duration: const Duration(milliseconds: 400),
-            top: _navBar[currentAnimationPos],
+            top: navBar[currentAnimationPos],
             left: 0,
             child: Container(
               height: 20,

@@ -1,25 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:homeasz/models/room_model.dart';
+import 'package:homeasz/models/routine_model.dart';
 import 'package:homeasz/models/switch_model.dart';
+// ignore: unused_import
 import 'package:homeasz/pages/home_page.dart';
 import 'package:homeasz/services/device_service.dart';
 import 'package:homeasz/services/room_service.dart';
+import 'package:homeasz/services/routine_service.dart';
 
 class DataProvider extends ChangeNotifier {
   final RoomService roomService = RoomService();
   final DeviceService deviceService = DeviceService();
+  final RoutineService routineService = RoutineService();
 
   List<Room> _rooms = [];
-  List<SwitchModel> _switches = [];
-  List<SwitchModel> _homePageSwitches = [];
+  List<PowerSwitch> _switches = [];
+  final List<PowerSwitch> _homePageSwitches = [];
+  List<Routine> _routines = [];
   String? _errorMessage;
   late int _currentRoom;
 
   String? get errorMessage => _errorMessage;
   int? get currentRoom => _currentRoom;
   List<Room> get rooms => _rooms;
-  List<SwitchModel> get HomePageSwitches => _homePageSwitches;
-  List<SwitchModel> get switches => _switches;
+  List<PowerSwitch> get homePageSwitches => _homePageSwitches;
+  List<PowerSwitch> get switches => _switches;
+  List<Routine> get routines => _routines;
+
 
   Future<List<Room>?> getUserRooms() async {
     try {
@@ -36,6 +43,13 @@ class DataProvider extends ChangeNotifier {
     }
   }
 
+  Future<List<Routine>> getUserRoutines() async {
+    final routines = await routineService.getUserRoutines();
+    _routines = routines;
+    notifyListeners();
+      return routines;
+  }
+
   Future<Room?> getRoom(String roomId) async {
     final room = await roomService.getRoom(roomId);
     return room;
@@ -49,8 +63,8 @@ class DataProvider extends ChangeNotifier {
     }
   }
 
-  void addToHomePageSwitches(String RoomName, SwitchModel selectedSwitch){
-    selectedSwitch.roomName = RoomName;
+  void addToHomePageSwitches(String roomName, PowerSwitch selectedSwitch){
+    selectedSwitch.roomName = roomName;
     _homePageSwitches.add(selectedSwitch);
     notifyListeners();
   }
@@ -68,14 +82,12 @@ class DataProvider extends ChangeNotifier {
     }
   }
 
-  Future<List<SwitchModel>> getSwitches({int? roomId, String? roomName}) async {
+  Future<List<PowerSwitch>> getSwitches({int? roomId, String? roomName}) async {
     roomId ??= rooms[rooms.indexWhere((element) => element.name == roomName)].id;
     final switches = await roomService.getSwitches(roomId);
-    if (switches != null) {
-      _currentRoom = roomId;
-      _switches = switches;
-      notifyListeners();
-    }
+    _currentRoom = roomId;
+    _switches = switches;
+    notifyListeners();
     return switches;
   }
 
@@ -85,16 +97,14 @@ class DataProvider extends ChangeNotifier {
 
   Future<bool> toggleSwitch(int switchId, bool state) async {
     final switchStatus = await deviceService.toggleSwitch(switchId, state);
-    if (switchStatus != null) {
-      final switchIndex =
-          _switches.indexWhere((element) => element.id == switchId);
-      if (switchIndex != -1) {
-        _switches[switchIndex].status =
-            switchStatus; // Correctly update the state
-        notifyListeners();
-      }
+    final switchIndex =
+        _switches.indexWhere((element) => element.id == switchId);
+    if (switchIndex != -1) {
+      _switches[switchIndex].status =
+          switchStatus; // Correctly update the state
+      notifyListeners();
     }
-    return switchStatus;
+      return switchStatus;
   }
 
   Future addDevice(String switchName, int roomId) async {
@@ -119,7 +129,7 @@ class DataProvider extends ChangeNotifier {
 
   Future editSwitch(int switchId, String switchName, String roomName,
       String stringType) async {
-    final SwitchModel? response = await deviceService.editSwitch(
+    final PowerSwitch? response = await deviceService.editSwitch(
         switchId, switchName, roomName, stringType);
     if (response != null) {
       final switchIndex =

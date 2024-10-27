@@ -87,7 +87,7 @@ class DeviceService {
     return false;
   }
 
-  Future<SwitchModel?> editSwitch(int switchId, String switchName, String roomName, String switchType) async {
+  Future<PowerSwitch?> editSwitch(int switchId, String switchName, String roomName, String switchType) async {
     final token = await _authService.getToken();
     if (token != null) {
       final response = await http.put(
@@ -104,7 +104,7 @@ class DeviceService {
       );
       if (response.statusCode == 200) {
         final Map<String, dynamic> body = jsonDecode(response.body);
-        return SwitchModel.fromMap(body['data']);
+        return PowerSwitch.fromMap(body['data']);
       } else {
 
       }

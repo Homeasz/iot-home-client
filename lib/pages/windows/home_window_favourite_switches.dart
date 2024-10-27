@@ -4,16 +4,20 @@ import 'package:homeasz/components/modal_sheets/add_to_home_favourites.dart';
 import 'package:homeasz/models/switch_model.dart';
 import 'package:homeasz/providers/data_provider.dart';
 import 'package:homeasz/utils/image_paths.dart';
+// ignore: unused_import
 import 'package:path/path.dart';
 import 'package:provider/provider.dart';
 
 class HomeWindowFavouriteSwitches extends StatefulWidget {
+  const HomeWindowFavouriteSwitches({super.key});
+
   @override
-  State<HomeWindowFavouriteSwitches> createState() => _HomeWindowFavouriteSwitchesState();
+  State<HomeWindowFavouriteSwitches> createState() =>
+      _HomeWindowFavouriteSwitchesState();
 }
 
-class _HomeWindowFavouriteSwitchesState extends State<HomeWindowFavouriteSwitches> {
-
+class _HomeWindowFavouriteSwitchesState
+    extends State<HomeWindowFavouriteSwitches> {
   final ScrollController _scrollController = ScrollController();
 
   void _showAddToHomeDialog(BuildContext context) {
@@ -29,8 +33,8 @@ class _HomeWindowFavouriteSwitchesState extends State<HomeWindowFavouriteSwitche
 
   @override
   Widget build(BuildContext context) {
-    List<SwitchModel> favouriteSwitches =
-        Provider.of<DataProvider>(context).HomePageSwitches;
+    List<PowerSwitch> favouriteSwitches =
+        Provider.of<DataProvider>(context).homePageSwitches;
     return SizedBox(
       height: 96,
       child: Scrollbar(
@@ -71,7 +75,7 @@ class _HomeWindowFavouriteSwitchesState extends State<HomeWindowFavouriteSwitche
   }
 
   Padding someFavorites(
-      int index, List<SwitchModel> favouriteSwitches, BuildContext context) {
+      int index, List<PowerSwitch> favouriteSwitches, BuildContext context) {
     return Padding(
         padding: const EdgeInsets.only(bottom: 10),
         child: (index == favouriteSwitches.length)

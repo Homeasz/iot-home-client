@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:homeasz/components/big_tile.dart';
-
-import 'package:homeasz/components/big_tile.dart';
+import 'package:homeasz/components/room_tile.dart';
 import 'package:homeasz/providers/data_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -51,11 +49,13 @@ class _RoomsWindowState extends State<RoomsWindow> {
                     itemCount: dataProvider.rooms.length,
                     itemBuilder: (context, index) {
                       final room = dataProvider.rooms[index];
-                      return BigTile(
-                          id: room.id,
-                          index: index,
-                          tileName: room.name,
-                          tileType: room.type);
+                      // return BigTile(
+                      //     id: room.id,
+                      //     index: index,
+                      //     tileName: room.name,
+                      //     tileType: room.type
+                      //   );
+                      return RoomTile(room: room);
                     }),
               ),
             ),

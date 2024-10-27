@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 final ThemeData customTheme = ThemeData(
   primaryColor: const Color(0xff87ceeb),

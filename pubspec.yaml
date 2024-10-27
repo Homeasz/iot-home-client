@@ -79,6 +79,7 @@ flutter:
     - lib/assets/
     - lib/assets/appliances/
     - lib/assets/rooms/
+    - lib/assets/routines/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

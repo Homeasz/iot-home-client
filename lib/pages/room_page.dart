@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:homeasz/components/add_button.dart';
-import 'package:homeasz/components/big_tile.dart';
+import 'package:homeasz/components/switch_tile.dart';
 import 'package:homeasz/providers/data_provider.dart';
 import 'package:homeasz/utils/image_paths.dart';
 import 'package:provider/provider.dart';
@@ -92,34 +92,28 @@ class _RoomPageState extends State<RoomPage> {
                               height: 30,
                             ),
                             Expanded(
-                              child: Container(
-                                child: Consumer<DataProvider>(
-                                  builder: (BuildContext context,
-                                      DataProvider value, Widget? child) {
-                                    return GridView.builder(
-                                      gridDelegate:
-                                          const SliverGridDelegateWithFixedCrossAxisCount(
-                                        crossAxisCount: 2,
-                                        crossAxisSpacing: 20,
-                                        mainAxisSpacing: 20,
-                                      ),
-                                      itemCount: value.switches.length,
-                                      itemBuilder: (context, index) {
-                                        final switchModel =
-                                            value.switches[index];
-                                        return BigTile(
-                                          id: switchModel.id,
-                                          index: index,
-                                          tileName: switchModel.name,
-                                          tileType: switchModel.type,
-                                          roomName: widget.roomName,
-                                          appliance: true,
-                                          state: switchModel.state,
-                                        );
-                                      },
-                                    );
-                                  },
-                                ),
+                              child: Consumer<DataProvider>(
+                                builder: (BuildContext context,
+                                    DataProvider value, Widget? child) {
+                                  return GridView.builder(
+                                    gridDelegate:
+                                        const SliverGridDelegateWithFixedCrossAxisCount(
+                                      crossAxisCount: 2,
+                                      crossAxisSpacing: 20,
+                                      mainAxisSpacing: 20,
+                                    ),
+                                    itemCount: value.switches.length,
+                                    itemBuilder: (context, index) {
+                                      final switchModel =
+                                          value.switches[index];
+                                      return SwitchTile(
+                                        // index: index,
+                                        powerSwitch: switchModel,
+                                        roomName: widget.roomName,
+                                      );
+                                    },
+                                  );
+                                },
                               ),
                             )
                           ],
@@ -142,7 +136,7 @@ class _RoomPageState extends State<RoomPage> {
                       ),
                       Image(
                           image: AssetImage(
-                              '$roomImagePath/${smallRoomType}${state ? 'true' : 'false'}.png')),
+                              '$roomImagePath/$smallRoomType${state ? 'true' : 'false'}.png')),
                       Column(
                         children: [
                           InkWell(

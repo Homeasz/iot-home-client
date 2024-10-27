@@ -1,4 +1,4 @@
-class SwitchModel {
+class PowerSwitch {
   final int id;
   final String name;
   bool state;
@@ -7,7 +7,7 @@ class SwitchModel {
   final DateTime createdAt;
   final DateTime updatedAt;
 
-  SwitchModel({
+  PowerSwitch({
     required this.id,
     required this.name,
     required this.state,
@@ -17,8 +17,8 @@ class SwitchModel {
     this.roomName,
   });
 
-  factory SwitchModel.fromMap(Map<String, dynamic> map) {
-    return SwitchModel(
+  factory PowerSwitch.fromMap(Map<String, dynamic> map) {
+    return PowerSwitch(
       id: map['id'] ?? 0,
       name: map['name'] ?? '',
       state: map['state'] ?? false,

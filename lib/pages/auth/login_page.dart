@@ -30,7 +30,7 @@ class _LoginPageState extends State<LoginPage> {
             child: CircularProgressIndicator(),
           );
         });
-    await authProvider.login(context, email, password);
+    await authProvider.login(email, password);
 
     if (authProvider.user != null) {
       Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
