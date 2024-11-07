@@ -98,7 +98,15 @@ class _HomePageState extends State<HomePage>
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   InkWell(
+                      onTap: () {
+                        _fullPage(1);
+                        _changeWindow(0);
+                      },
+                      child: const Text("Home")),
+                  InkWell(
+                    // show some marker when selected
                     child: const Text("Rooms"),
+                    
                     onTap: () {
                       _fullPage(2);
                       _changeWindow(1);
@@ -106,21 +114,10 @@ class _HomePageState extends State<HomePage>
                   ),
                   InkWell(
                       onTap: () {
-                        _fullPage(1);
-                        _changeWindow(0);
-                      },
-                      child: const Text("Home")),
-                  InkWell(
-                      onTap: () {
                         _fullPage(2);
                         _changeWindow(2);
                       },
                       child: const Text("Routines")),
-                  InkWell(
-                      onTap: () {
-                        Navigator.pushNamed(context, '/profile');
-                      },
-                      child: const Text("Profile")),
                 ],
               ),
             ),

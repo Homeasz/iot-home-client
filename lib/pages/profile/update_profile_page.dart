@@ -18,7 +18,6 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
   bool _isPasswordVisible = false;
   final TextEditingController fullNameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
-  final TextEditingController phoneNoController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController addressController = TextEditingController();
 
@@ -32,7 +31,6 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
       fullNameController.text =
           user.firstName != "" ? "${user.firstName} ${user.lastName}" : "";
       emailController.text = user.email;
-      phoneNoController.text = user.phone;
       addressController.text = user.address;
     }
   }
@@ -42,7 +40,6 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
     // Clean up the controllers when the widget is disposed
     fullNameController.dispose();
     emailController.dispose();
-    phoneNoController.dispose();
     passwordController.dispose();
     addressController.dispose();
     super.dispose();
@@ -61,7 +58,6 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
   void _updateProfile() async {
     String fullName = fullNameController.text;
     String email = emailController.text;
-    String phoneNo = phoneNoController.text;
     String password = passwordController.text;
     String address = addressController.text;
 
@@ -76,7 +72,6 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
     // check if any field is empty
     if (fullName.isEmpty ||
         email.isEmpty ||
-        phoneNo.isEmpty ||
         password.isEmpty ||
         address.isEmpty) {
       Navigator.pop(context);
@@ -101,7 +96,6 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
           firstName: firstName,
           lastName: lastName,
           email: email,
-          phone: phoneNo,
           address: address,
         ),
       );
@@ -112,6 +106,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
             content: Text("Profile updated successfully"),
           ),
         );
+        Navigator.pop(context);
       }
     } on Exception catch (e) {
       Navigator.pop(context); // Close the loading dialog
@@ -195,19 +190,14 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                       ),
                       const SizedBox(height: 20),
                       TextFormField(
-                        controller: phoneNoController,
-                        decoration: const InputDecoration(
-                            label: Text(tPhoneNo),
-                            prefixIcon: Icon(LineAwesomeIcons.phone_solid)),
-                      ),
-                      const SizedBox(height: 20),
-                      TextFormField(
                         controller: addressController,
-                        decoration:  InputDecoration(
+                        decoration: InputDecoration(
                           label: const Text("Address"),
-                          prefixIcon: const Icon(LineAwesomeIcons.house_damage_solid),
+                          prefixIcon:
+                              const Icon(LineAwesomeIcons.house_damage_solid),
                           suffixIcon: IconButton(
-                            icon: const Icon(LineAwesomeIcons.map_marker_alt_solid),
+                            icon: const Icon(
+                                LineAwesomeIcons.map_marker_alt_solid),
                             onPressed: _getLocation,
                           ),
                         ),
