@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:homeasz/components/qr_scanner.dart';
@@ -33,8 +34,13 @@ class _AddESPPageState extends State<AddESPPage> {
     // start loading circle
     showDialog(
         context: context,
-        builder: (context) => const CircularProgressIndicator());
-
+        builder: (context) => const SizedBox(height: 300, width: 300, child: CircularProgressIndicator()));
+    if(!(await WiFiForIoTPlugin.isEnabled())){
+      print("#################### wifi is disabled");
+      WiFiForIoTPlugin.setEnabled(true,
+                  shouldOpenSettings: true);
+                  print("#################### wifi is enabled");
+    }
     await connect();
   }
 
@@ -61,13 +67,16 @@ class _AddESPPageState extends State<AddESPPage> {
   }
 
   Future<bool> connect() async {
-    final ssid = ssidController.text;
-    final password = passwordController.text;
+    final qrData = json.decode(_ssidPassword);
+    final ssid =  "Lappusawifi";//qrData["SSID"];
+    final password = "7982743323";//qrData["PASSWORD"];
+    print("#####################################   SSID: $ssid");
+    print("#####################################   PASSWORD: $password");
     bool? connected = await WiFiForIoTPlugin.connect(
       ssid,
       password: password,
       joinOnce: false,
-      security: NetworkSecurity.WPA,
+      // security: NetworkSecurity.WPA,
     );
 
     // create a timer to wait for the connection to be established
