@@ -158,11 +158,9 @@ class _QRScannerState extends State<QRScanner> {
     });
     controller.scannedDataStream.listen((scanData) {
       setState(() {
+        controller.pauseCamera();
         result = scanData;
         widget.callback(scanData.code!);
-        // if (kDebugMode) {
-
-        // }
       });
     });
   }

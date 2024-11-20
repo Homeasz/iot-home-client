@@ -68,15 +68,15 @@ class _AddESPPageState extends State<AddESPPage> {
 
   Future<bool> connect() async {
     final qrData = json.decode(_ssidPassword);
-    final ssid =  "Lappusawifi";//qrData["SSID"];
-    final password = "7982743323";//qrData["PASSWORD"];
+    final ssid =  qrData["SSID"];
+    final password = qrData["PASSWORD"];
     print("#####################################   SSID: $ssid");
     print("#####################################   PASSWORD: $password");
     bool? connected = await WiFiForIoTPlugin.connect(
       ssid,
       password: password,
-      joinOnce: false,
-      // security: NetworkSecurity.WPA,
+      joinOnce: true,
+      security: NetworkSecurity.WPA,
     );
 
     // create a timer to wait for the connection to be established
