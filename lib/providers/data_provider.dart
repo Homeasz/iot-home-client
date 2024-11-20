@@ -27,7 +27,6 @@ class DataProvider extends ChangeNotifier {
   List<PowerSwitch> get switches => _switches;
   List<Routine> get routines => _routines;
 
-
   Future<List<Room>?> getUserRooms() async {
     try {
       final rooms = await roomService.getUserRooms();
@@ -47,7 +46,7 @@ class DataProvider extends ChangeNotifier {
     final routines = await routineService.getUserRoutines();
     _routines = routines;
     notifyListeners();
-      return routines;
+    return routines;
   }
 
   Future<Room?> getRoom(String roomId) async {
@@ -63,7 +62,7 @@ class DataProvider extends ChangeNotifier {
     }
   }
 
-  void addToHomePageSwitches(String roomName, PowerSwitch selectedSwitch){
+  void addToHomePageSwitches(String roomName, PowerSwitch selectedSwitch) {
     selectedSwitch.roomName = roomName;
     _homePageSwitches.add(selectedSwitch);
     notifyListeners();
@@ -83,7 +82,8 @@ class DataProvider extends ChangeNotifier {
   }
 
   Future<List<PowerSwitch>> getSwitches({int? roomId, String? roomName}) async {
-    roomId ??= rooms[rooms.indexWhere((element) => element.name == roomName)].id;
+    roomId ??=
+        rooms[rooms.indexWhere((element) => element.name == roomName)].id;
     final switches = await roomService.getSwitches(roomId);
     _currentRoom = roomId;
     _switches = switches;
@@ -91,12 +91,12 @@ class DataProvider extends ChangeNotifier {
     return switches;
   }
 
-  void clearSwitches(){
-    _switches=[];
+  void clearSwitches() {
+    _switches = [];
   }
 
   Future<bool> toggleSwitch(int switchId, bool state) async {
-    final switchStatus = await deviceService.toggleSwitch(switchId, state);
+    final switchStatus = await deviceService.toggleSwitch(switchId, !state);
     final switchIndex =
         _switches.indexWhere((element) => element.id == switchId);
     if (switchIndex != -1) {
@@ -104,7 +104,7 @@ class DataProvider extends ChangeNotifier {
           switchStatus; // Correctly update the state
       notifyListeners();
     }
-      return switchStatus;
+    return switchStatus;
   }
 
   Future addDevice(String switchName, int roomId) async {
@@ -115,7 +115,7 @@ class DataProvider extends ChangeNotifier {
     }
   }
 
-  void addSwitchToHomePage(int index){
+  void addSwitchToHomePage(int index) {
     _homePageSwitches.add(_switches[index]);
   }
 

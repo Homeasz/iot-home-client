@@ -26,8 +26,7 @@ class DeviceService {
       if (response.statusCode == 200) {
         final Map<String, dynamic> body = jsonDecode(response.body);
         return DeviceModel.fromMap(body['device']);
-      } else {
-      }
+      } else {}
     }
   }
 
@@ -50,6 +49,7 @@ class DeviceService {
   }
 
   Future<bool> toggleSwitch(int switchId, bool state) async {
+    // print switch id and state
     final token = await _authService.getToken();
     if (token != null) {
       final response = await http.put(
@@ -87,7 +87,8 @@ class DeviceService {
     return false;
   }
 
-  Future<PowerSwitch?> editSwitch(int switchId, String switchName, String roomName, String switchType) async {
+  Future<PowerSwitch?> editSwitch(int switchId, String switchName,
+      String roomName, String switchType) async {
     final token = await _authService.getToken();
     if (token != null) {
       final response = await http.put(
@@ -105,9 +106,7 @@ class DeviceService {
       if (response.statusCode == 200) {
         final Map<String, dynamic> body = jsonDecode(response.body);
         return PowerSwitch.fromMap(body['data']);
-      } else {
-
-      }
+      } else {}
     }
     return null;
   }

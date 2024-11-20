@@ -26,9 +26,6 @@ class SwitchTile extends StatelessWidget {
       imagePath: applianceImagePath,
       onTap: () {
         // Logic for toggling switch
-      },
-      onLongPress: () {
-        // Logic for showing appliance modal
         showDialog(
         context: context,
         useSafeArea: true,
@@ -44,6 +41,10 @@ class SwitchTile extends StatelessWidget {
             ),
           );
         });
+      },
+      onLongPress: () {
+        // Logic for showing appliance modal
+        
       },
       onPowerTap: () {
         // Logic for toggling power state
