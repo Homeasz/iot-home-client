@@ -28,4 +28,26 @@ class RoutineService {
     }
     return [];
   }
+
+  Future<Routine?> addRoutine(String name, String time, String days) async {
+    final token = await _authService.getToken();
+    if (token != null) {
+      final response = await http.post(
+        Uri.parse('$BASE_URL/routine'),
+        headers: <String, String>{
+          'Cookie': token,
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode(<String, dynamic>{
+          'name': name,
+          'time': time,
+          'days': days,
+        }),
+      );
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> body = jsonDecode(response.body);
+        return Routine.fromMap(body['data']);
+      }
+    }
+  }
 }

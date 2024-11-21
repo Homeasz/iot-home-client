@@ -1,16 +1,28 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:homeasz/components/modal_sheets/routines/device_routine_row.dart';
 import 'package:homeasz/components/modal_sheets/modal_confirm_button.dart';
 import 'package:homeasz/components/modal_sheets/routines/repeat_schedule_input.dart';
+import 'package:homeasz/components/my_dropdownmenu.dart';
 import 'package:homeasz/components/text_input.dart';
+import 'package:homeasz/models/room_model.dart';
+import 'package:homeasz/providers/data_provider.dart';
+import 'package:provider/provider.dart';
 
-class SetupRoutine extends StatelessWidget {
+class SetupRoutine extends StatefulWidget {
   SetupRoutine({super.key});
-  final TextEditingController routineName = TextEditingController();
 
   @override
+  State<SetupRoutine> createState() => _SetupRoutineState();
+}
+
+class _SetupRoutineState extends State<SetupRoutine> {
+  final TextEditingController routineName = TextEditingController();
+  int _selectedRoom = 0;
+  @override
   Widget build(BuildContext context) {
+    // final dataProvider = Provider.of<DataProvider>(context);
     return SizedBox(
       width: double.infinity,
       child: Padding(
@@ -19,9 +31,11 @@ class SetupRoutine extends StatelessWidget {
             right: 25,
             bottom: MediaQuery.of(context).viewInsets.bottom),
         child: Column(
+          // crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             const SizedBox(
-              height: 18,
+              height: 30,
             ),
             Container(
               width: 80,
@@ -31,7 +45,7 @@ class SetupRoutine extends StatelessWidget {
                   color: const Color(0xFFE3E3E3)),
             ),
             const SizedBox(
-              height: 25,
+              height: 20,
             ),
             Text(
               "Setup Routine",
@@ -44,7 +58,7 @@ class SetupRoutine extends StatelessWidget {
               ),
             ),
             const SizedBox(
-              height: 60,
+              height: 20,
             ),
             Align(
               alignment: const Alignment(-0.95, 0),
@@ -63,14 +77,12 @@ class SetupRoutine extends StatelessWidget {
             const SizedBox(
               height: 20,
             ),
-            SizedBox(
-                width: 313,
-                child: TextInput(
-                  input: routineName,
-                  hintText: "Enter Routine Name",
-                )),
+            TextInput(
+              input: routineName,
+              hintText: "Enter Routine Name",
+            ),
             const SizedBox(
-              height: 30,
+              height: 20,
             ),
             Align(
               alignment: const Alignment(-0.95, 0),
@@ -91,8 +103,19 @@ class SetupRoutine extends StatelessWidget {
             ),
             const RepeatScheduleInput(),
             const SizedBox(
-              height: 30,
+              height: 20,
             ),
+            Row(children: [
+              CupertinoButton(
+                child: Text(
+                  "Click"
+                ),
+                onPressed: () => {
+
+                })
+            ],),
+            
+            
             Align(
               alignment: const Alignment(-0.95, 0),
               child: Text(

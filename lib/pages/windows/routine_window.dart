@@ -16,7 +16,7 @@ class _RoutineWindowState extends State<RoutineWindow> {
     return Container(
       height: MediaQuery.sizeOf(context).height,
       width: MediaQuery.sizeOf(context).width,
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.fromLTRB(10, 0, 10, 20),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(20),

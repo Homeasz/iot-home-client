@@ -8,21 +8,22 @@ class TextInput extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: double.infinity,
+      // width: double.infinity,
       height: 60,
       decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(8),
-          color: Colors.white,
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.shade400,
-              spreadRadius: 1,
-              blurRadius: 2,
-              offset: const Offset(0.1, 0.1),
-            ),
-            const BoxShadow(
-                color: Color(0xffffffff), offset: Offset(-3, -3), blurRadius: 0)
-          ]),
+        borderRadius: BorderRadius.circular(8),
+        color: Colors.white,
+        // boxShadow: [
+        //   BoxShadow(
+        //     color: Colors.grey.shade400,
+        //     spreadRadius: 1,
+        //     blurRadius: 2,
+        //     offset: const Offset(0.1, 0.1),
+        //   ),
+        //   const BoxShadow(
+        //       color: Color(0xffffffff), offset: Offset(-3, -3), blurRadius: 0)
+        // ]
+      ),
       child: Padding(
         padding: const EdgeInsets.fromLTRB(15, 2, 17, 10),
         child: TextField(
@@ -33,7 +34,11 @@ class TextInput extends StatelessWidget {
             height: 0.06,
             letterSpacing: -0.54,
           ),
-          showCursor: true,
+          // showCursor: true,
+          enableInteractiveSelection: true,
+          onTapOutside: (event) {
+            FocusScope.of(context).unfocus();
+          },
           controller: input,
           cursorHeight: 20,
           // onclicking doesnt open keyboard
