@@ -6,7 +6,6 @@ import 'package:homeasz/providers/data_provider.dart';
 import 'package:homeasz/utils/image_paths.dart';
 import 'package:provider/provider.dart';
 
-
 class SwitchTile extends StatelessWidget {
   final PowerSwitch powerSwitch;
   final String roomName;
@@ -27,24 +26,23 @@ class SwitchTile extends StatelessWidget {
       onTap: () {
         // Logic for toggling switch
         showDialog(
-        context: context,
-        useSafeArea: true,
-        // backgroundColor: const Color(0xFFE7F8FF),
-        builder: (context) {
-          return Dialog(
-            backgroundColor: const Color(0xFFE7F8FF),
-            child: EditAppliance(
-              applianceName: powerSwitch.name,
-              applianceType: powerSwitch.type,
-              roomName: roomName,
-              applianceId: powerSwitch.id,
-            ),
-          );
-        });
+            context: context,
+            useSafeArea: true,
+            // backgroundColor: const Color(0xFFE7F8FF),
+            builder: (context) {
+              return Dialog(
+                backgroundColor: const Color(0xFFE7F8FF),
+                child: EditAppliance(
+                  applianceName: powerSwitch.name,
+                  applianceType: powerSwitch.type,
+                  roomName: roomName,
+                  applianceId: powerSwitch.id,
+                ),
+              );
+            });
       },
       onLongPress: () {
         // Logic for showing appliance modal
-        
       },
       onPowerTap: () {
         // Logic for toggling power state
@@ -54,5 +52,3 @@ class SwitchTile extends StatelessWidget {
     );
   }
 }
-
-

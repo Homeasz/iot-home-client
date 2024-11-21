@@ -29,7 +29,7 @@ class _EditApplianceState extends State<EditAppliance> {
   final TextEditingController _textEditingController = TextEditingController();
   late String selectedRoom;
   late String selectedType;
-  
+
   @override
   void initState() {
     super.initState();
@@ -38,16 +38,20 @@ class _EditApplianceState extends State<EditAppliance> {
     selectedType = widget.applianceType;
   }
 
-  void updateAppliance( DataProvider dataProvider) {
-    dataProvider.editSwitch(widget.applianceId, _textEditingController.text, selectedRoom, selectedType);
+  void updateAppliance(DataProvider dataProvider) {
+    dataProvider.editSwitch(widget.applianceId, _textEditingController.text,
+        selectedRoom, selectedType);
     Navigator.pop(context);
   }
 
-
+  void deleteAppliance(DataProvider dataProvider) {
+    dataProvider.deleteSwitch(widget.applianceId);
+    Navigator.pop(context);
+  }
 
   @override
   Widget build(BuildContext context) {
-    // provider 
+    // provider
     final smallCaseType = selectedType.toLowerCase();
     final dataProvider = Provider.of<DataProvider>(context);
     return Padding(
@@ -105,7 +109,6 @@ class _EditApplianceState extends State<EditAppliance> {
                 selectedType = value;
               });
             },
-
           ),
           const SizedBox(
             height: 20,
@@ -123,7 +126,20 @@ class _EditApplianceState extends State<EditAppliance> {
           const SizedBox(
             height: 20,
           ),
-          ModalConfirmButton(buttonText: "Edit", onPressed: () => updateAppliance(dataProvider)),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              ModalConfirmButton(
+                  buttonText: "Delete",
+                  onPressed: () => deleteAppliance(dataProvider)),
+              const SizedBox(
+                width: 20,
+              ),
+              ModalConfirmButton(
+                  buttonText: "Edit",
+                  onPressed: () => updateAppliance(dataProvider)),
+            ],
+          ),
           const SizedBox(
             height: 20,
           ),

@@ -15,6 +15,15 @@ const String BASE_URL =
 // const String BASE_URL = 'https://iot-home-web-device-service.onrender.com';
 const String ESP_URL = 'http://192.168.0.1';
 
+const int homeWindow = 0;
+const int roomsWindow = 1;
+const int routinesWindow = 2;
+const int addDeviceWindow = 3;
+
+const int animationLoadingPos = 0;
+const int animationHomePos = 1;
+const int animationOthersPos = 2;
+
 // const String tProfileImage = "assets/images/profile.jpg";
 const String tFullName = "Full Name";
 const String tEmail = "Email";

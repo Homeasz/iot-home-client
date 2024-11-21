@@ -3,6 +3,7 @@ import 'package:homeasz/components/modal_sheets/create_room/add_room_icons_grid.
 import 'package:homeasz/components/modal_sheets/create_room/add_room.dart';
 import 'package:homeasz/components/modal_sheets/home/add_to_home.dart';
 import 'package:homeasz/components/modal_sheets/routines/setup_routine.dart';
+import 'package:homeasz/utils/constants.dart';
 
 class AddButton extends StatefulWidget {
   final int window;
@@ -41,9 +42,12 @@ class _AddButtonState extends State<AddButton> {
           ),
         ),
         onTap: () {
-          if (widget.window == 3) {
+          if (widget.window == addDeviceWindow) {
             // go to add esp page
             Navigator.pushNamed(context, '/add_esp');
+          } else if(widget. window == routinesWindow) {
+            // go to add appliance page
+            Navigator.pushNamed(context, '/editRoutine');
           } else {
             showModalBottomSheet(
                 isScrollControlled: true,

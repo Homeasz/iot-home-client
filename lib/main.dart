@@ -10,6 +10,7 @@ import 'package:homeasz/providers/auth_provider.dart';
 import 'package:homeasz/pages/addesp_page.dart';
 import 'package:homeasz/pages/listesps_page.dart';
 import 'package:homeasz/utils/themes.dart';
+import 'package:homeasz/pages/editroutine_page.dart';
 
 void main() {
   runApp(MultiProvider(providers: [
@@ -38,6 +39,7 @@ class MyApp extends StatelessWidget {
         '/create_room': (context) => const CreateRoom(),
         '/list_esp': (context) => const ListESPsPage(),
         '/profile': (context) => const ProfileScreen(),
+        '/editRoutine': (context) => const EditroutinePage(),
 
       },
     );

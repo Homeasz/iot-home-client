@@ -18,14 +18,35 @@ class DataProvider extends ChangeNotifier {
   final List<PowerSwitch> _homePageSwitches = [];
   List<Routine> _routines = [];
   String? _errorMessage;
-  late int _currentRoom;
+  late int _currentRoom = 0;
+  List<PowerSwitch> _selectedSwitches = []; // for routines
 
   String? get errorMessage => _errorMessage;
-  int? get currentRoom => _currentRoom;
+  int get currentRoom => _currentRoom;
   List<Room> get rooms => _rooms;
   List<PowerSwitch> get homePageSwitches => _homePageSwitches;
   List<PowerSwitch> get switches => _switches;
   List<Routine> get routines => _routines;
+  List<PowerSwitch> get selectedSwitches => _selectedSwitches;
+
+
+  set currentRoom(int value) {
+    _currentRoom = value;
+    getSwitches(roomId: value);
+  }
+
+  set selectedSwitches(List<PowerSwitch> value) {
+    _selectedSwitches = value;
+  }
+
+  // add switch to selected switches
+  void addSwitchToSelectedSwitches(PowerSwitch powerSwitch) {
+    _selectedSwitches.add(powerSwitch);
+    print("Selected switches: $_selectedSwitches");
+    notifyListeners();
+  }
+
+
 
   Future<List<Room>?> getUserRooms() async {
     try {
@@ -44,6 +65,7 @@ class DataProvider extends ChangeNotifier {
 
   Future<List<Routine>> getUserRoutines() async {
     final routines = await routineService.getUserRoutines();
+    currentRoom = 0;
     _routines = routines;
     notifyListeners();
     return routines;
@@ -119,10 +141,10 @@ class DataProvider extends ChangeNotifier {
     _homePageSwitches.add(_switches[index]);
   }
 
-  Future deleteSwitch(String switchId) async {
+  Future deleteSwitch(int switchId) async {
     final response = await deviceService.deleteSwitch(switchId);
     if (response) {
-      _switches.removeWhere((element) => element.id.toString() == switchId);
+      _switches.removeWhere((element) => element.id == switchId);
       notifyListeners();
     }
   }

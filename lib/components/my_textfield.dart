@@ -23,23 +23,31 @@ class MyTextField extends StatelessWidget {
       child: TextField(
         controller: controller,
         obscureText: obscureText,
+        onTapOutside: (event) => FocusScope.of(context).unfocus(),
         decoration: InputDecoration(
-          contentPadding: const EdgeInsets.fromLTRB(16, 21, 0, 21),
-          isDense: true,
-          prefixIcon: (icon!=null)? Padding(padding: const EdgeInsets.only(left:16, right:8), child: ImageIcon(icon!,size:  iconSize,)) : null,
-          prefixIconConstraints: const BoxConstraints(minWidth: 30, minHeight: 30),
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(20.0),
-            borderSide: const BorderSide(color: Colors.white),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: Colors.grey.shade400), 
-          ),
-          fillColor: const Color(0xfffaf8f8),
-          filled: true,
-          hintText: hintText,
-          hintStyle: TextStyle(color: Colors.grey[500])
-        ),
+            contentPadding: const EdgeInsets.fromLTRB(16, 21, 0, 21),
+            isDense: true,
+            prefixIcon: (icon != null)
+                ? Padding(
+                    padding: const EdgeInsets.only(left: 16, right: 8),
+                    child: ImageIcon(
+                      icon!,
+                      size: iconSize,
+                    ))
+                : null,
+            prefixIconConstraints:
+                const BoxConstraints(minWidth: 30, minHeight: 30),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(20.0),
+              borderSide: const BorderSide(color: Colors.white),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderSide: BorderSide(color: Colors.grey.shade400),
+            ),
+            fillColor: Colors.white,
+            filled: true,
+            hintText: hintText,
+            hintStyle: TextStyle(color: Colors.grey[500])),
       ),
     );
   }

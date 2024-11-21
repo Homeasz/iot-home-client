@@ -5,6 +5,7 @@ import 'package:homeasz/pages/windows/rooms_window.dart';
 import 'package:homeasz/pages/windows/routine_window.dart';
 import 'package:homeasz/providers/data_provider.dart';
 import 'package:homeasz/providers/user_provider.dart';
+import 'package:homeasz/utils/constants.dart';
 import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
@@ -17,9 +18,8 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage>
     with SingleTickerProviderStateMixin {
   int currentRoom = 0;
-  int currentAnimationPos = 0; // 0 for loading, 1 for home view, 2 for others
-  int currentWindow =
-      0; // 0 for home, 1 for rooms, 2 for routines, 3 for add device
+  int currentAnimationPos = animationLoadingPos; // 0 for loading, 1 for home view, 2 for others
+  int currentWindow = homeWindow; // 0 for home, 1 for rooms, 2 for routines, 3 for add device
 
   // final info = NetworkInfo();
 
@@ -33,7 +33,7 @@ class _HomePageState extends State<HomePage>
     Future.delayed(const Duration(milliseconds: 400), () {
       if (mounted) {
         setState(() {
-          currentAnimationPos = 1;
+          currentAnimationPos = animationHomePos;
         });
       }
     });
@@ -99,8 +99,8 @@ class _HomePageState extends State<HomePage>
                 children: [
                   InkWell(
                       onTap: () {
-                        _fullPage(1);
-                        _changeWindow(0);
+                        _fullPage(animationHomePos);
+                        _changeWindow(homeWindow);
                       },
                       child: const Text("Home")),
                   InkWell(
@@ -108,14 +108,14 @@ class _HomePageState extends State<HomePage>
                     child: const Text("Rooms"),
                     
                     onTap: () {
-                      _fullPage(2);
-                      _changeWindow(1);
+                      _fullPage(animationOthersPos);
+                      _changeWindow(roomsWindow);
                     },
                   ),
                   InkWell(
                       onTap: () {
-                        _fullPage(2);
-                        _changeWindow(2);
+                        _fullPage(animationOthersPos);
+                        _changeWindow(routinesWindow);
                       },
                       child: const Text("Routines")),
                 ],

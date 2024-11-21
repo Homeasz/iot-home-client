@@ -104,8 +104,7 @@ class _RoomPageState extends State<RoomPage> {
                                     ),
                                     itemCount: value.switches.length,
                                     itemBuilder: (context, index) {
-                                      final switchModel =
-                                          value.switches[index];
+                                      final switchModel = value.switches[index];
                                       return SwitchTile(
                                         // index: index,
                                         powerSwitch: switchModel,

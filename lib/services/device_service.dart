@@ -71,7 +71,7 @@ class DeviceService {
     return false;
   }
 
-  Future<bool> deleteSwitch(String switchId) async {
+  Future<bool> deleteSwitch(int switchId) async {
     final token = await _authService.getToken();
     if (token == null) return false;
     final response = await http.delete(
@@ -80,10 +80,15 @@ class DeviceService {
         'Cookie': token,
         'Content-Type': 'application/json',
       },
+      body: jsonEncode(<String, dynamic>{
+        'switchId': switchId,
+        'toggleState': true,
+      }),
     );
     if (response.statusCode == 200) {
       return true;
-    } else {}
+    } else {
+    }
     return false;
   }
 
