@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:http/http.dart' as http;
+import 'package:multicast_dns/multicast_dns.dart';
 import '../utils/constants.dart';
 
 class EspService {
@@ -32,6 +33,40 @@ class EspService {
       return false;
     }
   }
+//TODO: store this resolved ip for http comm. later
+  Future<bool> mDnsResolve(String hostname) async {
+    final MDnsClient client =  MDnsClient(
+      rawDatagramSocketFactory: (
+        dynamic host,
+        int port, {
+        bool? reuseAddress,
+        bool? reusePort,
+        int? ttl,
+      }) {
+        return RawDatagramSocket.bind(
+          host,
+          port,
+          reusePort: false,
+          ttl: ttl!,
+        );
+      },
+    );
+    try{
+      await client.start();
+      await for (final IPAddressResourceRecord record in client
+      .lookup<IPAddressResourceRecord>(ResourceRecordQuery.addressIPv4(hostname))) {
+      print('Found address (${record.address}).');
+      return true;
+  }
+    }
+    catch(e){
+      print("Error resolving ip address");
+    }
+    finally{
+      client.stop();
+    }
+    return false;
+  } 
 
   Future<void> status() async {
     try {
