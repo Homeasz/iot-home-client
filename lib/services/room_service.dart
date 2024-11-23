@@ -123,7 +123,7 @@ class RoomService {
     return null;
   }
 
-  Future<List<PowerSwitch>> getSwitches(int roomId) async {
+  Future<List<PowerSwitch>> getSwitches(int roomId, String? roomName) async {
     final token = await _authService.getToken();
     if (token != null) {
       final response = await http.get(
@@ -136,6 +136,9 @@ class RoomService {
       if (response.statusCode == 200) {
         final Map<String, dynamic> body = jsonDecode(response.body);
         final List<dynamic> switches = body['data'];
+        switches.forEach((element) {
+          element['roomName'] = roomName;
+        });
         return switches
             .map((switchData) => PowerSwitch.fromMap(switchData))
             .toList();

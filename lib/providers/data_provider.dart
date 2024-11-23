@@ -42,10 +42,15 @@ class DataProvider extends ChangeNotifier {
   // add switch to selected switches
   void addSwitchToSelectedSwitches(PowerSwitch powerSwitch) {
     _selectedSwitches.add(powerSwitch);
+    print(powerSwitch.roomName);
     print("Selected switches: $_selectedSwitches");
     notifyListeners();
   }
 
+  void removeSwitchFromSelectedSwitches(PowerSwitch powerSwitch) {
+    _selectedSwitches.remove(powerSwitch);
+    notifyListeners();
+  }
 
 
   Future<List<Room>?> getUserRooms() async {
@@ -106,7 +111,7 @@ class DataProvider extends ChangeNotifier {
   Future<List<PowerSwitch>> getSwitches({int? roomId, String? roomName}) async {
     roomId ??=
         rooms[rooms.indexWhere((element) => element.name == roomName)].id;
-    final switches = await roomService.getSwitches(roomId);
+    final switches = await roomService.getSwitches(roomId, roomName);
     _currentRoom = roomId;
     _switches = switches;
     notifyListeners();

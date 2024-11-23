@@ -25,6 +25,7 @@ class PowerSwitch {
       type: map['type'] ?? '',
       createdAt: DateTime.parse(map['createdAt']),
       updatedAt: DateTime.parse(map['updatedAt'] ?? map['createdAt']),
+      roomName: map['roomName'] ?? '',
     );
   }
 

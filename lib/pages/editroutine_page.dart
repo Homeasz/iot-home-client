@@ -303,6 +303,37 @@ class _EditroutinePageState extends State<EditroutinePage> {
                       ),
                     ],
                   ),
+                  const SizedBox(height: 20),
+                  Container(
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(8),
+                      boxShadow: const [
+                        BoxShadow(
+                          color: Color.fromARGB(255, 255, 255, 255),
+                          // offset: Offset(1, 1),
+                        ),
+                      ],
+                    ),
+                    child: Column(
+                      children: dataProvider.selectedSwitches
+                          .map((PowerSwitch selectedSwitch) {
+                        return ListTile(
+                          leading: const Icon(Icons.lightbulb),
+                          subtitle: Text(selectedSwitch.roomName ?? ''),
+                          title: Text(selectedSwitch.name),
+                          trailing: IconButton(
+                            icon: const Icon(Icons.delete),
+                            onPressed: () {
+                              dataProvider.removeSwitchFromSelectedSwitches(
+                                  selectedSwitch);
+                            },
+                          ),
+                        );
+                      }).toList(),
+                    ),
+                  ),
                 ],
               ),
             );
