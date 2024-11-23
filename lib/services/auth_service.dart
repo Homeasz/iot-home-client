@@ -8,7 +8,6 @@ import 'package:jwt_decoder/jwt_decoder.dart';
 
 //TOdO: clear old tokens
 class AuthService {
-  
   Future<bool?> isAuthenticated() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('token');
@@ -34,7 +33,9 @@ class AuthService {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       final String? rawCookie = response.headers['set-cookie'];
       if (rawCookie != null) {
-        final jwt = rawCookie.split(';').firstWhere((element) => element.contains('jwt='));
+        final jwt = rawCookie
+            .split(';')
+            .firstWhere((element) => element.contains('jwt='));
         prefs.setString('token', jwt);
       }
       // prefs.setString('token', response.headers['set-cookie']!);
@@ -63,5 +64,4 @@ class AuthService {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.remove('token');
   }
-
 }

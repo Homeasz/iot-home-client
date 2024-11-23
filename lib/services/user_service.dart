@@ -50,5 +50,4 @@ class UserService {
     }
     return null;
   }
-
 }

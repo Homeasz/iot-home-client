@@ -2,7 +2,7 @@ import 'dart:convert';
 
 class User {
   final String firstName;
-  final String lastName; 
+  final String lastName;
   final String email;
   final String address;
   User({
@@ -29,7 +29,7 @@ class User {
     };
   }
 
-  factory User.fromJson(Map<String, dynamic> json){
+  factory User.fromJson(Map<String, dynamic> json) {
     return User.fromMap(json['data']);
   }
   String toJson() => json.encode(toMap());

@@ -7,9 +7,9 @@ class SplashScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF87CEEB),
-      body: Center(
-          child: Column(
+        backgroundColor: const Color(0xFF87CEEB),
+        body: Center(
+            child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             SizedBox(
@@ -25,8 +25,6 @@ class SplashScreen extends StatelessWidget {
               ),
             )
           ],
-        )
-      )
-    );
+        )));
   }
 }

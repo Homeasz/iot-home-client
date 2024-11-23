@@ -18,8 +18,10 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage>
     with SingleTickerProviderStateMixin {
   int currentRoom = 0;
-  int currentAnimationPos = animationLoadingPos; // 0 for loading, 1 for home view, 2 for others
-  int currentWindow = homeWindow; // 0 for home, 1 for rooms, 2 for routines, 3 for add device
+  int currentAnimationPos =
+      animationLoadingPos; // 0 for loading, 1 for home view, 2 for others
+  int currentWindow =
+      homeWindow; // 0 for home, 1 for rooms, 2 for routines, 3 for add device
 
   // final info = NetworkInfo();
 
@@ -106,7 +108,7 @@ class _HomePageState extends State<HomePage>
                   InkWell(
                     // show some marker when selected
                     child: const Text("Rooms"),
-                    
+
                     onTap: () {
                       _fullPage(animationOthersPos);
                       _changeWindow(roomsWindow);

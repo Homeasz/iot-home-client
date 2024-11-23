@@ -20,14 +20,14 @@ class _WeekdayInputState extends State<WeekdayInput> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(
-        boxShadow: [BoxShadow(
-              color: Colors.grey.shade400,
-              spreadRadius: 0,
-              blurRadius: 2,
-              offset: const Offset(2, 2),
-            ),]
-      ),
+      decoration: BoxDecoration(boxShadow: [
+        BoxShadow(
+          color: Colors.grey.shade400,
+          spreadRadius: 0,
+          blurRadius: 2,
+          offset: const Offset(2, 2),
+        ),
+      ]),
       child: Row(
           children: List.generate(7, (index) {
         return GestureDetector(
@@ -36,7 +36,7 @@ class _WeekdayInputState extends State<WeekdayInput> {
             height: 30,
             alignment: Alignment.center,
             decoration: BoxDecoration(
-                  borderRadius: index == 0
+                borderRadius: index == 0
                     ? const BorderRadius.only(
                         topLeft: Radius.circular(4),
                         bottomLeft: Radius.circular(4))

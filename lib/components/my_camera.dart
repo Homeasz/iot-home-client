@@ -40,19 +40,20 @@ class _MyCameraState extends State<MyCamera> {
     _controller.dispose();
     super.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<void>(
-        future: _initializeControllerFuture,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.done) {
-            // If the Future is complete, display the preview.
-            return CameraPreview(_controller);
-          } else {
-            // Otherwise, display a loading indicator.
-            return const Center(child: CircularProgressIndicator());
-          }
-        },
-      );
+      future: _initializeControllerFuture,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.done) {
+          // If the Future is complete, display the preview.
+          return CameraPreview(_controller);
+        } else {
+          // Otherwise, display a loading indicator.
+          return const Center(child: CircularProgressIndicator());
+        }
+      },
+    );
   }
 }

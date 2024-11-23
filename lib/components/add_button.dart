@@ -45,7 +45,7 @@ class _AddButtonState extends State<AddButton> {
           if (widget.window == addDeviceWindow) {
             // go to add esp page
             Navigator.pushNamed(context, '/add_esp');
-          } else if(widget. window == routinesWindow) {
+          } else if (widget.window == routinesWindow) {
             // go to add appliance page
             Navigator.pushNamed(context, '/editRoutine');
           } else {

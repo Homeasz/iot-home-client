@@ -1,4 +1,3 @@
-
 class Room {
   final int id;
   final String name;

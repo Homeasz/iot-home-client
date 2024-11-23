@@ -34,9 +34,8 @@ class _AddESPPageState extends State<AddESPPage> {
     // start loading circle
     loading(context);
 
-    if(!(await WiFiForIoTPlugin.isEnabled())){
-      WiFiForIoTPlugin.setEnabled(true,
-                  shouldOpenSettings: true);
+    if (!(await WiFiForIoTPlugin.isEnabled())) {
+      WiFiForIoTPlugin.setEnabled(true, shouldOpenSettings: true);
     }
     await connect();
     Navigator.pop(context);
@@ -63,18 +62,20 @@ class _AddESPPageState extends State<AddESPPage> {
     bool Esp_connected = false;
 
     //TODO: add additional cloud call confirmation
-    if(phone_reconnected && EspSsid!= null){
+    if (phone_reconnected && EspSsid != null) {
       final hostname = "Homeasz-${EspSsid!.substring(12)}";
       int retry_mdns_resolve = 3;
-      for(int i =0; i<retry_mdns_resolve;i++){
+      for (int i = 0; i < retry_mdns_resolve; i++) {
         Esp_connected = await espService.mDnsResolve(hostname);
-        if(Esp_connected) break;
+        if (Esp_connected) break;
       }
     }
     Navigator.pop(context);
-    _connectionStatus = Esp_connected? "Successfully added the kit" : "Wifi Credentials seem to be incorrect, please try again!";
+    _connectionStatus = Esp_connected
+        ? "Successfully added the kit"
+        : "Wifi Credentials seem to be incorrect, please try again!";
 
-    // bool connected = 
+    // bool connected =
     // if (connected) {
     //   setState(() {
     //     _connectionStatus = 'Sent Creds to ESP';
@@ -89,7 +90,7 @@ class _AddESPPageState extends State<AddESPPage> {
 
   Future<bool> connect() async {
     final qrData = json.decode(_ssidPassword);
-    final ssid =  qrData["SSID"];
+    final ssid = qrData["SSID"];
     EspSsid = ssid;
     final password = qrData["PASSWORD"];
     bool? connected = await WiFiForIoTPlugin.connect(
@@ -144,7 +145,7 @@ class _AddESPPageState extends State<AddESPPage> {
           )
         : GestureDetector(
             onTap: () async {
-              if(_isConnected){
+              if (_isConnected) {
                 await WiFiForIoTPlugin.disconnect();
               }
               //Needed to do mdns resolve
@@ -254,45 +255,45 @@ class _AddESPPageState extends State<AddESPPage> {
                         ),
                       ),
                     ),
-                       const SizedBox(height: 10),
-                TextInput(input: ssidController, hintText: 'SSID'),
-                const SizedBox(height: 20),
-                TextInput(input: passwordController, hintText: 'Password'),
-                const SizedBox(height: 20),
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: GestureDetector(
-                    onTap: sendSSIDPasswordToESP,
-                    child: Container(
-                      width: 100,
-                      padding: const EdgeInsets.all(10),
-                      decoration: ShapeDecoration(
-                        color: Colors.white,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20),
+                    const SizedBox(height: 10),
+                    TextInput(input: ssidController, hintText: 'SSID'),
+                    const SizedBox(height: 20),
+                    TextInput(input: passwordController, hintText: 'Password'),
+                    const SizedBox(height: 20),
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: GestureDetector(
+                        onTap: sendSSIDPasswordToESP,
+                        child: Container(
+                          width: 100,
+                          padding: const EdgeInsets.all(10),
+                          decoration: ShapeDecoration(
+                            color: Colors.white,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            shadows: const [
+                              BoxShadow(
+                                color: Color(0x3F000000),
+                                blurRadius: 2,
+                                offset: Offset(2, 2),
+                                spreadRadius: 0,
+                              )
+                            ],
+                          ),
+                          child: const Text(
+                            'Add Kit',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 15,
+                              fontFamily: 'Poppins',
+                              fontWeight: FontWeight.w400,
+                            ),
+                          ),
                         ),
-                        shadows: const [
-                          BoxShadow(
-                            color: Color(0x3F000000),
-                            blurRadius: 2,
-                            offset: Offset(2, 2),
-                            spreadRadius: 0,
-                          )
-                        ],
                       ),
-                      child: const Text(
-                        'Add Kit',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 15,
-                          fontFamily: 'Poppins',
-                          fontWeight: FontWeight.w400,
-                        ),
-                      ),
-                    ),
-                  ),
-                ) 
+                    )
                   ],
                 ),
               ),

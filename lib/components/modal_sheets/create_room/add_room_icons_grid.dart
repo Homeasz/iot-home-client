@@ -9,12 +9,11 @@ class AddRoomIconsGrid extends StatelessWidget {
   AddRoomIconsGrid({super.key});
   late void Function() toggleRoomIcon;
   static int activeState = -1;
-  
 
   @override
   Widget build(BuildContext context) {
     List<void Function()> RoomIconToggleFn = [];
-    
+
     return Column(children: [
       SizedBox(
         width: 211,
@@ -40,16 +39,16 @@ class AddRoomIconsGrid extends StatelessWidget {
                 width: 83,
                 height: 83,
                 child: RoomIcon(
-                    roomType: roomNames[index],
-                    builder: (context, toggle) {
-                      RoomIconToggleFn.add(toggle);
-                    }),
+                  roomType: roomNames[index],
+                  builder: (context, toggle) {
+                    RoomIconToggleFn.add(toggle);
+                  }
+                ),
               ),
             );
           }),
         ),
       ),
-      
     ]);
   }
 }

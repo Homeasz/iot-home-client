@@ -29,7 +29,6 @@ class DataProvider extends ChangeNotifier {
   List<Routine> get routines => _routines;
   List<PowerSwitch> get selectedSwitches => _selectedSwitches;
 
-
   set currentRoom(int value) {
     _currentRoom = value;
     getSwitches(roomId: value);

@@ -32,7 +32,6 @@ class BaseTile extends StatefulWidget {
 class _BaseTileState extends State<BaseTile> {
   late bool state;
 
-
   @override
   void initState() {
     super.initState();
@@ -111,21 +110,20 @@ class _BaseTileState extends State<BaseTile> {
               ),
               if (widget.onPowerTap != null)
                 InkWell(
-                  onTap: toggleState,
-                  child: Padding(
-                      padding: const EdgeInsets.all(15),
-                      child: Card(
-                        margin: const EdgeInsets.all(2),
-                        elevation: 6,
-                        color: state
-                            ? const Color(0xFFFFC700)
-                            : const Color(0xFFFFFFFF),
-                        shape: const CircleBorder(),
-                        child: Container(
-                            padding: const EdgeInsets.all(4),
-                            child: SvgPicture.asset(width: 20, powerImage)),
-                      ))),
-                
+                    onTap: toggleState,
+                    child: Padding(
+                        padding: const EdgeInsets.all(15),
+                        child: Card(
+                          margin: const EdgeInsets.all(2),
+                          elevation: 6,
+                          color: state
+                              ? const Color(0xFFFFC700)
+                              : const Color(0xFFFFFFFF),
+                          shape: const CircleBorder(),
+                          child: Container(
+                              padding: const EdgeInsets.all(4),
+                              child: SvgPicture.asset(width: 20, powerImage)),
+                        ))),
             ],
           ),
         ),

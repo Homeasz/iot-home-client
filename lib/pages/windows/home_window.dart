@@ -52,11 +52,9 @@ class _HomeWindowState extends State<HomeWindow> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
-                    
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              
                               Text(
                                 'Hi ${userProvider.user?.firstName},',
                                 textAlign: TextAlign.center,
