@@ -52,6 +52,7 @@ dependencies:
   qr_code_scanner: ^1.0.1
   flutter_svg: ^1.0.0
   google_fonts: ^6.2.1
+  day_picker: ^2.3.0
 
 
 dev_dependencies:

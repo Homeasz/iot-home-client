@@ -16,9 +16,10 @@ class _TimeInputState extends State<TimeInput> {
   @override
   Widget build(BuildContext context) {
     return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         SizedBox(
-            width: 25,
+            // width: 25,
             child: NumberPicker(
                 textStyle: GoogleFonts.poppins(
                     height: 0.06, letterSpacing: -0.54, fontSize: 18),
@@ -32,7 +33,7 @@ class _TimeInputState extends State<TimeInput> {
           style: GoogleFonts.poppins(fontSize: 18),
         ),
         SizedBox(
-            width: 30,
+            // width: 30,
             child: NumberPicker(
                 textStyle: GoogleFonts.poppins(
                     height: 0.06, letterSpacing: -0.54, fontSize: 18),
@@ -43,7 +44,7 @@ class _TimeInputState extends State<TimeInput> {
                 value: routineMin,
                 onChanged: (value) => {setState(() => routineMin = value)})),
         SizedBox(
-          width: 40,
+          // width: 40,
           child: NumberPicker(
               textStyle: GoogleFonts.poppins(
                   height: 0.06, letterSpacing: -0.54, fontSize: 18),

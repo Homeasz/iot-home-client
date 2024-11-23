@@ -23,8 +23,9 @@ class RepeatScheduleInput extends StatelessWidget {
             const BoxShadow(
                 color: Color(0xffffffff), offset: Offset(-3, -3), blurRadius: 0)
           ]),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
+      child: Column(
+        // mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           const SizedBox(
             width: 10,
