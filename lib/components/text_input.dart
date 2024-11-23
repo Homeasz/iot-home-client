@@ -7,6 +7,7 @@ class TextInput extends StatelessWidget {
   final String hintText;
   @override
   Widget build(BuildContext context) {
+    //TODO: create an interface that adds the shadow
     return Container(
       width: double.infinity,
       height: 60,
@@ -30,12 +31,12 @@ class TextInput extends StatelessWidget {
             color: Colors.black,
             fontSize: 18,
             fontWeight: FontWeight.w400,
-            height: 0.06,
+            // height: 0.01,
             letterSpacing: -0.54,
           ),
           showCursor: true,
           controller: input,
-          cursorHeight: 20,
+          cursorHeight: 30,
           // onclicking doesnt open keyboard
 
           decoration: InputDecoration(
@@ -44,7 +45,7 @@ class TextInput extends StatelessWidget {
                 color: Colors.grey,
                 fontSize: 18,
                 fontWeight: FontWeight.w400,
-                height: 0.06,
+                // height: 0.01,
                 letterSpacing: -0.54,
               ),
               enabledBorder: const UnderlineInputBorder(
