@@ -72,8 +72,7 @@ class RoomService {
       if (response.statusCode == 200) {
         final Map<String, dynamic> data = jsonDecode(response.body);
         return Room.fromMap(data['data']);
-      } else {
-      }
+      } else {}
     }
     return null;
   }
@@ -95,11 +94,9 @@ class RoomService {
 
       if (response.statusCode == 201) {
         final Map<String, dynamic> data = jsonDecode(response.body);
-        data.forEach((key, value) {
-        });
+        data.forEach((key, value) {});
         return Room.fromMap(data["room"]);
-      } else {
-      }
+      } else {}
     }
     return null;
   }
@@ -117,8 +114,7 @@ class RoomService {
       if (response.statusCode == 200) {
         final Map<String, dynamic> data = jsonDecode(response.body);
         return Room.fromMap(data['room']);
-      } else {
-      }
+      } else {}
     }
     return null;
   }
@@ -145,7 +141,7 @@ class RoomService {
     }
     return [];
   }
-  
+
   Future<bool> toggleRoom(int roomId, bool state) async {
     final token = await _authService.getToken();
     if (token != null) {

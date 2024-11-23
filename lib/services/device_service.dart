@@ -87,8 +87,7 @@ class DeviceService {
     );
     if (response.statusCode == 200) {
       return true;
-    } else {
-    }
+    } else {}
     return false;
   }
 

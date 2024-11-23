@@ -26,7 +26,6 @@ class MyDropdownMenu extends StatelessWidget {
       inputDecorationTheme: const InputDecorationTheme(
         fillColor: Colors.white,
         filled: true,
-    
       ),
       onSelected: (value) => onSelected(value),
       menuHeight: MediaQuery.sizeOf(context).height * 0.3,
@@ -41,11 +40,11 @@ class MyDropdownMenu extends StatelessWidget {
       dropdownMenuEntries: list
           .map<DropdownMenuEntry<dynamic>>((item) => DropdownMenuEntry(
                 style: MenuItemButton.styleFrom(
-                  // foregroundColor: const Color(0xFFE7F8FF),
-                  // backgroundColor: const Color(0xFFE7F8FF),
-    
-                ),
-                label: (item is String)? item : item.name,
+                    // foregroundColor: const Color(0xFFE7F8FF),
+                    // backgroundColor: const Color(0xFFE7F8FF),
+
+                    ),
+                label: (item is String) ? item : item.name,
                 // child: Text(roomName),
                 value: item,
               ))

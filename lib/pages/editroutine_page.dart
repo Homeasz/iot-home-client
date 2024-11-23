@@ -18,7 +18,6 @@ class EditroutinePage extends StatefulWidget {
 }
 
 class _EditroutinePageState extends State<EditroutinePage> {
-
   late DataProvider dataProvider;
 
   @override

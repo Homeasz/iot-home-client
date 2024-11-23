@@ -105,17 +105,11 @@ class _SetupRoutineState extends State<SetupRoutine> {
             const SizedBox(
               height: 20,
             ),
-            Row(children: [
-              CupertinoButton(
-                child: Text(
-                  "Click"
-                ),
-                onPressed: () => {
-
-                })
-            ],),
-            
-            
+            Row(
+              children: [
+                CupertinoButton(child: Text("Click"), onPressed: () => {})
+              ],
+            ),
             Align(
               alignment: const Alignment(-0.95, 0),
               child: Text(

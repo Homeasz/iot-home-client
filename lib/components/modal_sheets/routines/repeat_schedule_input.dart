@@ -30,7 +30,9 @@ class RepeatScheduleInput extends StatelessWidget {
             width: 10,
           ),
           const TimeInput(),
-          const SizedBox(width: 15,),
+          const SizedBox(
+            width: 15,
+          ),
           WeekdayInput()
         ],
       ),

@@ -18,7 +18,7 @@ void main() {
     ChangeNotifierProvider(create: (context) => DataProvider()),
     ChangeNotifierProvider(create: (context) => UserProvider()),
     ChangeNotifierProvider(create: (context) => ThemeProvider()),
-  ], child:  const MyApp()));
+  ], child: const MyApp()));
 }
 
 class MyApp extends StatelessWidget {
@@ -32,7 +32,6 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: themeProvider.isDarkMode ? darkTheme : customTheme,
       initialRoute: '/',
-
       routes: {
         '/': (context) => const AuthPage(),
         '/add_esp': (context) => const AddESPPage(),
@@ -40,7 +39,6 @@ class MyApp extends StatelessWidget {
         '/list_esp': (context) => const ListESPsPage(),
         '/profile': (context) => const ProfileScreen(),
         '/editRoutine': (context) => const EditroutinePage(),
-
       },
     );
   }

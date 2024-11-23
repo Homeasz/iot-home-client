@@ -5,7 +5,6 @@ import 'package:multicast_dns/multicast_dns.dart';
 import '../utils/constants.dart';
 
 class EspService {
-  
   Future<bool> addESP(String ssid, String password) async {
     try {
       final response = await http.post(
@@ -33,9 +32,10 @@ class EspService {
       return false;
     }
   }
+
 //TODO: store this resolved ip for http comm. later
   Future<bool> mDnsResolve(String hostname) async {
-    final MDnsClient client =  MDnsClient(
+    final MDnsClient client = MDnsClient(
       rawDatagramSocketFactory: (
         dynamic host,
         int port, {
@@ -51,29 +51,26 @@ class EspService {
         );
       },
     );
-    try{
+    try {
       await client.start();
-      await for (final IPAddressResourceRecord record in client
-      .lookup<IPAddressResourceRecord>(ResourceRecordQuery.addressIPv4(hostname))) {
-      print('Found address (${record.address}).');
-      return true;
-  }
-    }
-    catch(e){
+      await for (final IPAddressResourceRecord record
+          in client.lookup<IPAddressResourceRecord>(
+              ResourceRecordQuery.addressIPv4(hostname))) {
+        print('Found address (${record.address}).');
+        return true;
+      }
+    } catch (e) {
       print("Error resolving ip address");
-    }
-    finally{
+    } finally {
       client.stop();
     }
     return false;
-  } 
+  }
 
   Future<void> status() async {
     try {
       final response = await http.get(Uri.parse('$ESP_URL/switchStatus'));
-      if (response.statusCode == 200) {
-      }
-    } catch (e) {
-    }
+      if (response.statusCode == 200) {}
+    } catch (e) {}
   }
 }

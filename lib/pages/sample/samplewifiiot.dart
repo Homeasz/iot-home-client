@@ -174,8 +174,7 @@ class _FlutterWifiIoTState extends State<FlutterWifiIoT> {
 
   void showClientList() async {
     /// Refresh the list and show in console
-    getClientList(false, 300).then((val) => val.forEach((oClient) {
-        }));
+    getClientList(false, 300).then((val) => val.forEach((oClient) {}));
   }
 
   Widget getWidgets() {
@@ -221,10 +220,8 @@ class _FlutterWifiIoTState extends State<FlutterWifiIoT> {
 
           htNetworks.add(
             ListTile(
-              title: Text("${oNetwork.ssid!}${(_htIsNetworkRegistered!.containsKey(oNetwork.ssid) &&
-                          _htIsNetworkRegistered![oNetwork.ssid]!)
-                      ? " *"
-                      : ""}"),
+              title: Text(
+                  "${oNetwork.ssid!}${(_htIsNetworkRegistered!.containsKey(oNetwork.ssid) && _htIsNetworkRegistered![oNetwork.ssid]!) ? " *" : ""}"),
               trailing: PopupMenuButton<PopupCommand>(
                 padding: EdgeInsets.zero,
                 onSelected: (PopupCommand poCommand) {
@@ -547,8 +544,8 @@ class _FlutterWifiIoTState extends State<FlutterWifiIoT> {
             return Text("SSID : ${info.data![0]}");
           });
     } else {
-      htPrimaryWidgets.add(
-          const Center(child: Text("Wifi AP probably not supported by your device")));
+      htPrimaryWidgets.add(const Center(
+          child: Text("Wifi AP probably not supported by your device")));
     }
 
     return htPrimaryWidgets;
