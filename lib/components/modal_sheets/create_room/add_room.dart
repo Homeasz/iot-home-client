@@ -72,7 +72,7 @@ class AddRoom extends StatelessWidget {
             const SizedBox(
               height: 20,
             ),
-            TextInput(
+            MyTextInput(
               input: _textEditingController,
               hintText: "Enter Room Name",
             ),

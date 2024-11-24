@@ -90,7 +90,7 @@ class _EditApplianceState extends State<EditAppliance> {
               ),
               Flexible(
                 flex: 4,
-                child: TextInput(
+                child: MyTextInput(
                   input: _textEditingController,
                   hintText: "Enter device name",
                 ),

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class TextInput extends StatelessWidget {
-  const TextInput({super.key, required this.input, required this.hintText});
+class MyTextInput extends StatelessWidget {
+  const MyTextInput({super.key, required this.input, required this.hintText});
   final TextEditingController input;
   final String hintText;
   @override

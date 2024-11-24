@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:homeasz/components/modal_sheets/modal_confirm_button.dart';
 import 'package:homeasz/components/my_button.dart';
 import 'package:homeasz/components/my_dropdownmenu.dart';
@@ -27,9 +28,15 @@ class _EditroutinePageState extends State<EditroutinePage> {
   void initState() {
     super.initState();
     dataProvider = Provider.of<DataProvider>(context, listen: false);
-    dataProvider.getUserRooms();
-    dataProvider.currentRoom = dataProvider.rooms[0].id;
-    dataProvider.getSwitches(roomId: dataProvider.rooms[0].id);
+    dataProvider.getUserRooms().then((_) {
+      if (dataProvider.rooms.isNotEmpty) {
+        dataProvider.currentRoom = dataProvider.rooms[0].id;
+        dataProvider.getSwitches(
+          dataProvider.rooms[0].id,
+          dataProvider.rooms[0].name,
+        );
+      }
+    });
   }
 
   @override
@@ -47,6 +54,9 @@ class _EditroutinePageState extends State<EditroutinePage> {
     DayInWeek("S", dayKey: "saturday", isSelected: true),
     DayInWeek("S", dayKey: "sunday", isSelected: true),
   ];
+
+  // selected switches set
+  final Set<int> selectedSwitches = {};
 
   @override
   Widget build(BuildContext context) {
@@ -66,6 +76,8 @@ class _EditroutinePageState extends State<EditroutinePage> {
     }
 
     Future<void> addSwitchDialog() async {
+      String? errorMessage;
+
       return showDialog(
           context: context,
           useSafeArea: true,
@@ -74,66 +86,104 @@ class _EditroutinePageState extends State<EditroutinePage> {
             return Dialog(
               backgroundColor: const Color(0xFFE7F8FF),
               child: Padding(
-                padding: const EdgeInsets.only(left: 20, right: 20),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const SizedBox(
-                      height: 18,
-                    ),
-                    Container(
-                      width: 80,
-                      height: 4,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(4),
-                          color: const Color(0xFFE3E3E3)),
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    MyDropdownMenu(
-                      title: "Room",
-                      list: dataProvider.rooms,
-                      initialSelection: dataProvider.rooms[0],
-                      onSelected: (Room value) {
-                        setState(() {
-                          selectedRoom = value;
-                        });
-                      },
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    MyDropdownMenu(
-                      title: "Switches",
-                      list: dataProvider.switches,
-                      initialSelection: dataProvider.switches[0],
-                      onSelected: (PowerSwitch value) {
-                        setState(() {
-                          selectedSwitch = value;
-                        });
-                      },
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    ModalConfirmButton(
-                        buttonText: "Add",
-                        onPressed: () {
-                          if (selectedRoom == null || selectedSwitch == null) {
-                            return;
-                          }
-                          dataProvider
-                              .addSwitchToSelectedSwitches(selectedSwitch!);
-                          Navigator.pop(context);
-                        }),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                  ],
-                ),
-              ),
+                  padding: const EdgeInsets.only(left: 20, right: 20),
+                  child: Consumer<DataProvider>(
+                    builder: (context, dataProvider, child) {
+                      Room? selectedRoom = dataProvider.rooms.isNotEmpty
+                          ? dataProvider.rooms[0]
+                          : null;
+                      PowerSwitch? selectedSwitch =
+                          dataProvider.switches.isNotEmpty
+                              ? dataProvider.switches[0]
+                              : null;
+                      return StatefulBuilder(builder: (context, setState) {
+                        return Column(
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              const SizedBox(
+                                height: 18,
+                              ),
+                              Container(
+                                width: 80,
+                                height: 4,
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(4),
+                                    color: const Color(0xFFE3E3E3)),
+                              ),
+                              const SizedBox(
+                                height: 20,
+                              ),
+                              MyDropdownMenu(
+                                title: "Room",
+                                list: dataProvider.rooms,
+                                initialSelection: selectedRoom,
+                                onSelected: (Room value) {
+                                  // Update switches dynamically when a new room is selected
+                                  setState(() {
+                                    errorMessage = null;
+                                  });
+                                  dataProvider.getSwitches(
+                                      value.id, value.name);
+                                },
+                              ),
+                              const SizedBox(
+                                height: 20,
+                              ),
+                              MyDropdownMenu(
+                                title: "Switches",
+                                list: dataProvider.switches,
+                                initialSelection: selectedSwitch,
+                                onSelected: (PowerSwitch value) {
+                                   setState(() {
+                                    errorMessage = null;
+                                  });
+                                  selectedSwitch = value;
+                                },
+                              ),
+                              if (errorMessage != null) ...[
+                                const SizedBox(height: 10),
+                                Text(
+                                  errorMessage!,
+                                  style: const TextStyle(
+                                    color: Colors.red,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ],
+                              const SizedBox(
+                                height: 20,
+                              ),
+                              ModalConfirmButton(
+                                  buttonText: "Add",
+                                  onPressed: () {
+                                    if (selectedRoom == null ||
+                                        selectedSwitch == null) {
+                                      return;
+                                    }
+                                    if (selectedSwitches
+                                        .contains(selectedSwitch!.id)) {
+                                      HapticFeedback.mediumImpact();
+                                      setState(() {
+                                        errorMessage = 'Switch already added';
+                                      });
+
+                                      // show error message
+                                      return;
+                                    }
+                                    selectedSwitches.add(selectedSwitch!.id);
+                                    dataProvider.addSwitchToSelectedSwitches(
+                                        selectedSwitch!);
+                                    Navigator.pop(context);
+                                  }),
+                              const SizedBox(
+                                height: 20,
+                              )
+                            ]);
+                      });
+                    },
+                  )),
             );
           });
     }
@@ -155,6 +205,30 @@ class _EditroutinePageState extends State<EditroutinePage> {
         ),
         backgroundColor: const Color(0xFFE7F8FF),
       ),
+      persistentFooterButtons: [
+        MyButton(
+          text: 'Save',
+          onTap: () {
+            // save routine
+            final String routineName = routineNameController.text;
+            final List<int> switchIds = dataProvider.selectedSwitches
+                .map((PowerSwitch selectedSwitch) => selectedSwitch.id)
+                .toList();
+            final List<String> days = _days
+                .where((DayInWeek day) => day.isSelected)
+                .map((DayInWeek day) => day.dayKey)
+                .toList();
+            final String timeString = time!.format(context);
+            // dataProvider.createRoutine(
+            //   routineName: routineName,
+            //   switchIds: switchIds,
+            //   days: days,
+            //   time: timeString,
+            // );
+            Navigator.pop(context);
+          },
+        ),
+      ],
       body: SafeArea(
         child: Consumer<DataProvider>(
           builder:
@@ -183,7 +257,7 @@ class _EditroutinePageState extends State<EditroutinePage> {
                     ),
                   ),
                   const SizedBox(height: 10),
-                  TextInput(
+                  MyTextInput(
                       input: routineNameController,
                       hintText: 'Enter Routine Name'),
                   const SizedBox(height: 20),
@@ -264,13 +338,12 @@ class _EditroutinePageState extends State<EditroutinePage> {
                         ),
                         const SizedBox(height: 10),
                         SelectWeekDays(
-                          selectedDayTextColor: Colors.black,
-                          selectedDaysBorderColor: Colors.white,
-                          selectedDaysFillColor: const Color(0xFFE7F8FF),
-                          unSelectedDayTextColor: Colors.black,
-                          elevation: 1,
-                          borderWidth: 0,
-                          
+                            selectedDayTextColor: Colors.black,
+                            selectedDaysBorderColor: Colors.white,
+                            selectedDaysFillColor: const Color(0xFFE7F8FF),
+                            unSelectedDayTextColor: Colors.black,
+                            elevation: 1,
+                            borderWidth: 0,
                             onSelect: (values) {
                               print(values);
                             },
@@ -326,6 +399,10 @@ class _EditroutinePageState extends State<EditroutinePage> {
                           trailing: IconButton(
                             icon: const Icon(Icons.delete),
                             onPressed: () {
+                              if (selectedSwitches
+                                  .contains(selectedSwitch.id)) {
+                                selectedSwitches.remove(selectedSwitch.id);
+                              }
                               dataProvider.removeSwitchFromSelectedSwitches(
                                   selectedSwitch);
                             },

@@ -256,9 +256,9 @@ class _AddESPPageState extends State<AddESPPage> {
                       ),
                     ),
                     const SizedBox(height: 10),
-                    TextInput(input: ssidController, hintText: 'SSID'),
+                    MyTextInput(input: ssidController, hintText: 'SSID'),
                     const SizedBox(height: 20),
-                    TextInput(input: passwordController, hintText: 'Password'),
+                    MyTextInput(input: passwordController, hintText: 'Password'),
                     const SizedBox(height: 20),
                     Align(
                       alignment: Alignment.centerRight,

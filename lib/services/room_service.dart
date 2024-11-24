@@ -119,7 +119,7 @@ class RoomService {
     return null;
   }
 
-  Future<List<PowerSwitch>> getSwitches(int roomId, String? roomName) async {
+  Future<List<PowerSwitch>> getSwitches(int roomId, String roomName) async {
     final token = await _authService.getToken();
     if (token != null) {
       final response = await http.get(

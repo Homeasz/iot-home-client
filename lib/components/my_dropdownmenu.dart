@@ -18,6 +18,14 @@ class MyDropdownMenu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+     if (list.isEmpty) {
+      return Center(
+        child: Text(
+          "No items available for selection",
+          style: TextStyle(color: Colors.red, fontSize: 16),
+        ),
+      );
+    }
     return DropdownMenu<dynamic>(
       enabled: enabled,
       width: MediaQuery.sizeOf(context).width * 0.7,

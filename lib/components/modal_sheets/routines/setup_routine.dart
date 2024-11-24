@@ -77,7 +77,7 @@ class _SetupRoutineState extends State<SetupRoutine> {
             const SizedBox(
               height: 20,
             ),
-            TextInput(
+            MyTextInput(
               input: routineName,
               hintText: "Enter Routine Name",
             ),

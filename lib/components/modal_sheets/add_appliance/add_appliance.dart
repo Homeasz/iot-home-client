@@ -71,7 +71,7 @@ class _AddApplianceState extends State<AddAppliance> {
             const SizedBox(
               height: 40,
             ),
-            TextInput(
+            MyTextInput(
               input: _textEditingController,
               hintText: "Enter device name",
             ),

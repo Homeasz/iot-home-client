@@ -35,7 +35,7 @@ class _RoomPageState extends State<RoomPage> {
   void initState() {
     super.initState();
     _dataProvider = Provider.of<DataProvider>(context, listen: false);
-    _dataProvider.getSwitches(roomId: widget.roomId);
+    _dataProvider.getSwitches(widget.roomId, widget.roomName);
   }
 
   @override

@@ -88,7 +88,7 @@ class _AddToHomeFavouritesState extends State<AddToHomeFavourites> {
                       dataProvider.clearSwitches();
                     }
                     selectedRoom = room.name;
-                    dataProvider.getSwitches(roomName: selectedRoom);
+                    dataProvider.getSwitches(room.id,selectedRoom);
                   });
                 },
               ),
