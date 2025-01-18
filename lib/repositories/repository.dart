@@ -38,7 +38,7 @@ import 'package:provider/provider.dart';
 }
 */
 
-class OnboardedESPsRepository{
+class OnboardedESPsRepository {
   static OnboardedESPsRepository? _instance;
 
   OnboardedESPsRepository._internal();
@@ -50,7 +50,7 @@ class OnboardedESPsRepository{
 
   static Box<DeviceModel>? devicesBox;
 
-  Future<void> saveToDb(String deviceName, DeviceModel device) async{
+  Future<void> saveToDb(String deviceName, DeviceModel device) async {
     devicesBox ??= await Hive.openBox<DeviceModel>('Devices');
     devicesBox?.put(deviceName, device);
   }

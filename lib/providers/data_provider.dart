@@ -51,7 +51,6 @@ class DataProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-
   Future<List<Room>?> getUserRooms() async {
     try {
       final rooms = await roomService.getUserRooms();
@@ -68,7 +67,7 @@ class DataProvider extends ChangeNotifier {
   }
 
   Future<void> updateRoomDevices() async {
-    for(Room room in _rooms){
+    for (Room room in _rooms) {
       room = await getRoom(room.id) ?? room;
     }
     notifyListeners();
@@ -117,7 +116,7 @@ class DataProvider extends ChangeNotifier {
   Future<List<PowerSwitch>> getSwitches(int roomId, String roomName) async {
     roomId ??=
         rooms[rooms.indexWhere((element) => element.name == roomName)].id;
-        
+
     final switches = await roomService.getSwitches(roomId, roomName);
     _currentRoom = roomId;
     _switches = switches;
@@ -142,8 +141,8 @@ class DataProvider extends ChangeNotifier {
   }
 
   Future<int?> addDevice(String deviceName, int roomId) async {
-
-    final deviceModel = await OnboardedESPsRepository().getFromDb(deviceName) ?? await deviceService.addDevice(deviceName, roomId);
+    final deviceModel = await OnboardedESPsRepository().getFromDb(deviceName) ??
+        await deviceService.addDevice(deviceName, roomId);
     if (deviceModel != null) {
       return deviceModel.id;
     }

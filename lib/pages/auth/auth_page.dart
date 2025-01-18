@@ -43,13 +43,13 @@ class _AuthPageState extends State<AuthPage> {
 
   @override
   Widget build(BuildContext context) {
-    if(_displaySplash){
+    if (_displaySplash) {
       return const SplashScreen();
     }
     if (_isAuthenticated) {
-      return  const HomePage();
+      return const HomePage();
     } else {
-      return  const LoginOrSignUpPage();
+      return const LoginOrSignUpPage();
     }
   }
 }

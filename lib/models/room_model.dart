@@ -26,7 +26,8 @@ class Room {
       ),
       type: map['type'] ?? 'BEDROOM',
       createdAt: DateTime.parse(map['createdAt'] ?? "1970-01-01"),
-      updatedAt: DateTime.parse(map['updatedAt'] ?? map['createdAt'] ?? "1970-01-01"),
+      updatedAt:
+          DateTime.parse(map['updatedAt'] ?? map['createdAt'] ?? "1970-01-01"),
     );
   }
 

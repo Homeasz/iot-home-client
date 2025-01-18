@@ -36,8 +36,7 @@ class DeviceService {
         OnboardedESPsRepository().saveToDb(deviceName, device);
 
         return device;
-
-      } else if( response.statusCode == 401 ) {
+      } else if (response.statusCode == 401) {
         log("status: 401, response: ${response.body} ");
         DeviceModel? device;
         if (body['error'] == "Room already has device with the same name") {

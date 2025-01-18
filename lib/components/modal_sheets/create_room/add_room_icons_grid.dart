@@ -39,11 +39,10 @@ class AddRoomIconsGrid extends StatelessWidget {
                 width: 83,
                 height: 83,
                 child: RoomIcon(
-                  roomType: roomNames[index],
-                  builder: (context, toggle) {
-                    RoomIconToggleFn.add(toggle);
-                  }
-                ),
+                    roomType: roomNames[index],
+                    builder: (context, toggle) {
+                      RoomIconToggleFn.add(toggle);
+                    }),
               ),
             );
           }),

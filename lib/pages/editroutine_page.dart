@@ -135,7 +135,7 @@ class _EditroutinePageState extends State<EditroutinePage> {
                                 list: dataProvider.switches,
                                 initialSelection: selectedSwitch,
                                 onSelected: (PowerSwitch value) {
-                                   setState(() {
+                                  setState(() {
                                     errorMessage = null;
                                   });
                                   selectedSwitch = value;

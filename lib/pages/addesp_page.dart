@@ -93,7 +93,8 @@ class _AddESPPageState extends State<AddESPPage> {
     final ssid = qrData["SSID"];
     EspSsid = ssid;
     final password = qrData["PASSWORD"];
-    final deviceName = ssid; //TODO: in scale this might not be strongly unique, change this to a more unique name
+    final deviceName =
+        ssid; //TODO: in scale this might not be strongly unique, change this to a more unique name
     final roomId = ModalRoute.of(context)!.settings.arguments as int;
     deviceId = await DataProvider().addDevice(deviceName, roomId);
     bool? connected = await WiFiForIoTPlugin.connect(
@@ -261,7 +262,8 @@ class _AddESPPageState extends State<AddESPPage> {
                     const SizedBox(height: 10),
                     MyTextInput(input: ssidController, hintText: 'SSID'),
                     const SizedBox(height: 20),
-                    MyTextInput(input: passwordController, hintText: 'Password'),
+                    MyTextInput(
+                        input: passwordController, hintText: 'Password'),
                     const SizedBox(height: 20),
                     Align(
                       alignment: Alignment.centerRight,
