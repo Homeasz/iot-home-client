@@ -1,11 +1,15 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:homeasz/components/loading.dart';
 import 'package:homeasz/components/qr_scanner.dart';
 import 'package:homeasz/components/text_input.dart';
+import 'package:homeasz/providers/data_provider.dart';
+import 'package:homeasz/services/device_service.dart';
 import 'package:homeasz/services/esp_service.dart';
+import 'package:provider/provider.dart';
 import 'package:wifi_iot/wifi_iot.dart';
 import 'package:homeasz/utils/request_permissions.dart';
 
@@ -21,6 +25,7 @@ class _AddESPPageState extends State<AddESPPage> {
   final TextEditingController passwordController = TextEditingController();
   final EspService espService = EspService();
   String _ssidPassword = '';
+  int? deviceId;
   String? EspSsid;
   String? _connectionStatus;
   bool _isConnected = false;
@@ -37,7 +42,7 @@ class _AddESPPageState extends State<AddESPPage> {
     if (!(await WiFiForIoTPlugin.isEnabled())) {
       WiFiForIoTPlugin.setEnabled(true, shouldOpenSettings: true);
     }
-    await connect();
+    await connect(); //TODO: add a popup to display failure if connect fails
     Navigator.pop(context);
   }
 
@@ -50,26 +55,21 @@ class _AddESPPageState extends State<AddESPPage> {
     final ssid = ssidController.text;
     final password = passwordController.text;
     await espService.status();
-    await espService.addESP(ssid, password);
+    await espService.addESP(ssid, password, deviceId?.toString() ?? 'null');
     loading(context);
-    final phone_reconnected = await WiFiForIoTPlugin.connect(
-      ssid,
-      password: password,
-      joinOnce: false,
-      security: NetworkSecurity.WPA,
-    );
+    final disconnect_phone = await WiFiForIoTPlugin.disconnect();
     // await WiFiForIoTPlugin.disconnect();
-    bool Esp_connected = false;
+    bool Esp_connected = true;
 
     //TODO: add additional cloud call confirmation
-    if (phone_reconnected && EspSsid != null) {
-      final hostname = "Homeasz-${EspSsid!.substring(12)}";
-      int retry_mdns_resolve = 3;
-      for (int i = 0; i < retry_mdns_resolve; i++) {
-        Esp_connected = await espService.mDnsResolve(hostname);
-        if (Esp_connected) break;
-      }
-    }
+    // if (disconnect_phone && EspSsid != null) {
+    //   final hostname = "Homeasz-${EspSsid!.substring(12)}";
+    //   int retry_mdns_resolve = 3;
+    //   for (int i = 0; i < retry_mdns_resolve; i++) {
+    //     Esp_connected = await espService.mDnsResolve(hostname);
+    //     if (Esp_connected) break;
+    //   }
+    // }
     Navigator.pop(context);
     _connectionStatus = Esp_connected
         ? "Successfully added the kit"
@@ -93,6 +93,9 @@ class _AddESPPageState extends State<AddESPPage> {
     final ssid = qrData["SSID"];
     EspSsid = ssid;
     final password = qrData["PASSWORD"];
+    final deviceName = ssid; //TODO: in scale this might not be strongly unique, change this to a more unique name
+    final roomId = ModalRoute.of(context)!.settings.arguments as int;
+    deviceId = await DataProvider().addDevice(deviceName, roomId);
     bool? connected = await WiFiForIoTPlugin.connect(
       ssid,
       password: password,

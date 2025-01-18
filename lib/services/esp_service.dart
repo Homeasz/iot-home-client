@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:http/http.dart' as http;
@@ -5,7 +6,7 @@ import 'package:multicast_dns/multicast_dns.dart';
 import '../utils/constants.dart';
 
 class EspService {
-  Future<bool> addESP(String ssid, String password) async {
+  Future<bool> addESP(String ssid, String password, String deviceId) async {
     try {
       final response = await http.post(
         Uri.parse('$ESP_URL/wifiConnect.json'),
@@ -16,8 +17,10 @@ class EspService {
           'X-Requested-With': 'XMLHttpRequest',
           'my-connect-pwd': password,
           'my-connect-ssid': ssid,
+          'deviceId': deviceId,
         },
       );
+      log("addESP: response - ${response.body}");
 
       if (response.statusCode == 200) {
         return true;

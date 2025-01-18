@@ -1,5 +1,6 @@
 // // lib/services/api_service.dart
 
+import 'package:homeasz/models/device_model.dart';
 import 'package:homeasz/models/room_model.dart';
 import 'package:homeasz/models/switch_model.dart';
 import 'package:homeasz/services/auth_service.dart';
@@ -43,10 +44,10 @@ class RoomService {
 
   Future<Room?> getRoom(String roomId) async {
     try {
-      final response = await http.get(Uri.parse('$BASE_URL/rooms/$roomId'));
+      final response = await http.get(Uri.parse('$BASE_URL/room/$roomId'));
       if (response.statusCode == 200) {
         final Map<String, dynamic> data = jsonDecode(response.body);
-        return Room.fromJson(data['room']);
+        return Room.fromJson(data['data']);
       } else {
         return null;
       }

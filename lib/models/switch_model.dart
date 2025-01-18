@@ -1,8 +1,17 @@
+import 'package:hive/hive.dart';
+part 'switch_model.g.dart';
+
+@HiveType(typeId: 1)
 class PowerSwitch {
+  @HiveField(0)
   final int id;
+  @HiveField(1)
   final String name;
+  @HiveField(2)
   bool state;
+  @HiveField(3)
   final String type;
+  @HiveField(4)
   String? roomName;
   final DateTime createdAt;
   final DateTime updatedAt;

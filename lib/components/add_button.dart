@@ -7,8 +7,9 @@ import 'package:homeasz/utils/constants.dart';
 
 class AddButton extends StatefulWidget {
   final int window;
+  final dynamic arguments; //passing any arguments to Navigator.pushNamed
 
-  const AddButton({super.key, required this.window});
+  const AddButton({super.key, required this.window, this.arguments});
 
   @override
   State<AddButton> createState() => _AddButtonState();
@@ -44,7 +45,7 @@ class _AddButtonState extends State<AddButton> {
         onTap: () {
           if (widget.window == addDeviceWindow) {
             // go to add esp page
-            Navigator.pushNamed(context, '/add_esp');
+            Navigator.pushNamed(context, '/add_esp', arguments: widget.arguments);
           } else if (widget.window == routinesWindow) {
             // go to add appliance page
             Navigator.pushNamed(context, '/editRoutine');

@@ -55,8 +55,9 @@ class _RoomPageState extends State<RoomPage> {
           scrolledUnderElevation: 0,
         ),
         backgroundColor: const Color(0xFFE6F8FF),
-        floatingActionButton: const AddButton(
+        floatingActionButton: AddButton(
           window: 3,
+          arguments: widget.roomId,
         ),
         body: Center(
           child: Stack(

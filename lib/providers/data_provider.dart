@@ -4,6 +4,7 @@ import 'package:homeasz/models/routine_model.dart';
 import 'package:homeasz/models/switch_model.dart';
 // ignore: unused_import
 import 'package:homeasz/pages/home_page.dart';
+import 'package:homeasz/repositories/repository.dart';
 import 'package:homeasz/services/device_service.dart';
 import 'package:homeasz/services/room_service.dart';
 import 'package:homeasz/services/routine_service.dart';
@@ -58,12 +59,19 @@ class DataProvider extends ChangeNotifier {
         _rooms = rooms;
         notifyListeners();
       }
+      updateRoomDevices();
       return rooms;
     } catch (e) {
       _errorMessage = e.toString();
-
       return null;
     }
+  }
+
+  Future<void> updateRoomDevices() async {
+    for(Room room in _rooms){
+      room = await getRoom(room.id) ?? room;
+    }
+    notifyListeners();
   }
 
   Future<List<Routine>> getUserRoutines() async {
@@ -74,8 +82,8 @@ class DataProvider extends ChangeNotifier {
     return routines;
   }
 
-  Future<Room?> getRoom(String roomId) async {
-    final room = await roomService.getRoom(roomId);
+  Future<Room?> getRoom(int roomId) async {
+    final room = await roomService.getRoom(roomId.toString());
     return room;
   }
 
@@ -133,11 +141,11 @@ class DataProvider extends ChangeNotifier {
     return switchStatus;
   }
 
-  Future addDevice(String switchName, int roomId) async {
-    final deviceModel = await deviceService.addDevice(switchName, roomId);
+  Future<int?> addDevice(String deviceName, int roomId) async {
+
+    final deviceModel = await OnboardedESPsRepository().getFromDb(deviceName) ?? await deviceService.addDevice(deviceName, roomId);
     if (deviceModel != null) {
-      // _switches.add(deviceModel);
-      // notifyListeners();
+      return deviceModel.id;
     }
   }
 

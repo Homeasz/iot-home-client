@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
+import 'package:hive_flutter/adapters.dart';
+import 'package:homeasz/models/device_model.dart';
+import 'package:homeasz/models/switch_model.dart';
 import 'package:homeasz/pages/auth/auth_page.dart';
 import 'package:homeasz/pages/createroom_page.dart';
 import 'package:homeasz/pages/profile/profile_page.dart';
@@ -12,7 +16,10 @@ import 'package:homeasz/pages/listesps_page.dart';
 import 'package:homeasz/utils/themes.dart';
 import 'package:homeasz/pages/editroutine_page.dart';
 
-void main() {
+void main() async {
+  await Hive.initFlutter();
+  Hive.registerAdapter(DeviceModelAdapter());
+  Hive.registerAdapter(PowerSwitchAdapter());
   runApp(MultiProvider(providers: [
     ChangeNotifierProvider(create: (context) => AuthProvider()),
     ChangeNotifierProvider(create: (context) => DataProvider()),

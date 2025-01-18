@@ -1,10 +1,14 @@
 // // lib/services/api_service.dart
+import 'dart:developer';
+
 import 'package:homeasz/models/device_model.dart';
+import 'package:homeasz/repositories/repository.dart';
 import 'package:homeasz/services/auth_service.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:homeasz/models/switch_model.dart';
 import '../utils/constants.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 
 class DeviceService {
   final _authService = AuthService();
@@ -19,14 +23,28 @@ class DeviceService {
           'Content-Type': 'application/json',
         },
         body: jsonEncode(<String, dynamic>{
-          'deviceName': deviceName,
           'roomId': roomId,
+          'deviceName': deviceName,
+          "switchCapacity": 4
         }),
       );
-      if (response.statusCode == 200) {
-        final Map<String, dynamic> body = jsonDecode(response.body);
-        return DeviceModel.fromMap(body['device']);
-      } else {}
+      final Map<String, dynamic> body = jsonDecode(response.body);
+      if (response.statusCode == 201) {
+        log("status: 201, response: ${response.body} ");
+        DeviceModel device = DeviceModel.fromMap(body['device']);
+
+        OnboardedESPsRepository().saveToDb(deviceName, device);
+
+        return device;
+
+      } else if( response.statusCode == 401 ) {
+        log("status: 401, response: ${response.body} ");
+        DeviceModel? device;
+        if (body['error'] == "Room already has device with the same name") {
+          device = await OnboardedESPsRepository().getFromDb(deviceName);
+        }
+        return device;
+      }
     }
   }
 
