@@ -1,3 +1,5 @@
+import 'dart:async';
+import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 
@@ -6,7 +8,7 @@ import 'package:multicast_dns/multicast_dns.dart';
 import '../utils/constants.dart';
 
 class EspService {
-  Future<bool> addESP(String ssid, String password, String deviceId) async {
+  Future<int> addESP(String ssid, String password, String deviceId) async {
     try {
       final response = await http.post(
         Uri.parse('$ESP_URL/wifiConnect.json'),
@@ -19,20 +21,16 @@ class EspService {
           'my-connect-ssid': ssid,
           'deviceId': deviceId,
         },
-      );
+      ).timeout(const Duration(seconds: 20));
       log("addESP: response - ${response.body}");
 
-      if (response.statusCode == 200) {
-        return true;
-      } else {
-        return false;
-      }
-    } on SocketException catch (e) {
-      // Handle network-related errors
-      return false;
+      return jsonDecode(response.body)["error"];
+    } on TimeoutException catch (e) {
+      // Handle timeout errors
+      return 107;
     } catch (e) {
       // Handle other types of errors
-      return false;
+      return 108;
     }
   }
 
@@ -70,10 +68,13 @@ class EspService {
     return false;
   }
 
-  Future<void> status() async {
+  Future<bool> status() async {
     try {
       final response = await http.get(Uri.parse('$ESP_URL/switchStatus'));
-      if (response.statusCode == 200) {}
-    } catch (e) {}
+      if (response.statusCode == 200) {return true;}
+      return false;
+    } catch (e) {
+      return false;
+    }
   }
 }
