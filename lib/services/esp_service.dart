@@ -71,7 +71,9 @@ class EspService {
   Future<bool> status() async {
     try {
       final response = await http.get(Uri.parse('$ESP_URL/switchStatus'));
-      if (response.statusCode == 200) {return true;}
+      if (response.statusCode == 200) {
+        return true;
+      }
       return false;
     } catch (e) {
       return false;

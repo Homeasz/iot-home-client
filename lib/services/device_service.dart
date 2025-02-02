@@ -2,11 +2,13 @@
 import 'dart:developer';
 
 import 'package:homeasz/models/device_model.dart';
-import 'package:homeasz/repositories/repository.dart';
+import 'package:homeasz/repositories/onboarded_esps_repository.dart';
+import 'package:homeasz/repositories/switches_repository.dart';
 import 'package:homeasz/services/auth_service.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:homeasz/models/switch_model.dart';
+import 'package:http/http.dart';
 import '../utils/constants.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 
@@ -47,7 +49,7 @@ class DeviceService {
     }
   }
 
-  Future<bool> switchStatus(String switchId) async {
+  Future<Response?> switchDetails(int switchId) async {
     final token = await _authService.getToken();
     if (token != null) {
       final response = await http.post(
@@ -57,12 +59,32 @@ class DeviceService {
           'Content-Type': 'application/json',
         },
       );
-      if (response.statusCode == 200) {
-        final status = jsonDecode(response.body)['status'];
-        return status;
-      } else {}
+      return response;
+    }
+    return null;
+  }
+
+  Future<bool> switchStatus(int switchId) async {
+    final Response? response = await switchDetails(switchId);
+    if (response != null && response.statusCode == 200) {
+      final status = jsonDecode(response.body)['status'];
+      return status;
     }
     return false;
+  }
+
+  Future<PowerSwitch?> getSwitch(int switchId) async {
+    final Response? response = await switchDetails(switchId);
+    if (response != null && response.statusCode == 200) {
+      final jsonDecoded = jsonDecode(response.body);
+      final PowerSwitch powerSwitch = PowerSwitch(
+          id: jsonDecoded['id'],
+          name: jsonDecoded['name'],
+          state: jsonDecoded['state'],
+          type: jsonDecoded['type']);
+      return powerSwitch;
+    }
+    return null;
   }
 
   Future<bool> toggleSwitch(int switchId, bool state) async {

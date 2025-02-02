@@ -10,11 +10,12 @@ class DeviceModel {
   final String name;
   @HiveField(2)
   final int roomId;
-  final String deviceType;
   @HiveField(3)
+  final String deviceType;
+  @HiveField(4)
   final List<PowerSwitch> switches;
-  final DateTime createdAt;
-  final DateTime updatedAt;
+  final DateTime? createdAt;
+  final DateTime? updatedAt;
 
   DeviceModel({
     required this.id,
@@ -22,8 +23,8 @@ class DeviceModel {
     required this.roomId,
     required this.deviceType,
     required this.switches,
-    required this.createdAt,
-    required this.updatedAt,
+    this.createdAt,
+    this.updatedAt,
   });
 
   factory DeviceModel.fromMap(Map<String, dynamic> map) {

@@ -19,7 +19,7 @@ class MyDropdownMenu extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (list.isEmpty) {
-      return Center(
+      return const Center(
         child: Text(
           "No items available for selection",
           style: TextStyle(color: Colors.red, fontSize: 16),
@@ -41,7 +41,7 @@ class MyDropdownMenu extends StatelessWidget {
       menuStyle: MenuStyle(
         backgroundColor: WidgetStateProperty.all(const Color(0xFFE7F8FF)),
         side: WidgetStateProperty.all(const BorderSide(
-          color: const Color(0xFFE7F8FF),
+          color: Color(0xFFE7F8FF),
           width: 5,
         )),
       ),

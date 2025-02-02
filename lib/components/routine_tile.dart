@@ -4,7 +4,7 @@ import 'package:homeasz/models/routine_model.dart';
 import 'package:homeasz/utils/image_paths.dart';
 
 class RoutineTile extends StatelessWidget {
-  final Routine routine;
+  final RoutineCloudResponse routine;
 
   const RoutineTile({
     super.key,

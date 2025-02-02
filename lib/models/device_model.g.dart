@@ -20,17 +20,15 @@ class DeviceModelAdapter extends TypeAdapter<DeviceModel> {
       id: fields[0] as int,
       name: fields[1] as String,
       roomId: fields[2] as int,
-      switches: (fields[3] as List).cast<PowerSwitch>(),
-      deviceType: "ESP32",
-      createdAt: DateTime(1970),
-      updatedAt: DateTime(1970),
+      deviceType: fields[3] as String,
+      switches: (fields[4] as List).cast<PowerSwitch>(),
     );
   }
 
   @override
   void write(BinaryWriter writer, DeviceModel obj) {
     writer
-      ..writeByte(4)
+      ..writeByte(5)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -38,6 +36,8 @@ class DeviceModelAdapter extends TypeAdapter<DeviceModel> {
       ..writeByte(2)
       ..write(obj.roomId)
       ..writeByte(3)
+      ..write(obj.deviceType)
+      ..writeByte(4)
       ..write(obj.switches);
   }
 

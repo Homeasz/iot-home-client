@@ -22,8 +22,6 @@ class PowerSwitchAdapter extends TypeAdapter<PowerSwitch> {
       state: fields[2] as bool,
       type: fields[3] as String,
       roomName: fields[4] as String?,
-      createdAt: DateTime(1970),
-      updatedAt: DateTime(1970),
     );
   }
 

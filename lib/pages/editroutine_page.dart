@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -6,8 +8,12 @@ import 'package:homeasz/components/my_button.dart';
 import 'package:homeasz/components/my_dropdownmenu.dart';
 import 'package:homeasz/components/text_input.dart';
 import 'package:homeasz/models/room_model.dart';
+import 'package:homeasz/models/routine_model.dart';
 import 'package:homeasz/models/switch_model.dart';
+import 'package:homeasz/models/utils/action_model.dart' as action_model;
+import 'package:homeasz/models/utils/timer_model.dart' as timer_model;
 import 'package:homeasz/providers/data_provider.dart';
+import 'package:homeasz/utils/image_paths.dart';
 import 'package:provider/provider.dart';
 import 'package:day_picker/day_picker.dart';
 
@@ -24,6 +30,9 @@ class _EditroutinePageState extends State<EditroutinePage> {
   // define time state
   TimeOfDay? time = TimeOfDay.now();
 
+  bool _repeatRoutine = true;
+  get repeatRoutine => _repeatRoutine;
+
   @override
   void initState() {
     super.initState();
@@ -39,12 +48,6 @@ class _EditroutinePageState extends State<EditroutinePage> {
     });
   }
 
-  @override
-  void dispose() {
-    dataProvider.selectedSwitches = [];
-    super.dispose();
-  }
-
   final List<DayInWeek> _days = [
     DayInWeek("M", dayKey: "monday"),
     DayInWeek("T", dayKey: "tuesday"),
@@ -56,27 +59,33 @@ class _EditroutinePageState extends State<EditroutinePage> {
   ];
 
   // selected switches set
-  final Set<int> selectedSwitches = {};
+  final Map<int, RoutineSwitchUI> routineSwitches = {};
+  RoutineUI? routine;
+  bool warnEmptyRoutineName = false;
+  String? errorNoDeviceAdded;
+  final TextEditingController routineNameController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    final TextEditingController routineNameController = TextEditingController();
-
     // selected room
     // selected switch
     final dataProvider = Provider.of<DataProvider>(context, listen: false);
-    Room? selectedRoom;
-    PowerSwitch? selectedSwitch;
 
-    if (dataProvider.rooms.isNotEmpty) {
-      selectedRoom = dataProvider.rooms[0];
-      if (dataProvider.switches.isNotEmpty) {
-        selectedSwitch = dataProvider.switches[0];
-      }
+    void updateRoutineSwitches(RoutineSwitchUI routineSwitch) {
+      setState(() {
+        routineSwitches.putIfAbsent(
+            routineSwitch.powerSwitch.id, () => routineSwitch);
+      });
     }
 
     Future<void> addSwitchDialog() async {
-      String? errorMessage;
+      String? errorAddDeviceMessage;
+      List<action_model.ActionModel> listActions = action_model.getList();
+      List<timer_model.TimerModel> listTimer = timer_model.getList();
+      action_model.ActionModel selectedAction = listActions[0];
+      Room? selectedRoom;
+      PowerSwitch? selectedSwitch;
+      timer_model.TimerModel selectedTimer = listTimer[0];
 
       return showDialog(
           context: context,
@@ -89,13 +98,6 @@ class _EditroutinePageState extends State<EditroutinePage> {
                   padding: const EdgeInsets.only(left: 20, right: 20),
                   child: Consumer<DataProvider>(
                     builder: (context, dataProvider, child) {
-                      Room? selectedRoom = dataProvider.rooms.isNotEmpty
-                          ? dataProvider.rooms[0]
-                          : null;
-                      PowerSwitch? selectedSwitch =
-                          dataProvider.switches.isNotEmpty
-                              ? dataProvider.switches[0]
-                              : null;
                       return StatefulBuilder(builder: (context, setState) {
                         return Column(
                             mainAxisSize: MainAxisSize.min,
@@ -121,8 +123,9 @@ class _EditroutinePageState extends State<EditroutinePage> {
                                 onSelected: (Room value) {
                                   // Update switches dynamically when a new room is selected
                                   setState(() {
-                                    errorMessage = null;
+                                    errorAddDeviceMessage = null;
                                   });
+                                  selectedRoom = value;
                                   dataProvider.getSwitches(
                                       value.id, value.name);
                                 },
@@ -130,21 +133,66 @@ class _EditroutinePageState extends State<EditroutinePage> {
                               const SizedBox(
                                 height: 20,
                               ),
-                              MyDropdownMenu(
-                                title: "Switches",
-                                list: dataProvider.switches,
-                                initialSelection: selectedSwitch,
-                                onSelected: (PowerSwitch value) {
-                                  setState(() {
-                                    errorMessage = null;
-                                  });
-                                  selectedSwitch = value;
-                                },
+                              Visibility(
+                                visible: selectedRoom != null,
+                                child: Column(children: [
+                                  MyDropdownMenu(
+                                    title: "Switch",
+                                    list: dataProvider.switches,
+                                    initialSelection: selectedSwitch,
+                                    onSelected: (PowerSwitch value) {
+                                      setState(() {
+                                        errorAddDeviceMessage = null;
+                                      });
+                                      selectedSwitch = value;
+                                    },
+                                  ),
+                                  const SizedBox(
+                                    height: 20,
+                                  ),
+                                ]),
                               ),
-                              if (errorMessage != null) ...[
+                              Visibility(
+                                visible: selectedSwitch != null,
+                                child: Column(
+                                  children: [
+                                    MyDropdownMenu(
+                                      title: "Action",
+                                      initialSelection: selectedAction,
+                                      list: listActions,
+                                      onSelected:
+                                          (action_model.ActionModel value) {
+                                        setState(() {
+                                          errorAddDeviceMessage = null;
+                                        });
+                                        selectedAction = value;
+                                      },
+                                    ),
+                                    const SizedBox(
+                                      height: 20,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Visibility(
+                                visible: (selectedAction.action ==
+                                    action_model.Action.turnOn),
+                                child: MyDropdownMenu(
+                                  title: "Timer",
+                                  initialSelection: selectedTimer,
+                                  list: listTimer,
+                                  onSelected: (timer_model.TimerModel value) {
+                                    setState(() {
+                                      errorAddDeviceMessage = null;
+                                    });
+                                    selectedTimer = value;
+                                  },
+                                ),
+                              ),
+                              if (errorAddDeviceMessage != null) ...[
                                 const SizedBox(height: 10),
                                 Text(
-                                  errorMessage!,
+                                  errorAddDeviceMessage!,
                                   style: const TextStyle(
                                     color: Colors.red,
                                     fontSize: 14,
@@ -155,28 +203,35 @@ class _EditroutinePageState extends State<EditroutinePage> {
                               const SizedBox(
                                 height: 20,
                               ),
-                              ModalConfirmButton(
-                                  buttonText: "Add",
-                                  onPressed: () {
-                                    if (selectedRoom == null ||
-                                        selectedSwitch == null) {
-                                      return;
-                                    }
-                                    if (selectedSwitches
-                                        .contains(selectedSwitch!.id)) {
-                                      HapticFeedback.mediumImpact();
-                                      setState(() {
-                                        errorMessage = 'Switch already added';
-                                      });
+                              Visibility(
+                                visible: selectedSwitch != null,
+                                child: ModalConfirmButton(
+                                    buttonText: "Add",
+                                    onPressed: () {
+                                      if (selectedRoom == null ||
+                                          selectedSwitch == null) {
+                                        return;
+                                      }
+                                      if (routineSwitches
+                                          .containsKey(selectedSwitch!.id)) {
+                                        HapticFeedback.mediumImpact();
+                                        setState(() {
+                                          errorAddDeviceMessage =
+                                              'Switch already added';
+                                        });
 
-                                      // show error message
-                                      return;
-                                    }
-                                    selectedSwitches.add(selectedSwitch!.id);
-                                    dataProvider.addSwitchToSelectedSwitches(
-                                        selectedSwitch!);
-                                    Navigator.pop(context);
-                                  }),
+                                        // show error message
+                                        return;
+                                      }
+                                      updateRoutineSwitches(RoutineSwitchUI(
+                                          room: selectedRoom!,
+                                          powerSwitch: selectedSwitch!,
+                                          action: selectedAction,
+                                          timer: selectedTimer));
+                                      errorNoDeviceAdded = null;
+                                      Navigator.pop(context);
+                                    }),
+                              ),
                               const SizedBox(
                                 height: 20,
                               )
@@ -211,20 +266,26 @@ class _EditroutinePageState extends State<EditroutinePage> {
           onTap: () {
             // save routine
             final String routineName = routineNameController.text;
-            final List<int> switchIds = dataProvider.selectedSwitches
-                .map((PowerSwitch selectedSwitch) => selectedSwitch.id)
-                .toList();
-            final List<String> days = _days
-                .where((DayInWeek day) => day.isSelected)
-                .map((DayInWeek day) => day.dayKey)
-                .toList();
-            final String timeString = time!.format(context);
-            // dataProvider.createRoutine(
-            //   routineName: routineName,
-            //   switchIds: switchIds,
-            //   days: days,
-            //   time: timeString,
-            // );
+            if (routineName == '') {
+              log("Setting routine warning to true");
+              setState(() {
+                warnEmptyRoutineName = true;
+              });
+              return;
+            }
+            if (routineSwitches.isEmpty) {
+              setState(() {
+                errorNoDeviceAdded = "Add at least 1 device!";
+              });
+              return;
+            }
+            routine = RoutineUI(
+                routineName: routineName,
+                type: "morning",
+                repeatDays: _days,
+                time: time!,
+                routineSwitches: routineSwitches);
+            dataProvider.createRoutine(routine!);
             Navigator.pop(context);
           },
         ),
@@ -258,103 +319,129 @@ class _EditroutinePageState extends State<EditroutinePage> {
                   ),
                   const SizedBox(height: 10),
                   MyTextInput(
-                      input: routineNameController,
-                      hintText: 'Enter Routine Name'),
-                  const SizedBox(height: 20),
-                  const Align(
-                    alignment: Alignment.topLeft,
-                    child: Text(
-                      'Repeat',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 15,
-                        fontFamily: 'Poppins',
-                        fontWeight: FontWeight.w400,
-                        // height: 0.06,
-                        // letterSpacing: -0.54,
-                      ),
-                    ),
+                    input: routineNameController,
+                    hintText: 'Enter Routine Name',
+                    isWarning: warnEmptyRoutineName,
                   ),
                   const SizedBox(height: 20),
-                  // RepeatScheduleInput(),
-
-                  Container(
-                    // align content center
-                    padding: const EdgeInsets.all(16),
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(8),
-                      boxShadow: const [
-                        BoxShadow(
-                          color: Color.fromARGB(255, 255, 255, 255),
-                          // offset: Offset(1, 1),
+                  Align(
+                    alignment: Alignment.topLeft,
+                    child: Row(
+                      children: [
+                        const Text(
+                          'Repeat',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 15,
+                            fontFamily: 'Poppins',
+                            fontWeight: FontWeight.w400,
+                            // height: 0.06,
+                            // letterSpacing: -0.54,
+                          ),
                         ),
+                        const SizedBox(width: 20),
+                        Switch(
+                            value: repeatRoutine,
+                            activeColor: Theme.of(context).primaryColor,
+                            onChanged: (value) {
+                              setState(() {
+                                _repeatRoutine = value;
+                              });
+                            })
                       ],
                     ),
-
+                  ),
+                  Visibility(
+                    visible: repeatRoutine,
                     child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        InkWell(
-                          child: Text(time!.format(context),
-                              style: const TextStyle(
-                                color: Colors.black,
-                                fontSize: 18,
-                                fontFamily: 'Poppins',
-                                fontWeight: FontWeight.w400,
+                        const SizedBox(height: 20),
+                        // RepeatScheduleInput(),
+                        Container(
+                          // align content center
+                          padding: const EdgeInsets.all(16),
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(8),
+                            boxShadow: const [
+                              BoxShadow(
+                                color: Color.fromARGB(255, 255, 255, 255),
+                                // offset: Offset(1, 1),
+                              ),
+                            ],
+                          ),
 
-                                // height: 0.06,
-                                // letterSpacing: -0.54,
-                              )),
-                          onTap: () async {
-                            final selectedTime = await showTimePicker(
-                              context: context,
-                              initialTime: time!,
-                              barrierColor: const Color(0xFFE7F8FF),
-                              builder: (BuildContext context, Widget? child) {
-                                return Theme(
-                                  data: ThemeData.light().copyWith(
-                                    colorScheme: const ColorScheme.light(
-                                      primary: Color(0xFFE7F8FF),
-                                      onPrimary: Color.fromARGB(255, 0, 2, 4),
-                                      surface:
-                                          Color.fromARGB(255, 166, 201, 255),
-                                      onSurface: Color.fromARGB(255, 0, 2, 4),
-                                    ),
-                                    dialogBackgroundColor:
-                                        const Color(0xFFE7F8FF),
-                                  ),
-                                  child: child!,
-                                );
-                              },
-                            );
-                            if (selectedTime == null) return;
-                            setState(() {
-                              time = selectedTime;
-                            });
-                          },
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              InkWell(
+                                child: Text(time!.format(context),
+                                    style: const TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 18,
+                                      fontFamily: 'Poppins',
+                                      fontWeight: FontWeight.w400,
+
+                                      // height: 0.06,
+                                      // letterSpacing: -0.54,
+                                    )),
+                                onTap: () async {
+                                  final selectedTime = await showTimePicker(
+                                    context: context,
+                                    initialTime: time!,
+                                    barrierColor: const Color(0xFFE7F8FF),
+                                    builder:
+                                        (BuildContext context, Widget? child) {
+                                      return Theme(
+                                        data: ThemeData.light().copyWith(
+                                          colorScheme: const ColorScheme.light(
+                                            primary: Color(0xFFE7F8FF),
+                                            onPrimary:
+                                                Color.fromARGB(255, 0, 2, 4),
+                                            surface: Color.fromARGB(
+                                                255, 166, 201, 255),
+                                            onSurface:
+                                                Color.fromARGB(255, 0, 2, 4),
+                                          ),
+                                          dialogBackgroundColor:
+                                              const Color(0xFFE7F8FF),
+                                        ),
+                                        child: child!,
+                                      );
+                                    },
+                                  );
+                                  if (selectedTime == null) return;
+                                  setState(() {
+                                    time = selectedTime;
+                                  });
+                                },
+                              ),
+                              const SizedBox(height: 10),
+                              SelectWeekDays(
+                                  selectedDayTextColor: Colors.black,
+                                  selectedDaysBorderColor: Colors.white,
+                                  selectedDaysFillColor:
+                                      const Color(0xFFE7F8FF),
+                                  unSelectedDayTextColor: Colors.black,
+                                  elevation: 1,
+                                  borderWidth: 0,
+                                  onSelect: (values) {
+                                    print(values);
+                                  },
+                                  border: true,
+                                  boxDecoration: const BoxDecoration(),
+                                  days: _days)
+                            ],
+                          ),
                         ),
-                        const SizedBox(height: 10),
-                        SelectWeekDays(
-                            selectedDayTextColor: Colors.black,
-                            selectedDaysBorderColor: Colors.white,
-                            selectedDaysFillColor: const Color(0xFFE7F8FF),
-                            unSelectedDayTextColor: Colors.black,
-                            elevation: 1,
-                            borderWidth: 0,
-                            onSelect: (values) {
-                              print(values);
-                            },
-                            border: true,
-                            boxDecoration: const BoxDecoration(),
-                            days: _days)
                       ],
                     ),
                   ),
                   Row(
                     children: [
+                      const SizedBox(height: 20),
                       const Text(
                         'Devices',
                         textAlign: TextAlign.center,
@@ -376,7 +463,18 @@ class _EditroutinePageState extends State<EditroutinePage> {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 10),
+                  if (errorNoDeviceAdded != null) ...[
+                    const SizedBox(height: 10),
+                    Text(
+                      errorNoDeviceAdded!,
+                      style: const TextStyle(
+                        color: Colors.red,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ],
                   Container(
                     width: double.infinity,
                     decoration: BoxDecoration(
@@ -390,21 +488,20 @@ class _EditroutinePageState extends State<EditroutinePage> {
                       ],
                     ),
                     child: Column(
-                      children: dataProvider.selectedSwitches
-                          .map((PowerSwitch selectedSwitch) {
+                      children: routineSwitches.values.map((routineSwitch) {
                         return ListTile(
-                          leading: const Icon(Icons.lightbulb),
-                          subtitle: Text(selectedSwitch.roomName ?? ''),
-                          title: Text(selectedSwitch.name),
+                          leading: Image.asset(
+                            '$applianceImagePath/${routineSwitch.powerSwitch.type.toLowerCase()}${routineSwitch.action.action.value ? 'true' : 'false'}.png',
+                          ),
+                          subtitle: Text(routineSwitch.room.name ?? ''),
+                          title: Text(routineSwitch.powerSwitch.name),
                           trailing: IconButton(
                             icon: const Icon(Icons.delete),
                             onPressed: () {
-                              if (selectedSwitches
-                                  .contains(selectedSwitch.id)) {
-                                selectedSwitches.remove(selectedSwitch.id);
-                              }
-                              dataProvider.removeSwitchFromSelectedSwitches(
-                                  selectedSwitch);
+                              setState(() {
+                                routineSwitches
+                                    .remove(routineSwitch.powerSwitch.id);
+                              });
                             },
                           ),
                         );
@@ -419,4 +516,6 @@ class _EditroutinePageState extends State<EditroutinePage> {
       ),
     );
   }
+
+  String TAG = "EditRoutinePage:";
 }

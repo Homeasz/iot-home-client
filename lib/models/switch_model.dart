@@ -13,16 +13,16 @@ class PowerSwitch {
   final String type;
   @HiveField(4)
   String? roomName;
-  final DateTime createdAt;
-  final DateTime updatedAt;
+  final DateTime? createdAt;
+  final DateTime? updatedAt;
 
   PowerSwitch({
     required this.id,
     required this.name,
     required this.state,
     required this.type,
-    required this.createdAt,
-    required this.updatedAt,
+    this.createdAt,
+    this.updatedAt,
     this.roomName,
   });
 
