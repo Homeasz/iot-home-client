@@ -35,32 +35,10 @@ class RoutineUI {
       required this.repeatDays,
       required this.time,
       required this.routineSwitches});
-
-  // factory RoutineResponse.fromMap(Map<String,dynamic> map) {
-  //   String routineName = map['name'];
-  //   int repeatDaysBitmask = map['repeat'];
-  //   List<DayInWeek> repeatDays = [
-  //     DayInWeek("M", dayKey: "monday"),
-  //     DayInWeek("T", dayKey: "tuesday"),
-  //     DayInWeek("W", dayKey: "wednesday"),
-  //     DayInWeek("T", dayKey: "thursday"),
-  //     DayInWeek("F", dayKey: "friday"),
-  //     DayInWeek("S", dayKey: "saturday"),
-  //     DayInWeek("S", dayKey: "sunday"),
-  //   ];
-  //   for(int i = 0; i<7; i++){
-  //     repeatDays[(6+i)%7].isSelected = ((1<<i & repeatDaysBitmask) == 1);
-  //   }
-  //   TimeOfDay time = TimeOfDay(
-  //     hour: int.parse(map['time'].split(":")[0]),
-  //     minute: int.parse(map['time'].split(":")[1]),
-  //   );
-
-  // }
 }
 
 class RoutineSwitchCloudResponse {
-  final String id;
+  final int id;
   final bool action;
   final int revertDuration;
 
@@ -72,7 +50,7 @@ class RoutineSwitchCloudResponse {
 
   factory RoutineSwitchCloudResponse.fromMap(Map<String, dynamic> map) {
     return RoutineSwitchCloudResponse(
-      id: map['id'] ?? '',
+      id: map['switchId'] ?? -1,
       action: map['action'] ?? false,
       revertDuration: map['revertDuration'] ?? 0,
     );
@@ -80,6 +58,7 @@ class RoutineSwitchCloudResponse {
 }
 
 class RoutineCloudResponse {
+  final int id;
   final String name;
   final int repeat;
   final DateTime createdAt;
@@ -89,6 +68,7 @@ class RoutineCloudResponse {
   final String type;
 
   RoutineCloudResponse({
+    required this.id,
     required this.name,
     required this.repeat,
     required this.createdAt,
@@ -100,6 +80,7 @@ class RoutineCloudResponse {
 
   factory RoutineCloudResponse.fromMap(Map<String, dynamic> map) {
     return RoutineCloudResponse(
+      id: map['id'] ?? -1,
       name: map['name'] ?? '',
       repeat: map['repeat'] ?? 0,
       type: map['type'] ?? 'morning',

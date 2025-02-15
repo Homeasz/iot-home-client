@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:homeasz/components/routine_tile.dart';
 import 'package:homeasz/providers/data_provider.dart';
@@ -11,6 +13,12 @@ class RoutineWindow extends StatefulWidget {
 }
 
 class _RoutineWindowState extends State<RoutineWindow> {
+  @override
+  void initState() {
+    super.initState();
+    Provider.of<DataProvider>(context, listen: false).updateUserRoutinesUI();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -47,7 +55,8 @@ class _RoutineWindowState extends State<RoutineWindow> {
                           return RoutineTile(
                             routine: routine,
                           );
-                        })))
+                        }))),
+            const SizedBox(height: 80),
           ],
         ));
   }

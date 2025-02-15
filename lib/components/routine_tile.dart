@@ -18,7 +18,8 @@ class RoutineTile extends StatelessWidget {
       tileType: routine.type,
       initialState: false,
       imagePath: routineImagePath,
-      onTap: () {},
+      onTap: () =>
+          Navigator.pushNamed(context, '/editRoutine', arguments: routine.id),
       onLongPress: () {},
       onPowerTap: () {},
     );

@@ -1,8 +1,6 @@
 import 'dart:developer';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:homeasz/components/modal_sheets/modal_confirm_button.dart';
 import 'package:homeasz/components/my_button.dart';
 import 'package:homeasz/components/my_dropdownmenu.dart';
@@ -29,7 +27,6 @@ class _EditroutinePageState extends State<EditroutinePage> {
 
   // define time state
   TimeOfDay? time = TimeOfDay.now();
-
   bool _repeatRoutine = true;
   get repeatRoutine => _repeatRoutine;
 
@@ -48,7 +45,7 @@ class _EditroutinePageState extends State<EditroutinePage> {
     });
   }
 
-  final List<DayInWeek> _days = [
+  List<DayInWeek> _days = [
     DayInWeek("M", dayKey: "monday"),
     DayInWeek("T", dayKey: "tuesday"),
     DayInWeek("W", dayKey: "wednesday"),
@@ -59,33 +56,61 @@ class _EditroutinePageState extends State<EditroutinePage> {
   ];
 
   // selected switches set
-  final Map<int, RoutineSwitchUI> routineSwitches = {};
+  Map<int, RoutineSwitchUI> routineSwitches = {};
   RoutineUI? routine;
   bool warnEmptyRoutineName = false;
   String? errorNoDeviceAdded;
   final TextEditingController routineNameController = TextEditingController();
 
   @override
+  //TODO: this rebuilds every time a device card is clicked
   Widget build(BuildContext context) {
     // selected room
     // selected switch
     final dataProvider = Provider.of<DataProvider>(context, listen: false);
 
+    int? routineId = ModalRoute.of(context)!.settings.arguments as int?;
+    routine = dataProvider.getRoutineUI(routineId);
+
+    if (routine != null) {
+      log("$TAG routine: ${routine!.routineName}");
+      routineNameController.text = routine!.routineName;
+      time = routine!.time;
+      _days = routine!.repeatDays;
+      routineSwitches = routine!.routineSwitches;
+    }
+
     void updateRoutineSwitches(RoutineSwitchUI routineSwitch) {
       setState(() {
-        routineSwitches.putIfAbsent(
-            routineSwitch.powerSwitch.id, () => routineSwitch);
+        routineSwitches.update(
+            routineSwitch.powerSwitch.id, (value) => routineSwitch,
+            ifAbsent: () => routineSwitch);
       });
     }
 
-    Future<void> addSwitchDialog() async {
+    Future<void> addSwitchDialog(RoutineSwitchUI? routine) async {
       String? errorAddDeviceMessage;
       List<action_model.ActionModel> listActions = action_model.getList();
       List<timer_model.TimerModel> listTimer = timer_model.getList();
       action_model.ActionModel selectedAction = listActions[0];
+      timer_model.TimerModel selectedTimer = listTimer[0];
       Room? selectedRoom;
       PowerSwitch? selectedSwitch;
-      timer_model.TimerModel selectedTimer = listTimer[0];
+      if (routine != null) {
+        selectedRoom = dataProvider.getRoomFromId(routine.room
+            .id); //routine.room can't be passed directly, since the initialSelection Room Object should be an element of the list which is passed to dropdown menu, list is made from dataProvder._rooms
+        selectedAction = listActions.firstWhere(
+            (element) => element.action.value == routine.action.action.value);
+        selectedTimer = listTimer.firstWhere(
+            (element) => element.timer.value == routine.timer.timer.value);
+        await dataProvider.getSwitches(routine.room.id, routine.room.name);
+        selectedSwitch = dataProvider.switches.firstWhere(
+          (element) {
+            log("$TAG element.id: ${element.id}, powerSwitch.id: ${routine.powerSwitch.id}");
+            return element.id == routine.powerSwitch.id;
+          },
+        );
+      }
 
       return showDialog(
           context: context,
@@ -206,21 +231,10 @@ class _EditroutinePageState extends State<EditroutinePage> {
                               Visibility(
                                 visible: selectedSwitch != null,
                                 child: ModalConfirmButton(
-                                    buttonText: "Add",
+                                    buttonText: "Save",
                                     onPressed: () {
                                       if (selectedRoom == null ||
                                           selectedSwitch == null) {
-                                        return;
-                                      }
-                                      if (routineSwitches
-                                          .containsKey(selectedSwitch!.id)) {
-                                        HapticFeedback.mediumImpact();
-                                        setState(() {
-                                          errorAddDeviceMessage =
-                                              'Switch already added';
-                                        });
-
-                                        // show error message
                                         return;
                                       }
                                       updateRoutineSwitches(RoutineSwitchUI(
@@ -278,6 +292,11 @@ class _EditroutinePageState extends State<EditroutinePage> {
                 errorNoDeviceAdded = "Add at least 1 device!";
               });
               return;
+            }
+            if (!repeatRoutine) {
+              for (var day in _days) {
+                day.isSelected = false;
+              }
             }
             routine = RoutineUI(
                 routineName: routineName,
@@ -458,7 +477,7 @@ class _EditroutinePageState extends State<EditroutinePage> {
                       IconButton(
                         icon: const Icon(Icons.add),
                         onPressed: () {
-                          addSwitchDialog();
+                          addSwitchDialog(null);
                         },
                       ),
                     ],
@@ -504,6 +523,7 @@ class _EditroutinePageState extends State<EditroutinePage> {
                               });
                             },
                           ),
+                          onTap: () => addSwitchDialog(routineSwitch),
                         );
                       }).toList(),
                     ),

@@ -114,7 +114,8 @@ class _AddESPPageState extends State<AddESPPage> {
     final deviceName =
         ssid; //TODO: in scale this might not be strongly unique, change this to a more unique name
     final roomId = ModalRoute.of(context)!.settings.arguments as int;
-    deviceId = await DataProvider().addDevice(deviceName, roomId);
+    final dataProvider = Provider.of<DataProvider>(context);
+    deviceId = await dataProvider.addDevice(deviceName, roomId);
     bool? connected = await WiFiForIoTPlugin.connect(
       ssid,
       password: password,

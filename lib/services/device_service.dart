@@ -50,15 +50,17 @@ class DeviceService {
   }
 
   Future<Response?> switchDetails(int switchId) async {
+    log("$TAG switchDetails - $switchId");
     final token = await _authService.getToken();
     if (token != null) {
-      final response = await http.post(
+      final response = await http.get(
         Uri.parse('$BASE_URL/switch/status/$switchId'),
         headers: <String, String>{
           'Cookie': token,
           'Content-Type': 'application/json',
         },
       );
+      log("$TAG switchDetails - ${response.body}");
       return response;
     }
     return null;
@@ -76,12 +78,12 @@ class DeviceService {
   Future<PowerSwitch?> getSwitch(int switchId) async {
     final Response? response = await switchDetails(switchId);
     if (response != null && response.statusCode == 200) {
-      final jsonDecoded = jsonDecode(response.body);
+      final Map<String, dynamic> jsonDecoded = jsonDecode(response.body);
       final PowerSwitch powerSwitch = PowerSwitch(
-          id: jsonDecoded['id'],
-          name: jsonDecoded['name'],
-          state: jsonDecoded['state'],
-          type: jsonDecoded['type']);
+          id: jsonDecoded['data']['id'],
+          name: jsonDecoded['data']['name'],
+          state: jsonDecoded['data']['state'],
+          type: jsonDecoded['data']['type']);
       return powerSwitch;
     }
     return null;
@@ -153,4 +155,6 @@ class DeviceService {
     }
     return null;
   }
+
+  String TAG = "DeviceService: ";
 }

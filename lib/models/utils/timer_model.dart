@@ -1,5 +1,5 @@
 enum Timer {
-  none(-1, "No timer"),
+  none(0, "No timer"),
   fiveMins(5, "5 Minutes"),
   fifteenMins(15, "15 Minutes"),
   thirtyMins(30, "30 Minutes"),
@@ -13,18 +13,36 @@ enum Timer {
   final String name;
 }
 
+Timer intToTimer(int timer) {
+  if (timer <= 0) {
+    return Timer.none;
+  } else if (timer <= 5) {
+    return Timer.fiveMins;
+  } else if (timer <= 15) {
+    return Timer.fifteenMins;
+  } else if (timer <= 30) {
+    return Timer.thirtyMins;
+  } else if (timer <= 60) {
+    return Timer.oneHour;
+  } else if (timer <= 120) {
+    return Timer.twoHours;
+  } else if (timer <= 180) {
+    return Timer.threeHours;
+  } else {
+    return Timer.fiveHours;
+  }
+}
+
 class TimerModel {
   final String name;
   final Timer timer;
 
-  TimerModel({
-    required this.timer
-  })  : name = timer.name;
+  TimerModel({required this.timer}) : name = timer.name;
 }
 
-List<TimerModel> getList(){
+List<TimerModel> getList() {
   List<TimerModel> list = [];
-  for (Timer timerValue in Timer.values){
+  for (Timer timerValue in Timer.values) {
     list.add(TimerModel(timer: timerValue));
   }
   return list;

@@ -1,4 +1,5 @@
 import 'package:homeasz/models/device_model.dart';
+import 'package:homeasz/models/switch_model.dart';
 
 class Room {
   final int id;
@@ -7,6 +8,7 @@ class Room {
   final DateTime createdAt;
   final DateTime updatedAt;
   List<DeviceModel> devices;
+  List<PowerSwitch> switches;
 
   Room({
     required this.id,
@@ -15,6 +17,7 @@ class Room {
     required this.createdAt,
     required this.updatedAt,
     required this.devices,
+    required this.switches,
   });
 
   factory Room.fromMap(Map<String, dynamic> map) {
@@ -23,6 +26,9 @@ class Room {
       name: map['name'] ?? '',
       devices: List<DeviceModel>.from(
         (map['devices'] ?? []).map((x) => DeviceModel.fromMap(x)),
+      ),
+      switches: List<PowerSwitch>.from(
+        (map['switches'] ?? []).map((x) => PowerSwitch.fromMap(x)),
       ),
       type: map['type'] ?? 'BEDROOM',
       createdAt: DateTime.parse(map['createdAt'] ?? "1970-01-01"),

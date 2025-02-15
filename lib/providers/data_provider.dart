@@ -8,6 +8,8 @@ import 'package:homeasz/models/device_model.dart';
 import 'package:homeasz/models/room_model.dart';
 import 'package:homeasz/models/routine_model.dart';
 import 'package:homeasz/models/switch_model.dart';
+import 'package:homeasz/models/utils/action_model.dart' as action_model;
+import 'package:homeasz/models/utils/timer_model.dart' as timer_model;
 // ignore: unused_import
 import 'package:homeasz/pages/home_page.dart';
 import 'package:homeasz/repositories/onboarded_esps_repository.dart';
@@ -25,6 +27,7 @@ class DataProvider extends ChangeNotifier {
   List<PowerSwitch> _switches = [];
   final List<PowerSwitch> _homePageSwitches = [];
   List<RoutineCloudResponse> _routines = [];
+  Map<int, RoutineUI> _routinesUI = {};
   String? _errorMessage;
   late int _currentRoom = 0;
 
@@ -34,6 +37,7 @@ class DataProvider extends ChangeNotifier {
   List<PowerSwitch> get homePageSwitches => _homePageSwitches;
   List<PowerSwitch> get switches => _switches;
   List<RoutineCloudResponse> get routines => _routines;
+  Map<int, RoutineUI> get routinesUI => _routinesUI;
 
   set currentRoom(int value) {
     _currentRoom = value;
@@ -46,12 +50,18 @@ class DataProvider extends ChangeNotifier {
         _rooms = rooms;
         notifyListeners();
       }
-      updateRoomDevices();
       return rooms;
     } catch (e) {
       _errorMessage = e.toString();
       return null;
     }
+  }
+
+  Future<void> updateRoomSwitches() async {
+    for (Room room in _rooms) {
+      room.switches = await getSwitches(room.id, room.name);
+    }
+    return;
   }
 
   Future<void> updateRoomDevices() async {
@@ -67,6 +77,74 @@ class DataProvider extends ChangeNotifier {
     _routines = routines;
     notifyListeners();
     return routines;
+  }
+
+  RoutineUI? getRoutineUI(int? routineId) {
+    return (routineId != null && _routinesUI.containsKey(routineId))
+        ? _routinesUI[routineId]
+        : null;
+  }
+
+  Future<void> updateUserRoutinesUI() async {
+    await getUserRooms();
+    await updateRoomSwitches();
+    for (RoutineCloudResponse routine in routines) {
+      String routineName = routine.name;
+      String type = "morning";
+      int repeatDaysBitmask = routine.repeat;
+      List<DayInWeek> repeatDays = [
+        DayInWeek("M", dayKey: "monday"),
+        DayInWeek("T", dayKey: "tuesday"),
+        DayInWeek("W", dayKey: "wednesday"),
+        DayInWeek("T", dayKey: "thursday"),
+        DayInWeek("F", dayKey: "friday"),
+        DayInWeek("S", dayKey: "saturday"),
+        DayInWeek("S", dayKey: "sunday"),
+      ];
+      for (int i = 0; i < 7; i++) {
+        repeatDays[(6 + i) % 7].isSelected = ((1 << i & repeatDaysBitmask) > 0);
+      }
+      TimeOfDay time = routine.time;
+      Map<int, RoutineSwitchUI> routineSwitches = {};
+      for (RoutineSwitchCloudResponse routineSwitch in routine.switches) {
+        Room? room = getRoomIdFromSwitchId(routineSwitch.id);
+        if (room == null) {
+          log("$TAG No room exists for device");
+          continue;
+        }
+        PowerSwitch? powerSwitch;
+        powerSwitch = await getSwitch(room.id, routineSwitch.id);
+        if (powerSwitch == null) {
+          log("Couldn't get the switch with id ${routineSwitch.id}");
+        }
+        action_model.ActionModel action = action_model.ActionModel(
+            action: (routineSwitch.action)
+                ? action_model.Action.turnOn
+                : action_model.Action.turnOff);
+        timer_model.TimerModel timer = timer_model.TimerModel(
+            timer: timer_model.intToTimer(routineSwitch.revertDuration));
+        routineSwitches.putIfAbsent(
+            routineSwitch.id,
+            () => RoutineSwitchUI(
+                room: room,
+                powerSwitch: powerSwitch!,
+                action: action,
+                timer: timer));
+      }
+      _routinesUI.putIfAbsent(
+          routine.id,
+          () => RoutineUI(
+              routineName: routineName,
+              type: type,
+              repeatDays: repeatDays,
+              time: time,
+              routineSwitches: routineSwitches));
+    }
+    log("Updated User Routines UI");
+  }
+
+  Room? getRoomFromId(int roomId) {
+    return _rooms.firstWhere((element) => element.id == roomId);
   }
 
   Future<Room?> getRoom(int roomId) async {
@@ -110,13 +188,20 @@ class DataProvider extends ChangeNotifier {
       }
       dayIndex = (dayIndex + 1) % 7;
     }
-    List<Map<String,dynamic>> switches = routine.routineSwitches.values
-        .map((routineSwitch) => <String,dynamic> {'switchId': routineSwitch.powerSwitch.id, 'action': routineSwitch.action.action.value, 'revertDuration': "${routineSwitch.timer.timer.value}",'revertDurationUnit': "h"})
+    List<Map<String, dynamic>> switches = routine.routineSwitches.values
+        .map((routineSwitch) => <String, dynamic>{
+              'switchId': routineSwitch.powerSwitch.id,
+              'action': routineSwitch.action.action.value,
+              'revertDuration': "${routineSwitch.timer.timer.value}",
+              'revertDurationUnit': "m"
+            })
         .toList();
     RoutineCloudResponse? response =
         await routineService.addRoutine(name, time, repeat, switches);
     if (response != null) {
-      getUserRoutines();
+      _routines.add(response);
+      notifyListeners();
+      _routinesUI.putIfAbsent(response.id, () => routine);
       return true;
     }
     return false;
@@ -135,15 +220,22 @@ class DataProvider extends ChangeNotifier {
     }
   }
 
-  int? getRoomIdFromSwitchId(switchId) {
-    return rooms[rooms.indexWhere((element) {
-      for (DeviceModel device in element.devices) {
-        device.id == switchId;
-        return true;
+  Room? getRoomIdFromSwitchId(int switchId) {
+    log("SwitchId: $switchId rooms.size: ${rooms.length}");
+    int roomIndex = rooms.indexWhere((element) {
+      log("Room: ${element.name} element.size: ${element.switches.length}");
+      for (PowerSwitch device in element.switches) {
+        log("Room: ${element.name} SwitchId: $switchId device.id: ${device.id}");
+        if (device.id == switchId) {
+          return true;
+        }
       }
       return false;
-    })]
-        .id;
+    });
+    if (roomIndex >= 0) {
+      return rooms[roomIndex];
+    }
+    return null;
   }
 
   Future<void> saveSwitchToDb(int? roomId, PowerSwitch powerSwitch) async {
@@ -151,10 +243,10 @@ class DataProvider extends ChangeNotifier {
       SwitchesRepository().saveSwitchToDb(roomId, [powerSwitch]);
       return;
     }
-    roomId = getRoomIdFromSwitchId(powerSwitch.id);
+    roomId = getRoomIdFromSwitchId(powerSwitch.id)?.id;
     if (roomId == null) {
       await getUserRooms();
-      roomId = getRoomIdFromSwitchId(powerSwitch.id);
+      roomId = getRoomIdFromSwitchId(powerSwitch.id)?.id;
     }
     if (roomId == null) {
       log("$TAG No roomId exists for device");
@@ -169,7 +261,7 @@ class DataProvider extends ChangeNotifier {
     if (powerSwitch == null) {
       powerSwitch = await deviceService.getSwitch(switchId);
       if (powerSwitch == null) {
-        log("$TAG Invalid SwitchId");
+        log("$TAG Invalid SwitchId: $switchId");
         return powerSwitch;
       }
       saveSwitchToDb(roomId, powerSwitch);
@@ -178,8 +270,15 @@ class DataProvider extends ChangeNotifier {
   }
 
   Future<List<PowerSwitch>> getSwitches(int? roomId, String roomName) async {
-    roomId ??=
-        rooms[rooms.indexWhere((element) => element.name == roomName)].id;
+    if (roomId == null) {
+      int roomIndex = rooms.indexWhere((element) => element.name == roomName);
+      if (roomIndex >= 0) {
+        roomId = rooms[roomIndex].id;
+      } else {
+        log("$TAG getSwitches - Room not found");
+        return [];
+      }
+    }
 
     final switches = await roomService.getSwitches(roomId, roomName);
     _currentRoom = roomId;
