@@ -47,7 +47,7 @@ List<String> roomNames = [
   "kitchen",
   "livingroom",
   "officedesk",
-  "sink",
+  "bathroom",
   "table"
 ];
 List<String> applianceNames = [

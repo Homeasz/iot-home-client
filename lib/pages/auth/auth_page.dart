@@ -3,6 +3,8 @@ import 'package:homeasz/pages/auth/splash_screen.dart';
 import 'package:homeasz/pages/home_page.dart';
 import 'package:homeasz/providers/auth_provider.dart';
 import 'package:homeasz/pages/auth/login_or_singup_page.dart';
+import 'package:homeasz/providers/data_provider.dart';
+import 'package:homeasz/providers/user_provider.dart';
 import 'package:provider/provider.dart';
 import 'dart:async';
 
@@ -44,6 +46,10 @@ class _AuthPageState extends State<AuthPage> {
   @override
   Widget build(BuildContext context) {
     if (_displaySplash) {
+      if (_isAuthenticated) {
+        Provider.of<UserProvider>(context, listen: false).getUser();
+        Provider.of<DataProvider>(context, listen: false).dataSync();
+      }
       return const SplashScreen();
     }
     if (_isAuthenticated) {

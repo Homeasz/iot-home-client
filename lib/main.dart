@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:homeasz/models/device_model.dart';
+import 'package:homeasz/models/room_model.dart';
 import 'package:homeasz/models/switch_model.dart';
 import 'package:homeasz/pages/auth/auth_page.dart';
 import 'package:homeasz/pages/createroom_page.dart';
@@ -20,6 +21,7 @@ void main() async {
   await Hive.initFlutter();
   Hive.registerAdapter(DeviceModelAdapter());
   Hive.registerAdapter(PowerSwitchAdapter());
+  Hive.registerAdapter(RoomAdapter());
   runApp(MultiProvider(providers: [
     ChangeNotifierProvider(create: (context) => AuthProvider()),
     ChangeNotifierProvider(create: (context) => DataProvider()),

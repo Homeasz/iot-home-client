@@ -13,6 +13,7 @@ import 'package:homeasz/models/utils/timer_model.dart' as timer_model;
 // ignore: unused_import
 import 'package:homeasz/pages/home_page.dart';
 import 'package:homeasz/repositories/onboarded_esps_repository.dart';
+import 'package:homeasz/repositories/rooms_repository.dart';
 import 'package:homeasz/repositories/switches_repository.dart';
 import 'package:homeasz/services/device_service.dart';
 import 'package:homeasz/services/room_service.dart';
@@ -24,8 +25,8 @@ class DataProvider extends ChangeNotifier {
   final RoutineService routineService = RoutineService();
 
   List<Room> _rooms = [];
-  List<PowerSwitch> _switches = [];
-  final List<PowerSwitch> _homePageSwitches = [];
+  Map<int, List<PowerSwitch>> _switches = {}; //map of roomId and switches
+  List<PowerSwitch> _homePageSwitches = [];
   List<RoutineCloudResponse> _routines = [];
   Map<int, RoutineUI> _routinesUI = {};
   String? _errorMessage;
@@ -35,7 +36,7 @@ class DataProvider extends ChangeNotifier {
   int get currentRoom => _currentRoom;
   List<Room> get rooms => _rooms;
   List<PowerSwitch> get homePageSwitches => _homePageSwitches;
-  List<PowerSwitch> get switches => _switches;
+  Map<int, List<PowerSwitch>> get switches => _switches;
   List<RoutineCloudResponse> get routines => _routines;
   Map<int, RoutineUI> get routinesUI => _routinesUI;
 
@@ -43,14 +44,59 @@ class DataProvider extends ChangeNotifier {
     _currentRoom = value;
   }
 
+  Future<void> dataSync() async {
+    log("$TAG Data Sync");
+    //sync rooms from cloud
+    _homePageSwitches =
+        await SwitchesRepository().getFavouriteSwitchesFromDb() ?? [];
+    notifyListeners();
+    await roomService.getUserRooms().then((List<Room>? userRooms) {
+      if (userRooms == null) {
+        log("$TAG Failed to get rooms from cloud");
+      } else {
+        _rooms = userRooms;
+        RoomsRepository().saveRoomsToDb(userRooms);
+      }
+    });
+    //sync switches for each room from cloud
+    for (Room room in _rooms) {
+      await roomService
+          .getSwitches(room.id, room.name)
+          .then((List<PowerSwitch> switchesList) {
+        if (switchesList.isEmpty) {
+          log("$TAG Received empty switches list from cloud");
+        }
+        room.switches = switchesList;
+        _switches[room.id] = switchesList;
+        SwitchesRepository().saveSwitchesToDb(room.id, switchesList);
+      });
+    }
+
+    //sync routines from cloud
+    await routineService
+        .getUserRoutines()
+        .then((List<RoutineCloudResponse> routines) {
+      _routines = routines;
+      updateUserRoutinesUI();
+    });
+    //TODO:create routines repository and sync here
+  }
+
   Future<List<Room>?> getUserRooms() async {
     try {
-      final rooms = await roomService.getUserRooms();
-      if (rooms != null) {
-        _rooms = rooms;
-        notifyListeners();
+      List<Room>? userRooms =
+          rooms.isEmpty ? rooms : await RoomsRepository().getRoomsFromDb();
+      if (userRooms == null) {
+        userRooms = await roomService.getUserRooms();
+        if (userRooms == null) {
+          log("$TAG Failed to get rooms from cloud");
+          return null;
+        }
+        RoomsRepository().saveRoomsToDb(userRooms);
       }
-      return rooms;
+      _rooms = userRooms;
+      notifyListeners();
+      return userRooms;
     } catch (e) {
       _errorMessage = e.toString();
       return null;
@@ -86,8 +132,6 @@ class DataProvider extends ChangeNotifier {
   }
 
   Future<void> updateUserRoutinesUI() async {
-    await getUserRooms();
-    await updateRoomSwitches();
     for (RoutineCloudResponse routine in routines) {
       String routineName = routine.name;
       String type = "morning";
@@ -149,6 +193,10 @@ class DataProvider extends ChangeNotifier {
 
   Future<Room?> getRoom(int roomId) async {
     final room = await roomService.getRoom(roomId.toString());
+    if (room == null) {
+      log("$TAG getRoom - Room not found");
+      return null;
+    }
     return room;
   }
 
@@ -162,6 +210,7 @@ class DataProvider extends ChangeNotifier {
 
   void addToHomePageSwitches(String roomName, PowerSwitch selectedSwitch) {
     selectedSwitch.roomName = roomName;
+    SwitchesRepository().saveFavouriteSwitchToDb(selectedSwitch);
     _homePageSwitches.add(selectedSwitch);
     notifyListeners();
   }
@@ -207,12 +256,11 @@ class DataProvider extends ChangeNotifier {
     return false;
   }
 
-  Future editRoom(String roomId, String roomName) async {
-    final response = await roomService.editRoom(roomId, roomName);
+  Future editRoom(int roomId, String roomName) async {
+    final response = await roomService.editRoom(roomId.toString(), roomName);
     // print(response);
     if (response != null) {
-      final roomIndex =
-          rooms.indexWhere((element) => element.id.toString() == roomId);
+      final roomIndex = rooms.indexWhere((element) => element.id == roomId);
       if (roomIndex != -1) {
         rooms[roomIndex] = response;
         notifyListeners();
@@ -240,7 +288,7 @@ class DataProvider extends ChangeNotifier {
 
   Future<void> saveSwitchToDb(int? roomId, PowerSwitch powerSwitch) async {
     if (roomId != null) {
-      SwitchesRepository().saveSwitchToDb(roomId, [powerSwitch]);
+      SwitchesRepository().saveSwitchesToDb(roomId, [powerSwitch]);
       return;
     }
     roomId = getRoomIdFromSwitchId(powerSwitch.id)?.id;
@@ -252,12 +300,28 @@ class DataProvider extends ChangeNotifier {
       log("$TAG No roomId exists for device");
       return;
     }
-    SwitchesRepository().saveSwitchToDb(roomId, [powerSwitch]);
+    SwitchesRepository().saveSwitchesToDb(roomId, [powerSwitch]);
   }
 
   Future<PowerSwitch?> getSwitch(int? roomId, int switchId) async {
-    PowerSwitch? powerSwitch =
-        await SwitchesRepository().getSwitchFromDb(switchId);
+    PowerSwitch? powerSwitch;
+    if (roomId == null) {
+      for (List<PowerSwitch> switchList in _switches.values) {
+        for (PowerSwitch powerSwitch in switchList) {
+          if (powerSwitch.id == switchId) {
+            return powerSwitch;
+          }
+        }
+      }
+    } else {
+      powerSwitch =
+          _switches[roomId]?.firstWhere((element) => element.id == switchId);
+      if (powerSwitch != null) {
+        return powerSwitch;
+      }
+    }
+
+    powerSwitch = await SwitchesRepository().getSwitchFromDb(switchId);
     if (powerSwitch == null) {
       powerSwitch = await deviceService.getSwitch(switchId);
       if (powerSwitch == null) {
@@ -265,6 +329,8 @@ class DataProvider extends ChangeNotifier {
         return powerSwitch;
       }
       saveSwitchToDb(roomId, powerSwitch);
+    } else {
+      log("$TAG getSwitch - Switch found in db");
     }
     return powerSwitch;
   }
@@ -279,27 +345,38 @@ class DataProvider extends ChangeNotifier {
         return [];
       }
     }
-
-    final switches = await roomService.getSwitches(roomId, roomName);
     _currentRoom = roomId;
-    _switches = switches;
-    notifyListeners();
-    return switches;
-  }
 
-  void clearSwitches() {
-    _switches = [];
+    List<PowerSwitch>? switchesList = switches[roomId];
+    if (switchesList != null) {
+      log("$TAG getSwitches - Switches found in cache");
+      return switchesList;
+    }
+    switchesList = await SwitchesRepository().getSwitchesFromDb(roomId);
+    if (switchesList != null) {
+      log("$TAG getSwitches - Switches found in db");
+      _switches[roomId] = switchesList;
+      notifyListeners();
+      return switchesList;
+    }
+    switchesList = await roomService.getSwitches(roomId, roomName);
+    SwitchesRepository().saveSwitchesToDb(roomId, switchesList);
+    _switches[roomId] = switchesList;
+    notifyListeners();
+    return switchesList;
   }
 
   Future<bool> toggleSwitch(int switchId, bool state) async {
     final switchStatus = await deviceService.toggleSwitch(switchId, !state);
-    final switchIndex =
-        _switches.indexWhere((element) => element.id == switchId);
-    if (switchIndex != -1) {
-      _switches[switchIndex].status =
-          switchStatus; // Correctly update the state
-      notifyListeners();
+    for (List<PowerSwitch> switchList in _switches.values) {
+      for (PowerSwitch powerSwitch in switchList) {
+        if (powerSwitch.id == switchId) {
+          powerSwitch.status = switchStatus;
+          break;
+        }
+      }
     }
+    notifyListeners();
     return switchStatus;
   }
 
@@ -311,14 +388,13 @@ class DataProvider extends ChangeNotifier {
     }
   }
 
-  void addSwitchToHomePage(int index) {
-    _homePageSwitches.add(_switches[index]);
-  }
-
+  //TODO: fix this; _switches is now a list of switches for each room
   Future deleteSwitch(int switchId) async {
     final response = await deviceService.deleteSwitch(switchId);
     if (response) {
-      _switches.removeWhere((element) => element.id == switchId);
+      for (List<PowerSwitch> switchList in _switches.values) {
+        switchList.removeWhere((element) => element.id == switchId);
+      }
       notifyListeners();
     }
   }
@@ -328,16 +404,19 @@ class DataProvider extends ChangeNotifier {
     final PowerSwitch? response = await deviceService.editSwitch(
         switchId, switchName, roomName, stringType);
     if (response != null) {
-      final switchIndex =
-          _switches.indexWhere((element) => element.id == switchId);
-      if (switchIndex != -1) {
-        _switches[switchIndex] = response;
+      for (List<PowerSwitch> switchList in _switches.values) {
+        final switchIndex =
+            switchList.indexWhere((element) => element.id == switchId);
+        if (switchIndex != -1) {
+          switchList[switchIndex] = response;
+        }
       }
       notifyListeners();
     }
   }
 
   void deleteFavourite(int switchId) {
+    SwitchesRepository().removeFavouriteSwitchFromDb(switchId);
     _homePageSwitches.removeWhere((element) => element.id == switchId);
     notifyListeners();
   }

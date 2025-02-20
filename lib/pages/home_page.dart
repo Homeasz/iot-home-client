@@ -28,9 +28,8 @@ class _HomePageState extends State<HomePage>
   @override
   void initState() {
     super.initState();
-    Provider.of<UserProvider>(context, listen: false).getUser();
-    Provider.of<DataProvider>(context, listen: false).getUserRooms();
-    Provider.of<DataProvider>(context, listen: false).getUserRoutines();
+    // Provider.of<UserProvider>(context, listen: false).getUser();
+    // Provider.of<DataProvider>(context, listen: false).dataSync();
 
     Future.delayed(const Duration(milliseconds: 400), () {
       if (mounted) {

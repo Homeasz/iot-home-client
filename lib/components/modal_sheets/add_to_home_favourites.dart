@@ -15,14 +15,14 @@ class AddToHomeFavourites extends StatefulWidget {
 }
 
 class _AddToHomeFavouritesState extends State<AddToHomeFavourites> {
-  late String selectedRoom = "";
+  Room? selectedRoom;
   late String selectedType;
   late PowerSwitch selectedSwitch;
   bool selectedSomething = false;
 
   void updateHomePageSwitches(DataProvider dataProvider) {
     if (selectedSomething) {
-      dataProvider.addToHomePageSwitches(selectedRoom, selectedSwitch);
+      dataProvider.addToHomePageSwitches(selectedRoom!.name, selectedSwitch);
     }
   }
 
@@ -69,7 +69,7 @@ class _AddToHomeFavouritesState extends State<AddToHomeFavourites> {
                     Flexible(
                       flex: 4,
                       child: Text(
-                        "$selectedRoom's ${selectedSwitch.name}",
+                        "${selectedRoom!.name}'s ${selectedSwitch.name}",
                       ),
                     ),
                   ],
@@ -85,10 +85,9 @@ class _AddToHomeFavouritesState extends State<AddToHomeFavourites> {
                   setState(() {
                     if (selectedSomething) {
                       selectedSomething = false;
-                      dataProvider.clearSwitches();
                     }
-                    selectedRoom = room.name;
-                    dataProvider.getSwitches(room.id, selectedRoom);
+                    selectedRoom = room;
+                    dataProvider.getSwitches(room.id, selectedRoom!.name);
                   });
                 },
               ),
@@ -97,9 +96,11 @@ class _AddToHomeFavouritesState extends State<AddToHomeFavourites> {
               ),
               MyDropdownMenu(
                 title: "Device",
-                list: dataProvider.switches,
+                list: (selectedRoom != null)
+                    ? dataProvider.switches[selectedRoom!.id] ?? []
+                    : [],
                 initialSelection: "Select device",
-                enabled: selectedRoom != "",
+                enabled: selectedRoom != null,
                 onSelected: (PowerSwitch switchSelection) {
                   setState(() {
                     selectedType = switchSelection.type;

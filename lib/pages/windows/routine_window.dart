@@ -14,12 +14,6 @@ class RoutineWindow extends StatefulWidget {
 
 class _RoutineWindowState extends State<RoutineWindow> {
   @override
-  void initState() {
-    super.initState();
-    Provider.of<DataProvider>(context, listen: false).updateUserRoutinesUI();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Container(
         height: MediaQuery.sizeOf(context).height,

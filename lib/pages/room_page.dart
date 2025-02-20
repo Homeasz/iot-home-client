@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:homeasz/components/add_button.dart';
 import 'package:homeasz/components/switch_tile.dart';
+import 'package:homeasz/models/switch_model.dart';
 import 'package:homeasz/providers/data_provider.dart';
 import 'package:homeasz/utils/image_paths.dart';
 import 'package:provider/provider.dart';
@@ -36,12 +37,6 @@ class _RoomPageState extends State<RoomPage> {
     super.initState();
     _dataProvider = Provider.of<DataProvider>(context, listen: false);
     _dataProvider.getSwitches(widget.roomId, widget.roomName);
-  }
-
-  @override
-  void dispose() {
-    _dataProvider.clearSwitches();
-    super.dispose();
   }
 
   @override
@@ -95,7 +90,7 @@ class _RoomPageState extends State<RoomPage> {
                             Expanded(
                               child: Consumer<DataProvider>(
                                 builder: (BuildContext context,
-                                    DataProvider value, Widget? child) {
+                                    DataProvider dataProvider, Widget? child) {
                                   return GridView.builder(
                                     gridDelegate:
                                         const SliverGridDelegateWithFixedCrossAxisCount(
@@ -103,14 +98,19 @@ class _RoomPageState extends State<RoomPage> {
                                       crossAxisSpacing: 20,
                                       mainAxisSpacing: 20,
                                     ),
-                                    itemCount: value.switches.length,
+                                    itemCount:
+                                        dataProvider.switches[widget.roomId]?.length ??
+                                            0,
                                     itemBuilder: (context, index) {
-                                      final switchModel = value.switches[index];
-                                      return SwitchTile(
-                                        // index: index,
-                                        powerSwitch: switchModel,
-                                        roomName: widget.roomName,
-                                      );
+                                      final switchModel =
+                                          dataProvider.switches[widget.roomId]?[index];
+                                      if (switchModel != null) {
+                                        return SwitchTile(
+                                          // index: index,
+                                          powerSwitch: switchModel,
+                                          roomName: widget.roomName,
+                                        );
+                                      }
                                     },
                                   );
                                 },

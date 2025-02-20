@@ -1,5 +1,7 @@
 // // lib/services/api_service.dart
 
+import 'dart:developer';
+
 import 'package:homeasz/models/device_model.dart';
 import 'package:homeasz/models/room_model.dart';
 import 'package:homeasz/models/switch_model.dart';
@@ -132,6 +134,7 @@ class RoomService {
       );
       if (response.statusCode == 200) {
         final Map<String, dynamic> body = jsonDecode(response.body);
+        log("$TAG getSwitches - switches: ${body.toString()}");
         final List<dynamic> switches = body['data'];
         switches.forEach((element) {
           element['roomName'] = roomName;
@@ -167,4 +170,6 @@ class RoomService {
     }
     return false;
   }
+
+  static const TAG = "RoomService:";
 }
