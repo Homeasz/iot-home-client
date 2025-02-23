@@ -43,22 +43,22 @@ class MyDropdownMenu extends StatelessWidget {
       menuStyle: MenuStyle(
         backgroundColor: WidgetStateProperty.all(const Color(0xFFE7F8FF)),
         side: WidgetStateProperty.all(const BorderSide(
-          color: Color(0xFFE7F8FF),
+        color: Color(0xFFE7F8FF),
           width: 5,
         )),
       ),
-      dropdownMenuEntries: list
-          .map<DropdownMenuEntry<dynamic>>((item) => DropdownMenuEntry(
-                style: MenuItemButton.styleFrom(
-                    // foregroundColor: const Color(0xFFE7F8FF),
-                    // backgroundColor: const Color(0xFFE7F8FF),
+      dropdownMenuEntries: list.map<DropdownMenuEntry<dynamic>>((item) {
+        return DropdownMenuEntry(
+          style: MenuItemButton.styleFrom(
+              // foregroundColor: const Color(0xFFE7F8FF),
+              // backgroundColor: const Color(0xFFE7F8FF),
 
-                    ),
-                label: (item is String) ? item : item.name,
-                // child: Text(roomName),
-                value: item,
-              ))
-          .toList(),
+              ),
+          label: (item is String) ? item : item.name,
+          // child: Text(roomName),
+          value: item,
+        );
+      }).toList(),
     );
   }
 

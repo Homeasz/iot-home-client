@@ -12,6 +12,7 @@ import 'package:homeasz/models/utils/action_model.dart' as action_model;
 import 'package:homeasz/models/utils/timer_model.dart' as timer_model;
 // ignore: unused_import
 import 'package:homeasz/pages/home_page.dart';
+import 'package:homeasz/repositories/favourites_repository.dart';
 import 'package:homeasz/repositories/onboarded_esps_repository.dart';
 import 'package:homeasz/repositories/rooms_repository.dart';
 import 'package:homeasz/repositories/switches_repository.dart';
@@ -27,6 +28,7 @@ class DataProvider extends ChangeNotifier {
   List<Room> _rooms = [];
   Map<int, List<PowerSwitch>> _switches = {}; //map of roomId and switches
   List<PowerSwitch> _homePageSwitches = [];
+  List<dynamic> _homeWindowFavouriteTiles = [];
   List<RoutineCloudResponse> _routines = [];
   Map<int, RoutineUI> _routinesUI = {};
   String? _errorMessage;
@@ -36,6 +38,7 @@ class DataProvider extends ChangeNotifier {
   int get currentRoom => _currentRoom;
   List<Room> get rooms => _rooms;
   List<PowerSwitch> get homePageSwitches => _homePageSwitches;
+  List<dynamic> get homeWindowFavouriteTiles => _homeWindowFavouriteTiles;
   Map<int, List<PowerSwitch>> get switches => _switches;
   List<RoutineCloudResponse> get routines => _routines;
   Map<int, RoutineUI> get routinesUI => _routinesUI;
@@ -46,10 +49,18 @@ class DataProvider extends ChangeNotifier {
 
   Future<void> dataSync() async {
     log("$TAG Data Sync");
+    //sync favourites from db
+    try {
+      _homeWindowFavouriteTiles =
+          await FavouritesRepository().getFavouritesTilesFromDb() ?? [];
+      _homePageSwitches =
+          await FavouritesRepository().getFavouriteSwitchesFromDb() ?? [];
+      notifyListeners();
+    } catch (e) {
+      log("message: ${e.toString()}");
+    }
+
     //sync rooms from cloud
-    _homePageSwitches =
-        await SwitchesRepository().getFavouriteSwitchesFromDb() ?? [];
-    notifyListeners();
     await roomService.getUserRooms().then((List<Room>? userRooms) {
       if (userRooms == null) {
         log("$TAG Failed to get rooms from cloud");
@@ -178,13 +189,19 @@ class DataProvider extends ChangeNotifier {
       _routinesUI.putIfAbsent(
           routine.id,
           () => RoutineUI(
-              routineName: routineName,
+              name: routineName,
               type: type,
               repeatDays: repeatDays,
               time: time,
               routineSwitches: routineSwitches));
     }
     log("Updated User Routines UI");
+  }
+
+  void updateHomeWindowFavouriteTiles(dynamic tileData) {
+    _homeWindowFavouriteTiles.add(tileData);
+    FavouritesRepository().saveFavouritesTileToDb(tileData);
+    notifyListeners();
   }
 
   Room? getRoomFromId(int roomId) {
@@ -210,7 +227,7 @@ class DataProvider extends ChangeNotifier {
 
   void addToHomePageSwitches(String roomName, PowerSwitch selectedSwitch) {
     selectedSwitch.roomName = roomName;
-    SwitchesRepository().saveFavouriteSwitchToDb(selectedSwitch);
+    FavouritesRepository().saveFavouriteSwitchToDb(selectedSwitch);
     _homePageSwitches.add(selectedSwitch);
     notifyListeners();
   }
@@ -226,7 +243,7 @@ class DataProvider extends ChangeNotifier {
   }
 
   Future<bool> createRoutine(RoutineUI routine) async {
-    String name = routine.routineName;
+    String name = routine.name;
     String time = formatTimeOfDay(routine.time);
     int repeat = 0;
     int dayIndex = 1;
@@ -416,7 +433,7 @@ class DataProvider extends ChangeNotifier {
   }
 
   void deleteFavourite(int switchId) {
-    SwitchesRepository().removeFavouriteSwitchFromDb(switchId);
+    FavouritesRepository().removeFavouriteSwitchFromDb(switchId);
     _homePageSwitches.removeWhere((element) => element.id == switchId);
     notifyListeners();
   }

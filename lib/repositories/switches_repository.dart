@@ -18,8 +18,6 @@ class SwitchesRepository {
   }
 
   static Box<Map>? switchesBox; //map of switchId and powerswitch
-  static Box<PowerSwitch>?
-      favouriteSwitchesBox; //map of Favourite switchId and powerswitch
   Future<void> saveSwitchToDb(int roomId, PowerSwitch powerSwitch) async {
     switchesBox ??= await Hive.openBox<Map>('Switches');
     if (switchesBox == null) {
@@ -96,60 +94,6 @@ class SwitchesRepository {
       return switchesBox?.get(roomId)?.cast<int, PowerSwitch>().values.toList();
     }
     return null;
-  }
-
-//todo: save fav switches as list simply; instead of map with roomid
-  Future<void> saveFavouriteSwitchToDb(PowerSwitch powerSwitch) async {
-    favouriteSwitchesBox ??=
-        await Hive.openBox<PowerSwitch>('FavouriteSwitches');
-    if (favouriteSwitchesBox == null) {
-      log("$TAG saveFavouriteSwitchToDb - failed to open db");
-      return;
-    }
-    favouriteSwitchesBox!.put(powerSwitch.id, powerSwitch);
-  }
-
-  Future<void> saveFavouriteSwitchesToDb(
-      List<PowerSwitch> powerSwitchList) async {
-    favouriteSwitchesBox ??=
-        await Hive.openBox<PowerSwitch>('FavouriteSwitches');
-    if (favouriteSwitchesBox == null) {
-      log("$TAG saveFavouriteSwitchesToDb - failed to open db");
-      return;
-    }
-    for (PowerSwitch powerSwitch in powerSwitchList) {
-      favouriteSwitchesBox!.put(powerSwitch.id, powerSwitch);
-    }
-  }
-
-  Future<PowerSwitch?> getFavouriteSwitchFromDb(int switchId) async {
-    favouriteSwitchesBox ??=
-        await Hive.openBox<PowerSwitch>('FavouriteSwitches');
-    if (favouriteSwitchesBox == null) {
-      log("$TAG getFavouriteSwitchFromDb - failed to open db");
-      return null;
-    }
-    return favouriteSwitchesBox!.get(switchId);
-  }
-
-  Future<List<PowerSwitch>?> getFavouriteSwitchesFromDb() async {
-    favouriteSwitchesBox ??=
-        await Hive.openBox<PowerSwitch>('FavouriteSwitches');
-    if (favouriteSwitchesBox == null) {
-      log("$TAG getFavouriteSwitchesFromDb - failed to open db");
-      return null;
-    }
-    return favouriteSwitchesBox!.values.toList();
-  }
-
-  Future<void> removeFavouriteSwitchFromDb(int powerSwitchId) async {
-    favouriteSwitchesBox ??=
-        await Hive.openBox<PowerSwitch>('FavouriteSwitches');
-    if (favouriteSwitchesBox == null) {
-      log("$TAG saveFavouriteSwitchToDb - failed to open db");
-      return;
-    }
-    favouriteSwitchesBox!.delete(powerSwitchId);
   }
 
   String TAG = "SwitchesRepository:";

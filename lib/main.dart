@@ -3,6 +3,7 @@ import 'package:hive/hive.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:homeasz/models/device_model.dart';
 import 'package:homeasz/models/room_model.dart';
+import 'package:homeasz/models/routine_model.dart';
 import 'package:homeasz/models/switch_model.dart';
 import 'package:homeasz/pages/auth/auth_page.dart';
 import 'package:homeasz/pages/createroom_page.dart';
@@ -22,6 +23,12 @@ void main() async {
   Hive.registerAdapter(DeviceModelAdapter());
   Hive.registerAdapter(PowerSwitchAdapter());
   Hive.registerAdapter(RoomAdapter());
+  Hive.registerAdapter(RoutineCloudResponseAdapter());
+  Hive.registerAdapter(RoutineSwitchCloudResponseAdapter());
+  WidgetsFlutterBinding.ensureInitialized();
+  FlutterError.onError = (FlutterErrorDetails details) {
+    FlutterError.dumpErrorToConsole(details);
+  };
   runApp(MultiProvider(providers: [
     ChangeNotifierProvider(create: (context) => AuthProvider()),
     ChangeNotifierProvider(create: (context) => DataProvider()),

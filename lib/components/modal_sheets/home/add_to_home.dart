@@ -2,12 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:homeasz/components/modal_sheets/dropdown_row.dart';
 import 'package:homeasz/components/modal_sheets/modal_confirm_button.dart';
+import 'package:homeasz/components/my_dropdownmenu.dart';
+import 'package:homeasz/models/room_model.dart';
+import 'package:homeasz/models/routine_model.dart';
+import 'package:homeasz/providers/data_provider.dart';
+import 'package:provider/provider.dart';
 
 class AddToHome extends StatelessWidget {
-  const AddToHome({super.key});
+  AddToHome({super.key});
+  Room? selectedRoom;
+  RoutineCloudResponse? selectedRoutine;
 
   @override
   Widget build(BuildContext context) {
+    final dataProvider = Provider.of<DataProvider>(context);
     return SizedBox(
       width: double.infinity,
       child: Padding(
@@ -57,16 +65,22 @@ class AddToHome extends StatelessWidget {
             const SizedBox(
               height: 20,
             ),
-            const DropdownRow(
-              title: "Rooms",
-              hint: "Select Rooms",
-            ),
+            MyDropdownMenu(
+                list: dataProvider.rooms,
+                title: "Room",
+                initialSelection: null,
+                onSelected: (room) {
+                  selectedRoom = room;
+                }),
             const SizedBox(
               height: 20,
             ),
             ModalConfirmButton(
               buttonText: "Add",
-              onPressed: () {},
+              onPressed: () {
+                dataProvider.updateHomeWindowFavouriteTiles(selectedRoom!);
+                Navigator.pop(context);
+              },
             ),
             const SizedBox(
               height: 15,
@@ -88,11 +102,22 @@ class AddToHome extends StatelessWidget {
             const SizedBox(
               height: 18,
             ),
-            const DropdownRow(title: "Routine", hint: "Select routine"),
+            MyDropdownMenu(
+                list: dataProvider.routines,
+                title: "Routine",
+                initialSelection: null,
+                onSelected: (RoutineCloudResponse routine) {
+                  selectedRoutine = routine;
+                }),
             const SizedBox(
               height: 15,
             ),
-            ModalConfirmButton(buttonText: "Add", onPressed: () {}),
+            ModalConfirmButton(
+                buttonText: "Add",
+                onPressed: () {
+                  dataProvider.updateHomeWindowFavouriteTiles(selectedRoutine!);
+                  Navigator.pop(context);
+                }),
             const SizedBox(
               height: 30,
             )

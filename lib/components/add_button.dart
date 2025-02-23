@@ -19,9 +19,9 @@ class _AddButtonState extends State<AddButton> {
   @override
   Widget build(BuildContext context) {
     final List<Widget> actions = [
-      const AddToHome(),
+      AddToHome(),
       AddRoom(),
-      SetupRoutine(),
+      // SetupRoutine(),
       // const AddAppliance(),
     ];
 

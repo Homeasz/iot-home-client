@@ -2,11 +2,13 @@ import 'dart:developer';
 
 import 'package:day_picker/day_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
 import 'package:homeasz/models/room_model.dart';
 import 'package:homeasz/models/switch_model.dart';
 import 'package:homeasz/models/utils/action_model.dart';
 import 'package:homeasz/models/utils/timer_model.dart';
 import 'package:homeasz/providers/data_provider.dart';
+part 'routine_model.g.dart';
 
 class RoutineSwitchUI {
   final Room room;
@@ -23,23 +25,27 @@ class RoutineSwitchUI {
 }
 
 class RoutineUI {
-  String routineName;
+  String name;
   String type;
   List<DayInWeek> repeatDays;
   TimeOfDay time;
   Map<int, RoutineSwitchUI> routineSwitches;
 
   RoutineUI(
-      {required this.routineName,
+      {required this.name,
       required this.type,
       required this.repeatDays,
       required this.time,
       required this.routineSwitches});
 }
 
+@HiveType(typeId: 4)
 class RoutineSwitchCloudResponse {
+  @HiveField(0)
   final int id;
+  @HiveField(1)
   final bool action;
+  @HiveField(2)
   final int revertDuration;
 
   RoutineSwitchCloudResponse({
@@ -57,22 +63,29 @@ class RoutineSwitchCloudResponse {
   }
 }
 
+@HiveType(typeId: 3)
 class RoutineCloudResponse {
+  @HiveField(0)
   final int id;
+  @HiveField(1)
   final String name;
+  @HiveField(2)
   final int repeat;
-  final DateTime createdAt;
-  final DateTime updatedAt;
+  final DateTime? createdAt;
+  final DateTime? updatedAt;
+  @HiveField(3)
   final List<RoutineSwitchCloudResponse> switches;
+  @HiveField(4)
   final TimeOfDay time;
+  @HiveField(5)
   final String type;
 
   RoutineCloudResponse({
     required this.id,
     required this.name,
     required this.repeat,
-    required this.createdAt,
-    required this.updatedAt,
+    this.createdAt,
+    this.updatedAt,
     required this.switches,
     required this.time,
     this.type = 'morning',

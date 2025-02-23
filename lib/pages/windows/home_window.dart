@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:homeasz/pages/windows/home_window_favourite_switches.dart';
+import 'package:homeasz/pages/windows/home_window_favourite_tiles.dart';
 import 'package:homeasz/providers/user_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
@@ -105,9 +106,10 @@ class _HomeWindowState extends State<HomeWindow> {
                         ],
                       ),
 
-                      const SizedBox(height: 80),
+                      const SizedBox(height: 60),
                       // horizontal scroll list
-                      HomeWindowFavouriteSwitches(),
+                      const HomeWindowFavouriteSwitches(),
+                      const HomeWindowFavouriteTiles(),
                     ],
                   )),
         ));

@@ -73,8 +73,8 @@ class _EditroutinePageState extends State<EditroutinePage> {
     routine = dataProvider.getRoutineUI(routineId);
 
     if (routine != null) {
-      log("$TAG routine: ${routine!.routineName}");
-      routineNameController.text = routine!.routineName;
+      log("$TAG routine: ${routine!.name}");
+      routineNameController.text = routine!.name;
       time = routine!.time;
       _days = routine!.repeatDays;
       routineSwitches = routine!.routineSwitches;
@@ -301,7 +301,7 @@ class _EditroutinePageState extends State<EditroutinePage> {
               }
             }
             routine = RoutineUI(
-                routineName: routineName,
+                name: routineName,
                 type: "morning",
                 repeatDays: _days,
                 time: time!,

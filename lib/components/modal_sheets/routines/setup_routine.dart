@@ -4,11 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:homeasz/components/modal_sheets/routines/device_routine_row.dart';
 import 'package:homeasz/components/modal_sheets/modal_confirm_button.dart';
 import 'package:homeasz/components/modal_sheets/routines/repeat_schedule_input.dart';
-import 'package:homeasz/components/my_dropdownmenu.dart';
 import 'package:homeasz/components/text_input.dart';
-import 'package:homeasz/models/room_model.dart';
-import 'package:homeasz/providers/data_provider.dart';
-import 'package:provider/provider.dart';
 
 class SetupRoutine extends StatefulWidget {
   SetupRoutine({super.key});
