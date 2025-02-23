@@ -97,7 +97,9 @@ class _AddToHomeFavouritesState extends State<AddToHomeFavourites> {
               MyDropdownMenu(
                 title: "Device",
                 list: (selectedRoom != null)
-                    ? dataProvider.switches[selectedRoom!.id] ?? []
+                    ? dataProvider.switches[selectedRoom!.id]?.values
+                            .toList() ??
+                        []
                     : [],
                 initialSelection: "Select device",
                 enabled: selectedRoom != null,

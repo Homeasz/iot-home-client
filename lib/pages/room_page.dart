@@ -98,12 +98,13 @@ class _RoomPageState extends State<RoomPage> {
                                       crossAxisSpacing: 20,
                                       mainAxisSpacing: 20,
                                     ),
-                                    itemCount:
-                                        dataProvider.switches[widget.roomId]?.length ??
-                                            0,
+                                    itemCount: dataProvider
+                                            .switches[widget.roomId]?.length ??
+                                        0,
                                     itemBuilder: (context, index) {
-                                      final switchModel =
-                                          dataProvider.switches[widget.roomId]?[index];
+                                      final switchModel = dataProvider
+                                          .switches[widget.roomId]?.values
+                                          .toList()[index];
                                       if (switchModel != null) {
                                         return SwitchTile(
                                           // index: index,

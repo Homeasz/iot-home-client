@@ -18,6 +18,7 @@ class SwitchesRepository {
   }
 
   static Box<Map>? switchesBox; //map of switchId and powerswitch
+
   Future<void> saveSwitchToDb(int roomId, PowerSwitch powerSwitch) async {
     switchesBox ??= await Hive.openBox<Map>('Switches');
     if (switchesBox == null) {
@@ -28,41 +29,22 @@ class SwitchesRepository {
     Map<int, PowerSwitch>? switchesMap;
     if (entry is Map<dynamic, dynamic>) {
       switchesMap = entry.cast<int, PowerSwitch>();
-      switchesMap[powerSwitch.id] = powerSwitch;
-      switchesBox?.put(roomId, switchesMap);
     } else {
       log("$TAG saveSwitchToDb - roomId $roomId not found in db");
       switchesMap = {};
-      switchesMap[powerSwitch.id] = powerSwitch;
-      switchesBox?.put(roomId, switchesMap);
     }
+    switchesMap[powerSwitch.id] = powerSwitch;
+    switchesBox?.put(roomId, switchesMap);
   }
 
   Future<void> saveSwitchesToDb(
-      int roomId, List<PowerSwitch> powerSwitchList) async {
+      int roomId, Map<int, PowerSwitch> powerSwitchList) async {
     switchesBox ??= await Hive.openBox<Map>('Switches');
     if (switchesBox == null) {
       log("$TAG saveSwitchToDb - failed to open db");
       return;
     }
-    var entry = switchesBox!.get(roomId);
-    Map<int, PowerSwitch>? switchesMap;
-    if (entry is Map<dynamic, dynamic>) {
-      log("$TAG saveSwitchToDb - roomId $roomId found in db");
-      switchesMap = entry.cast<int, PowerSwitch>();
-      for (PowerSwitch powerSwitch in powerSwitchList) {
-        switchesMap.update(powerSwitch.id, (value) => powerSwitch,
-            ifAbsent: () => powerSwitch);
-      }
-      switchesBox?.put(roomId, switchesMap);
-    } else {
-      log("$TAG saveSwitchToDb - roomId $roomId not found in db");
-      switchesMap = {};
-      for (PowerSwitch powerSwitch in powerSwitchList) {
-        switchesMap[powerSwitch.id] = powerSwitch;
-      }
-      switchesBox?.put(roomId, switchesMap);
-    }
+    switchesBox?.put(roomId, powerSwitchList);
   }
 
   Future<PowerSwitch?> getSwitchFromDb(int switchId) async {
@@ -84,14 +66,14 @@ class SwitchesRepository {
     return powerSwitch;
   }
 
-  Future<List<PowerSwitch>?> getSwitchesFromDb(int roomId) async {
-    switchesBox ??= await Hive.openBox<Map<int, PowerSwitch>>('Switches');
+  Future<Map<int, PowerSwitch>?> getSwitchesFromDb(int roomId) async {
+    switchesBox ??= await Hive.openBox<Map>('Switches');
     if (switchesBox == null) {
       log("$TAG getSwitchesFromDb - failed to open db");
       return null;
     }
     if (switchesBox!.containsKey(roomId)) {
-      return switchesBox?.get(roomId)?.cast<int, PowerSwitch>().values.toList();
+      return switchesBox?.get(roomId)?.cast<int, PowerSwitch>();
     }
     return null;
   }

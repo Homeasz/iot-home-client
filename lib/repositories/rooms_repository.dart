@@ -50,6 +50,7 @@ class RoomsRepository {
   }
 
   Future<List<Room>?> getRoomsFromDb() async {
+    log("$TAG getRoomsFromDb");
     roomsBox ??= await Hive.openBox<Room>('Rooms');
     if (roomsBox == null) {
       log("$TAG getRoomsFromDb - failed to open db");

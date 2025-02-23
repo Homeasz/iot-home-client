@@ -104,12 +104,7 @@ class _EditroutinePageState extends State<EditroutinePage> {
         selectedTimer = listTimer.firstWhere(
             (element) => element.timer.value == routine.timer.timer.value);
         await dataProvider.getSwitches(routine.room.id, routine.room.name);
-        selectedSwitch = dataProvider.switches[selectedRoom?.id]?.firstWhere(
-          (element) {
-            log("$TAG element.id: ${element.id}, powerSwitch.id: ${routine.powerSwitch.id}");
-            return element.id == routine.powerSwitch.id;
-          },
-        );
+        selectedSwitch = dataProvider.switches[selectedRoom?.id]?[routine.powerSwitch.id];
       }
 
       return showDialog(
@@ -164,7 +159,7 @@ class _EditroutinePageState extends State<EditroutinePage> {
                                   MyDropdownMenu(
                                     title: "Switch",
                                     list: dataProvider
-                                            .switches[selectedRoom?.id] ??
+                                            .switches[selectedRoom?.id]?.values.toList() ??
                                         [],
                                     initialSelection: selectedSwitch,
                                     onSelected: (PowerSwitch value) {
