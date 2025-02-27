@@ -160,8 +160,7 @@ class DataProvider extends ChangeNotifier {
       _routines.remove(routineId);
       RoutinesRepository().removeRoutineFromDb(routineId);
       _routinesUI.remove(routineId);
-      _homeWindowFavouriteTiles
-          .removeWhere((element) => element.id == routineId);
+      deleteFavouriteTile(routineId, RoutineCloudResponse);
       notifyListeners();
     }
     return response;
@@ -435,7 +434,7 @@ class DataProvider extends ChangeNotifier {
           switchMap.remove(switchId);
         }
       }
-      _homePageSwitches.removeWhere((element) => element.id == switchId);
+      deleteFavouriteSwitch(switchId);
       notifyListeners();
     }
   }
