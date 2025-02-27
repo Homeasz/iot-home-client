@@ -6,10 +6,12 @@ import 'package:homeasz/utils/image_paths.dart';
 
 class RoomTile extends StatelessWidget {
   final Room room;
+  final void Function(BuildContext, int, Type)? deleteCallback;
 
   const RoomTile({
     super.key,
     required this.room,
+    this.deleteCallback,
   });
 
   @override
@@ -32,9 +34,9 @@ class RoomTile extends StatelessWidget {
           ),
         );
       },
-      onLongPress: () {
-        // Additional long press action for room tile, if any
-      },
+      onLongPress: (deleteCallback != null)
+          ? () => deleteCallback!(context, room.id, Room)
+          : null,
     );
   }
 }

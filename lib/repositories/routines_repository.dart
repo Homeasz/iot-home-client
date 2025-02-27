@@ -18,9 +18,11 @@ class RoutinesRepository {
     return _instance!;
   }
 
-  static Box<RoutineCloudResponse>? routinesBox; //map of routineId and RoutineCloudResponse
+  static Box<RoutineCloudResponse>?
+      routinesBox; //map of routineId and RoutineCloudResponse
 
-  Future<void> saveRoutineToDb(int routineId, RoutineCloudResponse routine) async {
+  Future<void> saveRoutineToDb(
+      int routineId, RoutineCloudResponse routine) async {
     routinesBox ??= await Hive.openBox<RoutineCloudResponse>('Routines');
     if (routinesBox == null) {
       log("$TAG getRoutinesFromDb - failed to open db");
@@ -29,13 +31,13 @@ class RoutinesRepository {
     routinesBox?.put(routineId, routine);
   }
 
-  Future<void> saveRoutinesToDb(List<RoutineCloudResponse> routines) async {
+  Future<void> saveRoutinesToDb(Map<int, RoutineCloudResponse> routines) async {
     routinesBox ??= await Hive.openBox<RoutineCloudResponse>('Routines');
     if (routinesBox == null) {
       log("$TAG getRoutinesFromDb - failed to open db");
       return;
     }
-    for (RoutineCloudResponse routine in routines) {
+    for (RoutineCloudResponse routine in routines.values) {
       routinesBox?.put(routine.id, routine);
     }
   }
@@ -50,14 +52,24 @@ class RoutinesRepository {
     return routine;
   }
 
-  Future<List<RoutineCloudResponse>?> getRoutinesFromDb() async {
+  Future<Map<int, RoutineCloudResponse>?> getRoutinesFromDb() async {
     log("$TAG getRoutinesFromDb");
     routinesBox ??= await Hive.openBox<RoutineCloudResponse>('Routines');
     if (routinesBox == null) {
       log("$TAG getRoutinesFromDb - failed to open db");
       return null;
     }
-    return routinesBox!.values.toList();
+    return routinesBox?.toMap().cast<int, RoutineCloudResponse>();
+  }
+
+  Future<void> removeRoutineFromDb(int routineId) async {
+    routinesBox ??= await Hive.openBox<RoutineCloudResponse>('Routines');
+    if (routinesBox == null) {
+      log("$TAG removeRoutineFromDb - failed to open db");
+      return;
+    }
+    routinesBox!.delete(routineId);
+    return;
   }
 
   String TAG = "RoutinesRepository:";

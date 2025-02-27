@@ -24,6 +24,11 @@ class HomeWindowFavouriteTiles extends StatefulWidget {
 
 class _HomeWindowFavouriteTilesState extends State<HomeWindowFavouriteTiles> {
   // final ScrollController _scrollController = ScrollController();
+  void deleteFavouriteCallback(BuildContext context, int id, Type runtimeType) {
+    final dataProvider = Provider.of<DataProvider>(context, listen: false);
+    dataProvider.deleteFavouriteTile(id, runtimeType);
+  }
+
   @override
   Widget build(BuildContext context) {
     DataProvider dataProvider = Provider.of<DataProvider>(context);
@@ -47,10 +52,12 @@ class _HomeWindowFavouriteTilesState extends State<HomeWindowFavouriteTiles> {
               log("$TAG - build: HomeWindowFavouriteTiles ${tileInfo.runtimeType}");
               if (tileInfo.runtimeType == Room) {
                 log("$TAG - build: HomeWindowFavouriteTiles RoomTile ROOM");
-                return RoomTile(room: tileInfo);
+                return RoomTile(
+                    room: tileInfo, deleteCallback: deleteFavouriteCallback);
               } else if (tileInfo.runtimeType == RoutineCloudResponse) {
                 log("$TAG - build: HomeWindowFavouriteTiles RoomTile ROUTINEUI");
-                return RoutineTile(routine: tileInfo);
+                return RoutineTile(
+                    routine: tileInfo, deleteCallback: deleteFavouriteCallback);
               }
             }),
       ),

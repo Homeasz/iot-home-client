@@ -30,7 +30,7 @@ class DataProvider extends ChangeNotifier {
   Map<int, Map<int, PowerSwitch>> _switches = {}; //map of roomId and switches
   List<PowerSwitch> _homePageSwitches = [];
   List<dynamic> _homeWindowFavouriteTiles = [];
-  List<RoutineCloudResponse> _routines = [];
+  Map<int, RoutineCloudResponse> _routines = {};
   Map<int, RoutineUI> _routinesUI = {};
   String? _errorMessage;
   late int _currentRoom = 0;
@@ -41,7 +41,7 @@ class DataProvider extends ChangeNotifier {
   List<PowerSwitch> get homePageSwitches => _homePageSwitches;
   List<dynamic> get homeWindowFavouriteTiles => _homeWindowFavouriteTiles;
   Map<int, Map<int, PowerSwitch>> get switches => _switches;
-  List<RoutineCloudResponse> get routines => _routines;
+  Map<int, RoutineCloudResponse> get routines => _routines;
   Map<int, RoutineUI> get routinesUI => _routinesUI;
 
   set currentRoom(int value) {
@@ -68,7 +68,7 @@ class DataProvider extends ChangeNotifier {
           await SwitchesRepository().getSwitchesFromDb(room.id) ?? {};
       room.switches = _switches[room.id]!.values.toList();
     }
-    _routines = await RoutinesRepository().getRoutinesFromDb() ?? [];
+    _routines = await RoutinesRepository().getRoutinesFromDb() ?? {};
     await updateUserRoutinesUI();
 
     dataSyncFromCloud();
@@ -105,7 +105,7 @@ class DataProvider extends ChangeNotifier {
     //sync routines from cloud
     routineService
         .getUserRoutines()
-        .then((List<RoutineCloudResponse> routines) {
+        .then((Map<int, RoutineCloudResponse> routines) {
       _routines = routines;
       notifyListeners();
       RoutinesRepository().saveRoutinesToDb(routines);
@@ -154,8 +154,21 @@ class DataProvider extends ChangeNotifier {
         : null;
   }
 
+  Future<bool> removeRoutine(int routineId) async {
+    bool response = await routineService.removeRoutine(routineId);
+    if (response) {
+      _routines.remove(routineId);
+      RoutinesRepository().removeRoutineFromDb(routineId);
+      _routinesUI.remove(routineId);
+      _homeWindowFavouriteTiles
+          .removeWhere((element) => element.id == routineId);
+      notifyListeners();
+    }
+    return response;
+  }
+
   Future<void> updateUserRoutinesUI() async {
-    for (RoutineCloudResponse routine in routines) {
+    for (RoutineCloudResponse routine in routines.values) {
       String routineName = routine.name;
       String type = "morning";
       int repeatDaysBitmask = routine.repeat;
@@ -254,7 +267,7 @@ class DataProvider extends ChangeNotifier {
     return "$hour:$minute$period";
   }
 
-  Future<bool> createRoutine(RoutineUI routine) async {
+  Future<bool> updateRoutine(RoutineUI routine, int? routineId) async {
     String name = routine.name;
     String time = formatTimeOfDay(routine.time);
     int repeat = 0;
@@ -274,13 +287,15 @@ class DataProvider extends ChangeNotifier {
               'revertDurationUnit': "m"
             })
         .toList();
-    RoutineCloudResponse? response =
-        await routineService.addRoutine(name, time, repeat, switches);
+    RoutineCloudResponse? response = await routineService.addRoutine(
+        name, time, repeat, switches, routineId);
     if (response != null) {
-      _routines.add(response);
+      _routines.update(response.id, (value) => response,
+          ifAbsent: () => response);
       RoutinesRepository().saveRoutineToDb(response.id, response);
       notifyListeners();
-      _routinesUI.putIfAbsent(response.id, () => routine);
+      _routinesUI.update(response.id, (key) => routine,
+          ifAbsent: () => routine);
       return true;
     }
     return false;
@@ -419,11 +434,7 @@ class DataProvider extends ChangeNotifier {
           switchMap.remove(switchId);
         }
       }
-      for (PowerSwitch powerSwitch in _homePageSwitches) {
-        if (powerSwitch.id == switchId) {
-          _homePageSwitches.remove(powerSwitch);
-        }
-      }
+      _homePageSwitches.removeWhere((element) => element.id == switchId);
       notifyListeners();
     }
   }
@@ -445,9 +456,17 @@ class DataProvider extends ChangeNotifier {
     }
   }
 
-  void deleteFavourite(int switchId) {
+  void deleteFavouriteSwitch(int switchId) {
+    log("$TAG deleteFavouriteSwitch");
     FavouritesRepository().removeFavouriteSwitchFromDb(switchId);
     _homePageSwitches.removeWhere((element) => element.id == switchId);
+    notifyListeners();
+  }
+
+  void deleteFavouriteTile(int TileId, Type runtimeType) {
+    log("$TAG deleteFavouriteTile");
+    FavouritesRepository().removeFavouritesTileFromDb(TileId, runtimeType);
+    _homeWindowFavouriteTiles.removeWhere((element) => element.id == TileId);
     notifyListeners();
   }
 

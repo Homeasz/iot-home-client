@@ -5,10 +5,12 @@ import 'package:homeasz/utils/image_paths.dart';
 
 class RoutineTile extends StatelessWidget {
   final RoutineCloudResponse routine;
+  final void Function(BuildContext, int, Type)? deleteCallback;
 
   const RoutineTile({
     super.key,
     required this.routine,
+    this.deleteCallback,
   });
 
   @override
@@ -20,7 +22,9 @@ class RoutineTile extends StatelessWidget {
       imagePath: routineImagePath,
       onTap: () =>
           Navigator.pushNamed(context, '/editRoutine', arguments: routine.id),
-      onLongPress: () {},
+      onLongPress: (deleteCallback != null)
+          ? () => deleteCallback!(context, routine.id, RoutineCloudResponse)
+          : null,
       onPowerTap: () {},
     );
   }

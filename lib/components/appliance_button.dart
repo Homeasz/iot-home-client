@@ -45,7 +45,7 @@ class _ApplianceButtonState extends State<ApplianceButton> {
 
   void deleteFavourite() {
     final dataProvider = Provider.of<DataProvider>(context, listen: false);
-    dataProvider.deleteFavourite(widget.switchId);
+    dataProvider.deleteFavouriteSwitch(widget.switchId);
   }
 
   void onLongPress() {

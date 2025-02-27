@@ -59,6 +59,7 @@ class _EditroutinePageState extends State<EditroutinePage> {
   Map<int, RoutineSwitchUI> routineSwitches = {};
   RoutineUI? routine;
   bool warnEmptyRoutineName = false;
+  bool isRoutineUpdate = false;
   String? errorNoDeviceAdded;
   final TextEditingController routineNameController = TextEditingController();
 
@@ -69,11 +70,11 @@ class _EditroutinePageState extends State<EditroutinePage> {
     // selected switch
     final dataProvider = Provider.of<DataProvider>(context, listen: false);
 
-    int? routineId = ModalRoute.of(context)!.settings.arguments as int?;
+    int? routineId = ModalRoute.of(context)?.settings.arguments as int?;
     routine = dataProvider.getRoutineUI(routineId);
 
     if (routine != null) {
-      log("$TAG routine: ${routine!.name}");
+      log("$TAG routine: ${routine!.name} routineId: $routineId");
       routineNameController.text = routine!.name;
       time = routine!.time;
       _days = routine!.repeatDays;
@@ -104,7 +105,8 @@ class _EditroutinePageState extends State<EditroutinePage> {
         selectedTimer = listTimer.firstWhere(
             (element) => element.timer.value == routine.timer.timer.value);
         await dataProvider.getSwitches(routine.room.id, routine.room.name);
-        selectedSwitch = dataProvider.switches[selectedRoom?.id]?[routine.powerSwitch.id];
+        selectedSwitch =
+            dataProvider.switches[selectedRoom?.id]?[routine.powerSwitch.id];
       }
 
       return showDialog(
@@ -159,7 +161,8 @@ class _EditroutinePageState extends State<EditroutinePage> {
                                   MyDropdownMenu(
                                     title: "Switch",
                                     list: dataProvider
-                                            .switches[selectedRoom?.id]?.values.toList() ??
+                                            .switches[selectedRoom?.id]?.values
+                                            .toList() ??
                                         [],
                                     initialSelection: selectedSwitch,
                                     onSelected: (PowerSwitch value) {
@@ -301,7 +304,7 @@ class _EditroutinePageState extends State<EditroutinePage> {
                 repeatDays: _days,
                 time: time!,
                 routineSwitches: routineSwitches);
-            dataProvider.createRoutine(routine!);
+            dataProvider.updateRoutine(routine!, routineId);
             Navigator.pop(context);
           },
         ),

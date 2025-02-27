@@ -103,7 +103,7 @@ class AddToHome extends StatelessWidget {
               height: 18,
             ),
             MyDropdownMenu(
-                list: dataProvider.routines,
+                list: dataProvider.routines.values.toList(),
                 title: "Routine",
                 initialSelection: null,
                 onSelected: (RoutineCloudResponse routine) {

@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:homeasz/components/routine_tile.dart';
+import 'package:homeasz/models/routine_model.dart';
 import 'package:homeasz/providers/data_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -13,6 +14,12 @@ class RoutineWindow extends StatefulWidget {
 }
 
 class _RoutineWindowState extends State<RoutineWindow> {
+  void deleteRoutineCallback(
+      BuildContext context, int routineId, Type runtimeType) {
+    final dataProvider = Provider.of<DataProvider>(context, listen: false);
+    dataProvider.removeRoutine(routineId);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -45,9 +52,12 @@ class _RoutineWindowState extends State<RoutineWindow> {
                                 mainAxisSpacing: 10),
                         itemCount: dataProvider.routines.length,
                         itemBuilder: (context, index) {
-                          final routine = dataProvider.routines[index];
+                          List<RoutineCloudResponse> routinesList =
+                              dataProvider.routines.values.toList();
+                          final routine = routinesList[index];
                           return RoutineTile(
                             routine: routine,
+                            deleteCallback: deleteRoutineCallback,
                           );
                         }))),
             const SizedBox(height: 80),

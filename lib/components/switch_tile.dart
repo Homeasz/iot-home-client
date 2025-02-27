@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:homeasz/components/modal_sheets/edit_appliance.dart';
 import 'package:homeasz/components/base_tile.dart';
@@ -9,11 +11,13 @@ import 'package:provider/provider.dart';
 class SwitchTile extends StatelessWidget {
   final PowerSwitch powerSwitch;
   final String roomName;
+  final void Function(BuildContext, int)? deleteCallback;
 
   const SwitchTile({
     super.key,
     required this.powerSwitch,
     required this.roomName,
+    this.deleteCallback,
   });
 
   @override
@@ -41,14 +45,17 @@ class SwitchTile extends StatelessWidget {
               );
             });
       },
-      onLongPress: () {
-        // Logic for showing appliance modal
-      },
+      onLongPress: (deleteCallback != null)
+          ? () => deleteCallback!(context, powerSwitch.id)
+          : null,
       onPowerTap: () {
+        log("$TAG - onPowerTap: ${powerSwitch.id} ${powerSwitch.state}");
         // Logic for toggling power state
         final dataProvider = Provider.of<DataProvider>(context, listen: false);
         dataProvider.toggleSwitch(powerSwitch.id, powerSwitch.state);
       },
     );
   }
+
+  static const TAG = "SwitchTile";
 }

@@ -1,6 +1,7 @@
 enum Timer {
   none(0, "No timer"),
   fiveMins(5, "5 Minutes"),
+  tenMins(10, "10 Minutes"),
   fifteenMins(15, "15 Minutes"),
   thirtyMins(30, "30 Minutes"),
   oneHour(60, "1 Hour"),
@@ -18,6 +19,8 @@ Timer intToTimer(int timer) {
     return Timer.none;
   } else if (timer <= 5) {
     return Timer.fiveMins;
+  } else if (timer <= 10) {
+    return Timer.tenMins;
   } else if (timer <= 15) {
     return Timer.fifteenMins;
   } else if (timer <= 30) {

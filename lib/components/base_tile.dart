@@ -12,7 +12,7 @@ class BaseTile extends StatefulWidget {
     required this.tileType,
     required this.initialState,
     required this.onTap,
-    required this.onLongPress,
+    this.onLongPress,
     this.imagePath,
     this.onPowerTap,
   });
@@ -21,7 +21,7 @@ class BaseTile extends StatefulWidget {
   final String tileType;
   final bool initialState;
   final VoidCallback onTap;
-  final VoidCallback onLongPress;
+  final VoidCallback? onLongPress;
   final String? imagePath;
   final VoidCallback? onPowerTap;
 
@@ -31,6 +31,7 @@ class BaseTile extends StatefulWidget {
 
 class _BaseTileState extends State<BaseTile> {
   late bool state;
+  bool deleteButtonVisible = false;
 
   @override
   void initState() {
@@ -76,57 +77,74 @@ class _BaseTileState extends State<BaseTile> {
       ),
       child: GestureDetector(
         onTap: widget.onTap,
-        onLongPress: widget.onLongPress,
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(12, 0, 0, 8),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Flexible(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Flexible(
-                      child: Image.asset(
-                        '${widget.imagePath}/$smallCaseTileType${state ? 'true' : 'false'}.png',
-                      ),
-                    ),
-                    Flexible(
-                      child: Text(
-                        shortenTileName(widget.tileName),
-                        textAlign: TextAlign.center,
-                        style: GoogleFonts.poppins(
-                          fontSize: 16,
-                          color: Colors.black,
-                          fontWeight: FontWeight.w600,
-                          height: 0.06,
-                          letterSpacing: -0.54,
+        onLongPress: () => setState(() {
+          deleteButtonVisible = !deleteButtonVisible;
+        }),
+        child: Stack(children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(12, 0, 0, 8),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Flexible(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Flexible(
+                        child: Image.asset(
+                          '${widget.imagePath}/$smallCaseTileType${state ? 'true' : 'false'}.png',
                         ),
                       ),
-                    ),
-                  ],
+                      Flexible(
+                        child: Text(
+                          shortenTileName(widget.tileName),
+                          textAlign: TextAlign.center,
+                          style: GoogleFonts.poppins(
+                            fontSize: 16,
+                            color: Colors.black,
+                            fontWeight: FontWeight.w600,
+                            height: 0.06,
+                            letterSpacing: -0.54,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                if (widget.onPowerTap != null)
+                  InkWell(
+                      onTap: toggleState,
+                      child: Padding(
+                          padding: const EdgeInsets.all(15),
+                          child: Card(
+                            margin: const EdgeInsets.all(2),
+                            elevation: 6,
+                            color: state
+                                ? const Color(0xFFFFC700)
+                                : const Color(0xFFFFFFFF),
+                            shape: const CircleBorder(),
+                            child: Container(
+                                padding: const EdgeInsets.all(4),
+                                child: SvgPicture.asset(width: 20, powerImage)),
+                          ))),
+              ],
+            ),
+          ),
+          if (deleteButtonVisible && widget.onLongPress != null)
+            Positioned(
+              top: -2,
+              right: -2,
+              child: InkWell(
+                onTap: widget.onLongPress,
+                child: const Icon(
+                  Icons.cancel,
+                  color: Color.fromARGB(255, 215, 70, 70),
+                  size: 25,
                 ),
               ),
-              if (widget.onPowerTap != null)
-                InkWell(
-                    onTap: toggleState,
-                    child: Padding(
-                        padding: const EdgeInsets.all(15),
-                        child: Card(
-                          margin: const EdgeInsets.all(2),
-                          elevation: 6,
-                          color: state
-                              ? const Color(0xFFFFC700)
-                              : const Color(0xFFFFFFFF),
-                          shape: const CircleBorder(),
-                          child: Container(
-                              padding: const EdgeInsets.all(4),
-                              child: SvgPicture.asset(width: 20, powerImage)),
-                        ))),
-            ],
-          ),
-        ),
+            )
+        ]),
       ),
     );
   }

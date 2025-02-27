@@ -26,6 +26,11 @@ class _RoomPageState extends State<RoomPage> {
   bool state = false;
   late DataProvider _dataProvider;
 
+  void deleteSwitchCallback(BuildContext context, int switchId) {
+    _dataProvider.deleteSwitch(switchId);
+    setState(() {});
+  }
+
   void onPowerTap() {
     setState(() {
       state = !state;
@@ -110,6 +115,7 @@ class _RoomPageState extends State<RoomPage> {
                                           // index: index,
                                           powerSwitch: switchModel,
                                           roomName: widget.roomName,
+                                          deleteCallback: deleteSwitchCallback,
                                         );
                                       }
                                     },
