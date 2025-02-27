@@ -316,6 +316,7 @@ class DataProvider extends ChangeNotifier {
   Room? getRoomFromSwitchId(int switchId) {
     for (int roomId in _switches.keys) {
       if (_switches[roomId]!.containsKey(switchId)) {
+        if (_rooms.isEmpty) return null;
         return _rooms.firstWhere((element) => element.id == roomId);
       }
     }
