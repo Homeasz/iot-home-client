@@ -114,7 +114,7 @@ class _RoomPageState extends State<RoomPage> {
                                         return SwitchTile(
                                           // index: index,
                                           powerSwitch: switchModel,
-                                          roomName: widget.roomName,
+                                          roomId: widget.roomId,
                                           deleteCallback: deleteSwitchCallback,
                                         );
                                       }

@@ -440,13 +440,12 @@ class DataProvider extends ChangeNotifier {
   }
 
   Future editSwitch(int switchId, String switchName, String roomName,
-      String stringType) async {
+      int newRoomId, int oldRoomId, String stringType) async {
     final PowerSwitch? response = await deviceService.editSwitch(
         switchId, switchName, roomName, stringType);
     if (response != null) {
-      for (Map<int, PowerSwitch> switchMap in _switches.values) {
-        switchMap[switchId] = response;
-      }
+      _switches[oldRoomId]?.remove(switchId);
+      _switches[newRoomId]?[switchId] = response;
       int index = _homePageSwitches
           .indexWhere((powerSwitch) => powerSwitch.id == response.id);
       if (index > -1) {

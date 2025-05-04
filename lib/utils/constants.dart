@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
 const String BASE_URL =
-    'http://ec2-3-109-126-105.ap-south-1.compute.amazonaws.com';
+    'https://homeasz-fwdse6dne5agarbc.centralindia-01.azurewebsites.net';
+// 'http://ec2-3-109-126-105.ap-south-1.compute.amazonaws.com';
 // const String BASE_URL =
 //     'https://ec2-3-109-126-105.ap-south-1.compute.amazonaws.com';
 // const String BASE_URL =

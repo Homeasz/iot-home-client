@@ -149,7 +149,7 @@ class DeviceService {
         }),
       );
       if (response.statusCode == 200) {
-        final Map<String, dynamic> body = jsonDecode(response.body);
+        final Map<String, dynamic> body = jsonDecode(response.body);    
         return PowerSwitch.fromMap(body['data']);
       } else {}
     }

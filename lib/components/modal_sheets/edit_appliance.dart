@@ -13,12 +13,12 @@ class EditAppliance extends StatefulWidget {
       {super.key,
       required this.applianceName,
       required this.applianceType,
-      required this.roomName,
+      required this.roomId,
       required this.applianceId});
 
   final String applianceName;
   final String applianceType;
-  final String roomName;
+  final int roomId;
   final int applianceId;
 
   @override
@@ -27,20 +27,23 @@ class EditAppliance extends StatefulWidget {
 
 class _EditApplianceState extends State<EditAppliance> {
   final TextEditingController _textEditingController = TextEditingController();
-  late String selectedRoom;
+  late int selectedRoomId;
+  String? selectedRoomName;
   late String selectedType;
+  bool warn = false;
 
   @override
   void initState() {
     super.initState();
     _textEditingController.text = widget.applianceName;
-    selectedRoom = widget.roomName;
+    selectedRoomId = widget.roomId;
     selectedType = widget.applianceType;
   }
 
   void updateAppliance(DataProvider dataProvider) {
+    if (selectedRoomName == null) {}
     dataProvider.editSwitch(widget.applianceId, _textEditingController.text,
-        selectedRoom, selectedType);
+        selectedRoomName!, selectedRoomId, widget.roomId, selectedType);
     Navigator.pop(context);
   }
 
@@ -116,15 +119,27 @@ class _EditApplianceState extends State<EditAppliance> {
           MyDropdownMenu(
             title: "Choose Room",
             list: dataProvider.rooms,
-            initialSelection: widget.roomName,
+            initialSelection: dataProvider.getRoomFromId(selectedRoomId),
             onSelected: (Room room) {
               setState(() {
-                selectedRoom = room.name;
+                selectedRoomId = room.id;
+                selectedRoomName = room.name;
+                warn = false;
               });
             },
           ),
           const SizedBox(
             height: 20,
+          ),
+          Visibility(
+            visible: warn,
+            child: const Column(children: [
+              Text("Please select a room!",
+                  style: TextStyle(color: Colors.red)),
+              SizedBox(
+                height: 20,
+              ),
+            ]),
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -137,7 +152,11 @@ class _EditApplianceState extends State<EditAppliance> {
               ),
               ModalConfirmButton(
                   buttonText: "Edit",
-                  onPressed: () => updateAppliance(dataProvider)),
+                  onPressed: () => (selectedRoomName == null)
+                      ? setState(() {
+                          warn = true;
+                        })
+                      : updateAppliance(dataProvider)),
             ],
           ),
           const SizedBox(

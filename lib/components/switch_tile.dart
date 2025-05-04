@@ -10,13 +10,13 @@ import 'package:provider/provider.dart';
 
 class SwitchTile extends StatelessWidget {
   final PowerSwitch powerSwitch;
-  final String roomName;
+  final int roomId;
   final void Function(BuildContext, int)? deleteCallback;
 
   const SwitchTile({
     super.key,
     required this.powerSwitch,
-    required this.roomName,
+    required this.roomId,
     this.deleteCallback,
   });
 
@@ -39,7 +39,7 @@ class SwitchTile extends StatelessWidget {
                 child: EditAppliance(
                   applianceName: powerSwitch.name,
                   applianceType: powerSwitch.type,
-                  roomName: roomName,
+                  roomId: roomId,
                   applianceId: powerSwitch.id,
                 ),
               );
