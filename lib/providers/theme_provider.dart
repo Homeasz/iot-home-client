@@ -10,7 +10,7 @@ class ThemeProvider with ChangeNotifier {
 
   ThemeProvider() {
     _isDarkMode = false; // default to light mode
-    _loadFromPrefs();
+    // _loadFromPrefs();
   }
 
   toggleTheme() {

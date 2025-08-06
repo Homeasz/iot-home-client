@@ -6,8 +6,8 @@ import 'package:homeasz/models/auth_model.dart';
 import 'package:homeasz/utils/constants.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 
+//TOdO: clear old tokens
 class AuthService {
-  
   Future<bool?> isAuthenticated() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('token');
@@ -25,7 +25,7 @@ class AuthService {
 
   Future<AuthUser?> login(String email, String password) async {
     final response = await http.post(
-      Uri.parse('$BASE_URL/auth/login'),
+      Uri.parse('$BASE_URL/user/login'),
       body: jsonEncode({'email': email, 'password': password}),
       headers: <String, String>{'Content-Type': 'application/json'},
     );
@@ -33,20 +33,22 @@ class AuthService {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       final String? rawCookie = response.headers['set-cookie'];
       if (rawCookie != null) {
-        final jwt = rawCookie.split(';').firstWhere((element) => element.contains('jwt='));
+        final jwt = rawCookie
+            .split(';')
+            .firstWhere((element) => element.contains('jwt='));
         prefs.setString('token', jwt);
       }
       // prefs.setString('token', response.headers['set-cookie']!);
-      return AuthUser.fromJson(response.body);
+      final Map<String, dynamic> body = jsonDecode(response.body)["data"];
+      return AuthUser.fromMap(body);
     } else {
-      print(response.body);
       return null;
     }
   }
 
   Future<AuthUser?> signup(String email, String password) async {
     final response = await http.post(
-      Uri.parse('$BASE_URL/auth/signup'),
+      Uri.parse('$BASE_URL/user/signup'),
       body: jsonEncode({'email': email, 'password': password}),
       headers: {'Content-Type': 'application/json'},
     );
@@ -62,5 +64,4 @@ class AuthService {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.remove('token');
   }
-
 }

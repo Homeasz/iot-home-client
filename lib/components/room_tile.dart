@@ -1,41 +1,42 @@
 import 'package:flutter/material.dart';
+import 'package:homeasz/components/base_tile.dart';
 import 'package:homeasz/models/room_model.dart';
 import 'package:homeasz/pages/room_page.dart';
+import 'package:homeasz/utils/image_paths.dart';
 
-class RoomCard extends StatelessWidget {
-  const RoomCard({
+class RoomTile extends StatelessWidget {
+  final Room room;
+  final void Function(BuildContext, int, Type)? deleteCallback;
+
+  const RoomTile({
     super.key,
-    required this.index,
-    required this.roomName,
+    required this.room,
+    this.deleteCallback,
   });
-
-  final int index;
-  final String roomName;
-  // get a random color
 
   @override
   Widget build(BuildContext context) {
-    Color random = Color((index * 0x12345678*(10+index)+5235529935) & 0xFFFFFFFF);
-    return Card(
-        color: random,
-        child: ListTile(
-            // center the title
-            title: Padding(
-              padding: const EdgeInsets.fromLTRB(5, 0, 0, 8),
-              child: Center(
-                child: Text(
-                  roomName,
-                  style: Theme.of(context).textTheme.headlineSmall,
-                ),
-              ),
+    return BaseTile(
+      tileName: room.name,
+      tileType: room.type,
+      initialState: false,
+      imagePath: roomImagePath,
+      onTap: () {
+        // Logic for navigating to room page
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => RoomPage(
+              roomId: room.id,
+              roomName: room.name,
+              roomType: room.type,
             ),
-            onTap: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => RoomPage(
-                            roomIndex: index,
-                          )));
-            }));
+          ),
+        );
+      },
+      onLongPress: (deleteCallback != null)
+          ? () => deleteCallback!(context, room.id, Room)
+          : null,
+    );
   }
 }

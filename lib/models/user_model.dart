@@ -2,15 +2,13 @@ import 'dart:convert';
 
 class User {
   final String firstName;
-  final String lastName; 
+  final String lastName;
   final String email;
-  final String phone;
   final String address;
   User({
     required this.firstName,
     required this.lastName,
     required this.email,
-    required this.phone,
     required this.address,
   });
 
@@ -19,7 +17,6 @@ class User {
       firstName: map['firstname'] ?? '',
       lastName: map['lastname'] ?? '',
       email: map['email'] ?? '',
-      phone: map['phone'] ?? '',
       address: map['address'] ?? '',
     );
   }
@@ -28,13 +25,12 @@ class User {
       'firstname': firstName,
       'lastname': lastName,
       'email': email,
-      'phone': phone,
       'address': address,
     };
   }
 
-  factory User.fromJson(Map<String, dynamic> json){
-    return User.fromMap(json['profileDetails']);
+  factory User.fromJson(Map<String, dynamic> json) {
+    return User.fromMap(json['data']);
   }
   String toJson() => json.encode(toMap());
 }

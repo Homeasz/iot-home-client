@@ -5,10 +5,11 @@ import 'package:homeasz/components/my_button.dart';
 import 'package:homeasz/components/my_textfield.dart';
 import 'package:homeasz/providers/auth_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class SignUpPage extends StatefulWidget {
   final Function()? onTap;
-  const SignUpPage({Key? key, this.onTap}) : super(key: key);
+  const SignUpPage({super.key, this.onTap});
 
   @override
   State<SignUpPage> createState() => _SignUpPageState();
@@ -56,6 +57,116 @@ class _SignUpPageState extends State<SignUpPage> {
 
   @override
   Widget build(BuildContext context) {
+    final height = MediaQuery.sizeOf(context).height;
+    final authProvider = Provider.of<AuthProvider>(context);
+    return Scaffold(
+      body: Center(
+        child: SafeArea(
+          child: Center(
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    'Hello there!',
+                    style: GoogleFonts.alice(
+                      color: Colors.black,
+                      fontSize: 48,
+                      fontWeight: FontWeight.w400,
+                      height: 0.02,
+                      letterSpacing: -1.44,
+                    ),
+                  ),
+                  SizedBox(height: height * 0.05),
+                  Text(
+                    'Happy to get you onboarded!',
+                    textAlign: TextAlign.center,
+                    style: GoogleFonts.inriaSerif(
+                      color: const Color(0xFF907C7C),
+                      fontSize: 16,
+                      fontWeight: FontWeight.w400,
+                      height: 1.05,
+                      letterSpacing: -0.48,
+                    ),
+                  ),
+                  // email textfield
+                  SizedBox(height: height * 0.05),
+                  MyTextField(
+                    controller: usernameController,
+                    hintText: 'Name',
+                    obscureText: false,
+                    icon: const AssetImage('lib/assets/User.png'),
+                  ),
+
+                  const SizedBox(height: 10),
+                  MyTextField(
+                    controller: emailController,
+                    hintText: 'Email',
+                    obscureText: false,
+                    icon: const AssetImage('lib/assets/Mail.png'),
+                  ),
+
+                  const SizedBox(height: 10),
+                  MyTextField(
+                    controller: passwordController,
+                    hintText: 'Create password',
+                    obscureText: true,
+                    icon: const AssetImage('lib/assets/Lock.png'),
+                    iconSize: 24,
+                  ),
+                  const SizedBox(height: 10),
+                  MyTextField(
+                    controller: passwordController,
+                    hintText: 'Re-type password',
+                    obscureText: true,
+                    icon: const AssetImage('lib/assets/Lock.png'),
+                    iconSize: 24,
+                  ),
+
+                  const SizedBox(height: 25),
+                  MyButton(
+                    onTap: () {
+                      signUp(authProvider);
+                    },
+                    text: 'Sign Up',
+                  ),
+                  const SizedBox(height: 18),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          'Have an account?',
+                          style: GoogleFonts.inriaSerif(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.black,
+                          ),
+                        ),
+                        const SizedBox(width: 4),
+                        GestureDetector(
+                          onTap: widget.onTap,
+                          child: Text(
+                            'Sign in',
+                            style: GoogleFonts.inriaSerif(
+                              fontSize: 15,
+                              fontWeight: FontWeight.w900,
+                              color: Colors.black,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+    /*
     final authProvider = Provider.of<AuthProvider>(context);
     return Scaffold(
       body: SafeArea(
@@ -147,6 +258,6 @@ class _SignUpPageState extends State<SignUpPage> {
           ),
         ),
       ),
-    );
+    );*/
   }
 }

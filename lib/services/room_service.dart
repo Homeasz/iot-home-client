@@ -1,15 +1,24 @@
 // // lib/services/api_service.dart
-import 'dart:ffi';
 
+import 'dart:developer';
+
+import 'package:homeasz/models/device_model.dart';
 import 'package:homeasz/models/room_model.dart';
 import 'package:homeasz/models/switch_model.dart';
 import 'package:homeasz/services/auth_service.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import '../utils/constants.dart';
 
 class RoomService {
   final _authService = AuthService();
+
+  Future<List<Room>?> getLocalUserRooms() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    List<Room> rooms = prefs.get('rooms') as List<Room>;
+    return rooms;
+  }
 
   Future<List<Room>?> getUserRooms() async {
     final token = await _authService.getToken();
@@ -25,7 +34,7 @@ class RoomService {
         // deserialize the response which has message and rooms
         final Map<String, dynamic> data = jsonDecode(response.body);
         // get the rooms from the response by parsing the json
-        final List<dynamic> rooms = data['rooms'];
+        final List<dynamic> rooms = data['data'];
         // return the list of rooms
         return rooms.map((room) => Room.fromMap(room)).toList();
       } else {
@@ -37,40 +46,36 @@ class RoomService {
 
   Future<Room?> getRoom(String roomId) async {
     try {
-      final response =
-          await http.get(Uri.parse('$ROOM_BASE_URL/rooms/$roomId'));
+      final response = await http.get(Uri.parse('$BASE_URL/room/$roomId'));
       if (response.statusCode == 200) {
         final Map<String, dynamic> data = jsonDecode(response.body);
-        return Room.fromJson(data['room']);
+        return Room.fromJson(data['data']);
       } else {
         return null;
       }
     } catch (e) {
-      print('Error: $e');
       return null;
     }
   }
 
-  Future<Room?> addRoom(String name) async {
+  Future<Room?> addRoom(String name, String type) async {
     final token = await _authService.getToken();
     if (token != null) {
       final response = await http.post(
-        Uri.parse('$ROOM_BASE_URL/room/'),
+        Uri.parse('$BASE_URL/room/'),
         headers: <String, String>{
           'Cookie': token,
           'Content-Type': 'application/json',
         },
         body: jsonEncode(<String, String>{
           'roomName': name,
+          'type': type.toUpperCase(),
         }),
       );
       if (response.statusCode == 200) {
         final Map<String, dynamic> data = jsonDecode(response.body);
-        return Room.fromMap(data['room']);
-      } else {
-        print(response.statusCode);
-        print(response.body);
-      }
+        return Room.fromMap(data['data']);
+      } else {}
     }
     return null;
   }
@@ -79,7 +84,7 @@ class RoomService {
     final token = await _authService.getToken();
     if (token != null) {
       final response = await http.put(
-        Uri.parse('$ROOM_BASE_URL/room/'),
+        Uri.parse('$BASE_URL/room/'),
         headers: <String, String>{
           'Cookie': token,
           'Content-Type': 'application/json',
@@ -92,14 +97,9 @@ class RoomService {
 
       if (response.statusCode == 201) {
         final Map<String, dynamic> data = jsonDecode(response.body);
-        data.forEach((key, value) {
-          print('$key: $value');
-        });
+        data.forEach((key, value) {});
         return Room.fromMap(data["room"]);
-      } else {
-        print(response.statusCode);
-        print(response.body);
-      }
+      } else {}
     }
     return null;
   }
@@ -108,7 +108,7 @@ class RoomService {
     final token = await _authService.getToken();
     if (token != null) {
       final response = await http.delete(
-        Uri.parse('$ROOM_BASE_URL/room/$roomId'),
+        Uri.parse('$BASE_URL/room/$roomId'),
         headers: <String, String>{
           'Cookie': token,
           'Content-Type': 'application/json',
@@ -117,18 +117,16 @@ class RoomService {
       if (response.statusCode == 200) {
         final Map<String, dynamic> data = jsonDecode(response.body);
         return Room.fromMap(data['room']);
-      } else {
-        print(response.body);
-      }
+      } else {}
     }
     return null;
   }
 
-  Future<List<SwitchModel>> getSwitches(String roomId) async {
+  Future<List<PowerSwitch>> getSwitches(int roomId, String roomName) async {
     final token = await _authService.getToken();
     if (token != null) {
       final response = await http.get(
-        Uri.parse('$ROOM_BASE_URL/room/switches/$roomId'),
+        Uri.parse('$BASE_URL/room/switches/$roomId'),
         headers: <String, String>{
           'Cookie': token,
           'Content-Type': 'application/json',
@@ -136,16 +134,42 @@ class RoomService {
       );
       if (response.statusCode == 200) {
         final Map<String, dynamic> body = jsonDecode(response.body);
+        log("$TAG getSwitches - switches: ${body.toString()}");
         final List<dynamic> switches = body['data'];
+        switches.forEach((element) {
+          element['roomName'] = roomName;
+        });
         return switches
-            .map((switchData) => SwitchModel.fromMap(switchData))
+            .map((switchData) => PowerSwitch.fromMap(switchData))
             .toList();
       } else {
-        print(response.body);
         return [];
       }
     }
     return [];
   }
 
+  Future<bool> toggleRoom(int roomId, bool state) async {
+    final token = await _authService.getToken();
+    if (token != null) {
+      final response = await http.put(
+        Uri.parse('$BASE_URL/room/switches/toggle/all'),
+        headers: <String, String>{
+          'Cookie': token,
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode(<String, dynamic>{
+          'roomId': roomId,
+          'state': state,
+        }),
+      );
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> body = jsonDecode(response.body);
+        return body['data']['state'];
+      } else {}
+    }
+    return false;
+  }
+
+  static const TAG = "RoomService:";
 }

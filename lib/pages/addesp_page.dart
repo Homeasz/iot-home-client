@@ -1,9 +1,18 @@
-import 'package:flutter/material.dart';
-import 'package:homeasz/components/my_textfield.dart';
-import 'package:homeasz/components/qr_scanner.dart';
-import 'package:homeasz/services/esp_service.dart';
-import 'package:wifi_iot/wifi_iot.dart';
+import 'dart:async';
+import 'dart:convert';
+import 'dart:developer';
 
+import 'package:flutter/material.dart';
+import 'package:homeasz/components/loading.dart';
+import 'package:homeasz/components/qr_scanner.dart';
+import 'package:homeasz/components/text_input.dart';
+import 'package:homeasz/providers/data_provider.dart';
+import 'package:homeasz/services/device_service.dart';
+import 'package:homeasz/services/esp_service.dart';
+import 'package:homeasz/utils/image_paths.dart';
+import 'package:provider/provider.dart';
+import 'package:wifi_iot/wifi_iot.dart';
+import 'package:homeasz/utils/request_permissions.dart';
 
 class AddESPPage extends StatefulWidget {
   const AddESPPage({super.key});
@@ -17,12 +26,12 @@ class _AddESPPageState extends State<AddESPPage> {
   final TextEditingController passwordController = TextEditingController();
   final EspService espService = EspService();
   String _ssidPassword = '';
-  String _connectionStatus = '';
-  bool _isConnected = false;
-
-  // esp hotspot info variable
-  String _ip = '';
-
+  int? deviceId;
+  String? EspSsid;
+  String? _connectionStatus;
+  int espStatus =
+      0; //0: Not connected yet, 1: connected to app, 2: connected to wifi, 3: Disconnected after a succesful connect
+  bool _scanQRPressed = false;
 
   void ssidPassword(String value) async {
     setState(() {
@@ -30,9 +39,13 @@ class _AddESPPageState extends State<AddESPPage> {
     });
 
     // start loading circle
-    // showDialog(context: context, builder: (context) => const CircularProgressIndicator());
+    loading(context);
 
-    // await connect();
+    if (!(await WiFiForIoTPlugin.isEnabled())) {
+      WiFiForIoTPlugin.setEnabled(true, shouldOpenSettings: true);
+    }
+    await connect(); //TODO: add a popup to display failure if connect fails
+    Navigator.pop(context);
   }
 
   @override
@@ -43,195 +56,285 @@ class _AddESPPageState extends State<AddESPPage> {
   void sendSSIDPasswordToESP() async {
     final ssid = ssidController.text;
     final password = passwordController.text;
-    await espService.status();
-    bool connected = await espService.addESP(ssid, password);
-    if (connected) {
+    if (!(await espService.status())) {
       setState(() {
-        _connectionStatus = 'Sent Creds to ESP';
-      });
-      Navigator.pop(context, true);
-    } else {
-      setState(() {
-        _connectionStatus = 'Failed to send Creds to ESP';
+        espStatus = 3;
+        _connectionStatus =
+            "Abruptly disconnected from ${EspSsid ?? 'device'}\nPlease scan QR again";
       });
     }
+    loading(context);
+    final int connectStatus =
+        await espService.addESP(ssid, password, deviceId?.toString() ?? 'null');
+    log("sendSSIDPasswordToESP - $connectStatus");
+    if (connectStatus == 100) {
+      setState(() {
+        espStatus = 2;
+        _connectionStatus = "New kit added  ";
+      });
+      final disconnect_phone = await WiFiForIoTPlugin.disconnect();
+    } else if (connectStatus == 102) {
+      setState(() {
+        _connectionStatus = "Incorrect WiFi credentials!";
+      });
+    } else {
+      setState(() {
+        _connectionStatus = "Failed to connect ESP to WiFi\nPlease try again!";
+      });
+    }
+    Navigator.pop(context);
+    //TODO: add additional cloud call confirmation
+    // if (disconnect_phone && EspSsid != null) {
+    //   final hostname = "Homeasz-${EspSsid!.substring(12)}";
+    //   int retry_mdns_resolve = 3;
+    //   for (int i = 0; i < retry_mdns_resolve; i++) {
+    //     Esp_connected = await espService.mDnsResolve(hostname);
+    //     if (Esp_connected) break;
+    //   }
+    // }
+
+    // bool connected =
+    // if (connected) {
+    //   setState(() {
+    //     _connectionStatus = 'Sent Creds to ESP';
+    //   });
+    //   Future.delayed(Duration(seconds: 5),(){Navigator.pop(context, true);});
+    // } else {
+    //   setState(() {
+    //     _connectionStatus = 'Failed to send Creds to ESP';
+    //   });
+    // }
   }
 
   Future<bool> connect() async {
-    final ssid = ssidController.text;
-    final password = passwordController.text;
+    final qrData = json.decode(_ssidPassword);
+    final ssid = qrData["SSID"];
+    EspSsid = ssid;
+    final password = qrData["PASSWORD"];
+    final deviceName =
+        ssid; //TODO: in scale this might not be strongly unique, change this to a more unique name
+    final roomId = ModalRoute.of(context)!.settings.arguments as int;
+    final dataProvider = Provider.of<DataProvider>(context);
+    deviceId = await dataProvider.addDevice(deviceName, roomId);
     bool? connected = await WiFiForIoTPlugin.connect(
       ssid,
       password: password,
-      joinOnce: false,
+      joinOnce: true,
       security: NetworkSecurity.WPA,
     );
-    if (connected == true) {
-      setState(() {
-        _connectionStatus = 'Connected to $ssid';
-      });
-      setState(() {
-        _isConnected = true;
-      });
+    // connected = false;
+    // create a timer to wait for the connection to be established
+    // bool connected =  Timer(const Duration(seconds: 10), () => true) as bool;
+    if (connected) {
+      // setState(() {
+      //   _connectionStatus = 'Connected to $ssid';
+      //   _isConnected = true;
+      //   _scanQRPressed = false;
+      // });
+      // setState(() {
+      //   _isConnected = true;
+      // });
+      // setState(() {
+      //   _scanQRPressed = false;
+      // });
 
-      // get esp hotspot ip
-      String ip = (await WiFiForIoTPlugin.getIP())!;
       await WiFiForIoTPlugin.forceWifiUsage(true);
       setState(() {
-        _ip = ip;
+        _connectionStatus = 'Connected to $ssid';
+        espStatus = 1;
+        _scanQRPressed = false;
       });
-
       await espService.status();
       ssidController.clear();
       passwordController.clear();
     } else {
       setState(() {
         _connectionStatus = 'Failed to connect to $ssid';
-      });
-      setState(() {
-        _isConnected = false;
+        _scanQRPressed = false;
+        espStatus = 0;
       });
     }
     return connected;
   }
 
+  Widget showQR(BuildContext context) {
+    return _scanQRPressed
+        ? Container(
+            height: 300,
+            width: 300,
+            child: QRScanner(
+              callback: ssidPassword,
+            ),
+          )
+        : GestureDetector(
+            onTap: () async {
+              if (espStatus > 0) {
+                await WiFiForIoTPlugin.disconnect();
+              }
+              //Needed to do mdns resolve
+              requestPermissions();
+              setState(() {
+                _scanQRPressed = true;
+                espStatus = 0;
+                _connectionStatus = null;
+              });
+            },
+            child: Container(
+              height: 50,
+              width: 150,
+              padding: const EdgeInsets.all(10),
+              decoration: ShapeDecoration(
+                color: Colors.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                shadows: const [
+                  BoxShadow(
+                    color: Color(0x3F000000),
+                    blurRadius: 4,
+                    offset: Offset(4, 4),
+                    spreadRadius: 0,
+                  )
+                ],
+              ),
+              child: const Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Icon(
+                    Icons.qr_code,
+                    color: Colors.black,
+                  ),
+                  Text(
+                    'Scan QR',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 18,
+                      fontFamily: 'Poppins',
+                      fontWeight: FontWeight.w400,
+                      height: 0.06,
+                      letterSpacing: -0.54,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xFFE7F8FF),
       appBar: AppBar(
-        title: const Text('Add ESP'),
+        title: const Text('Add Device'),
+        backgroundColor: const Color(0xFFE7F8FF),
       ),
-      body: _isConnected ? _sendCredsToESP(context) : _connectToESP(context),
-    );
-  }
-
-  Center _sendCredsToESP(BuildContext context) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const Text('Connected to ESP'),
-          Text('IP: $_ip',
-              style: Theme.of(context).textTheme.bodyLarge
-          ),
-          const SizedBox(height: 20),
-          // get wifi creds for ESP
-          TextField(
-            controller: ssidController,
-            decoration: const InputDecoration(
-              hintText: 'SSID',
-            ),
-          ),
-          const SizedBox(height: 20),
-          TextField(
-            controller: passwordController,
-            decoration: const InputDecoration(
-              hintText: 'Password',
-            ),
-          ),
-          GestureDetector(
-            onTap: sendSSIDPasswordToESP,
-            child: Container(
-              padding: const EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                color: Colors.blue,
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: const Text(
-                'Send Creds to ESP',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 20,
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.only(left: 20, right: 20),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              const SizedBox(height: 20),
+              const Align(
+                alignment: Alignment.topLeft,
+                child: Text(
+                  'Setup new Homeasz kit',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 20,
+                    fontFamily: 'Poppins',
+                    fontWeight: FontWeight.w400,
+                    // height: 0.06,
+                    // letterSpacing: -0.54,
+                  ),
                 ),
               ),
-            ),
-          )
-        ],
-      ),
-    );
-  }
-
-  Center _connectToESP(BuildContext context) {
-    return Center(
-      child: SafeArea(
-        child: SingleChildScrollView(
-          child: Column(
-            // mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              SizedBox(
-                  height: 300,
-                  width: 300,
-                  child: QRScanner(
-                    callback: ssidPassword,
-                  )),
-
-              // horizontal divider with or text and border padding
-              const Padding(
-                padding: EdgeInsets.all(8.0),
-                child: Row(
+              const SizedBox(height: 10),
+              showQR(context),
+              const SizedBox(height: 10),
+              if (_connectionStatus != null)
+                Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                  Text(
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                        fontSize: 16, fontWeight: FontWeight.w600),
+                    _connectionStatus!,
+                  ),
+                  if (espStatus == 2)
+                    const Image(width: 32, image: AssetImage(tickPath))
+                ]),
+              if (espStatus == 2)
+                const Text(
+                    style: const TextStyle(
+                        fontSize: 16, fontWeight: FontWeight.w400),
+                    textAlign: TextAlign.center,
+                    "\nProceed back to the room and rename\n newly added Devices!"),
+              const SizedBox(height: 10),
+              Visibility(
+                visible: (espStatus == 1),
+                child: Column(
                   children: [
-                    Expanded(
-                      child: Divider(
-                        color: Colors.black,
-                        thickness: 1,
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.all(8.0),
+                    const Align(
+                      alignment: Alignment.topLeft,
                       child: Text(
-                        'OR',
+                        'Connect kit to Wi-Fi',
+                        textAlign: TextAlign.center,
                         style: TextStyle(
                           color: Colors.black,
-                          fontSize: 15,
+                          fontSize: 20,
+                          fontFamily: 'Poppins',
+                          fontWeight: FontWeight.w400,
                         ),
                       ),
                     ),
-                    Expanded(
-                      child: Divider(
-                        color: Colors.black,
-                        thickness: 1,
+                    const SizedBox(height: 10),
+                    MyTextInput(input: ssidController, hintText: 'SSID'),
+                    const SizedBox(height: 20),
+                    MyTextInput(
+                        input: passwordController, hintText: 'Password'),
+                    const SizedBox(height: 20),
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: GestureDetector(
+                        onTap: sendSSIDPasswordToESP,
+                        child: Container(
+                          width: 100,
+                          padding: const EdgeInsets.all(10),
+                          decoration: ShapeDecoration(
+                            color: Colors.white,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            shadows: const [
+                              BoxShadow(
+                                color: Color(0x3F000000),
+                                blurRadius: 2,
+                                offset: Offset(2, 2),
+                                spreadRadius: 0,
+                              )
+                            ],
+                          ),
+                          child: const Text(
+                            'Add Kit',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 15,
+                              fontFamily: 'Poppins',
+                              fontWeight: FontWeight.w400,
+                            ),
+                          ),
+                        ),
                       ),
-                    ),
+                    )
                   ],
                 ),
               ),
-              Text(
-                _ssidPassword,
-                style: Theme.of(context).textTheme.bodyLarge,
-              ),
-              Text(
-                _connectionStatus,
-                style: Theme.of(context).textTheme.bodyLarge,
-              ),
-              MyTextField(
-                controller: ssidController,
-                hintText: 'SSID',
-                obscureText: false,
-              ),
-              const SizedBox(height: 20),
-              MyTextField(
-                controller: passwordController,
-                hintText: 'Password',
-                obscureText: false,
-              ),
-              const SizedBox(height: 20),
-              GestureDetector(
-                onTap: connect,
-                child: Container(
-                  padding: const EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                    color: Colors.blue,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: const Text(
-                    'Connect',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 20,
-                    ),
-                  ),
-                ),
-              )
             ],
           ),
         ),

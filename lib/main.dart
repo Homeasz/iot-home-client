@@ -1,4 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
+import 'package:hive_flutter/adapters.dart';
+import 'package:homeasz/models/device_model.dart';
+import 'package:homeasz/models/room_model.dart';
+import 'package:homeasz/models/routine_model.dart';
+import 'package:homeasz/models/switch_model.dart';
 import 'package:homeasz/pages/auth/auth_page.dart';
 import 'package:homeasz/pages/createroom_page.dart';
 import 'package:homeasz/pages/profile/profile_page.dart';
@@ -10,14 +16,25 @@ import 'package:homeasz/providers/auth_provider.dart';
 import 'package:homeasz/pages/addesp_page.dart';
 import 'package:homeasz/pages/listesps_page.dart';
 import 'package:homeasz/utils/themes.dart';
+import 'package:homeasz/pages/editroutine_page.dart';
 
-void main() {
+void main() async {
+  await Hive.initFlutter();
+  Hive.registerAdapter(DeviceModelAdapter());
+  Hive.registerAdapter(PowerSwitchAdapter());
+  Hive.registerAdapter(RoomAdapter());
+  Hive.registerAdapter(RoutineCloudResponseAdapter());
+  Hive.registerAdapter(RoutineSwitchCloudResponseAdapter());
+  WidgetsFlutterBinding.ensureInitialized();
+  FlutterError.onError = (FlutterErrorDetails details) {
+    FlutterError.dumpErrorToConsole(details);
+  };
   runApp(MultiProvider(providers: [
     ChangeNotifierProvider(create: (context) => AuthProvider()),
     ChangeNotifierProvider(create: (context) => DataProvider()),
     ChangeNotifierProvider(create: (context) => UserProvider()),
     ChangeNotifierProvider(create: (context) => ThemeProvider()),
-  ], child:  MyApp()));
+  ], child: const MyApp()));
 }
 
 class MyApp extends StatelessWidget {
@@ -29,14 +46,15 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Homeasz',
       debugShowCheckedModeBanner: false,
-      theme: themeProvider.isDarkMode ? darkTheme : lightTheme,
+      theme: themeProvider.isDarkMode ? darkTheme : customTheme,
       initialRoute: '/',
       routes: {
         '/': (context) => const AuthPage(),
-        '/create_room': (context) => const CreateRoom(),
         '/add_esp': (context) => const AddESPPage(),
+        '/create_room': (context) => const CreateRoom(),
         '/list_esp': (context) => const ListESPsPage(),
         '/profile': (context) => const ProfileScreen(),
+        '/editRoutine': (context) => const EditroutinePage(),
       },
     );
   }

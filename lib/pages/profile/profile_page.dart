@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:homeasz/models/auth_model.dart';
 import 'package:homeasz/pages/profile/profile_menu_page.dart';
 import 'package:homeasz/pages/profile/update_profile_page.dart';
 import 'package:homeasz/providers/auth_provider.dart';
@@ -10,7 +9,7 @@ import 'package:homeasz/utils/constants.dart';
 import 'package:provider/provider.dart';
 
 class ProfileScreen extends StatelessWidget {
-  const ProfileScreen({Key? key}) : super(key: key);
+  const ProfileScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:homeasz/models/auth_model.dart';
+import 'package:homeasz/models/user_model.dart';
 import 'package:homeasz/services/auth_service.dart';
 import 'package:provider/provider.dart';
 import 'package:homeasz/providers/user_provider.dart';
@@ -9,12 +10,14 @@ class AuthProvider extends ChangeNotifier {
 
   AuthUser? get user => _authUser;
 
-  Future<void> login(BuildContext context, email, String password) async {
+  UserProvider? _userProvider;
+
+  Future<void> login(email, String password) async {
     // call the login API
     // if successful, set the user
     _authUser = await AuthService().login(email, password);
     if (_authUser != null) {
-      Provider.of<UserProvider>(context, listen: false).getUser();
+      _userProvider?.getUser();
     }
     notifyListeners();
   }

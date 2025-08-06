@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:wifi_scan/wifi_scan.dart';
 
 class ListESPsPage extends StatefulWidget {
-  const ListESPsPage({Key? key}) : super(key: key);
+  const ListESPsPage({super.key});
 
   @override
   State<ListESPsPage> createState() => _ListESPsPageState();

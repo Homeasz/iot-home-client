@@ -1,193 +1,175 @@
 import 'package:flutter/material.dart';
-import 'package:homeasz/models/room_model.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:homeasz/components/add_button.dart';
+import 'package:homeasz/components/switch_tile.dart';
 import 'package:homeasz/models/switch_model.dart';
 import 'package:homeasz/providers/data_provider.dart';
+import 'package:homeasz/utils/image_paths.dart';
 import 'package:provider/provider.dart';
 
 class RoomPage extends StatefulWidget {
-  final int roomIndex;
+  const RoomPage(
+      {super.key,
+      required this.roomName,
+      required this.roomType,
+      required this.roomId});
 
-  const RoomPage({super.key, required this.roomIndex});
+  final String roomName;
+  final String roomType;
+  final int roomId;
 
   @override
   State<RoomPage> createState() => _RoomPageState();
 }
 
 class _RoomPageState extends State<RoomPage> {
-  // switch states as a array
+  bool state = false;
+  late DataProvider _dataProvider;
 
-  List<SwitchModel> switches = [];
+  void deleteSwitchCallback(BuildContext context, int switchId) {
+    _dataProvider.deleteSwitch(switchId);
+    setState(() {});
+  }
 
-  bool editRoomName = false;
-  final TextEditingController roomNameController = TextEditingController();
+  void onPowerTap() {
+    setState(() {
+      state = !state;
+    });
+  }
 
   @override
   void initState() {
     super.initState();
-    _fetchSwitches();
-  }
-
-  void _fetchSwitches() async {
-    final DataProvider dataProvider =
-        Provider.of<DataProvider>(context, listen: false);
-    String roomId = dataProvider.rooms[widget.roomIndex].id.toString();
-    await dataProvider.getSwitches(roomId);
-    setState(() {
-      switches = dataProvider.switches;
-    });
-  }
-
-  void toggleEditRoomName() async {
-    if(editRoomName){
-      final DataProvider dataProvider = Provider.of<DataProvider>(context, listen: false);
-    String roomId = dataProvider.rooms[widget.roomIndex].id.toString();
-    await dataProvider.editRoom(roomId, roomNameController.text);
-    }
-    
-    setState(() {
-      editRoomName = !editRoomName;
-    });
-  }
-
-  void _toggleSwitch(int switchIndex, DataProvider dataProvider) async {
-    final switchModel = switches[switchIndex];
-    dataProvider.toggleSwitch(switchModel.id.toString(), !switchModel.state);
-  }
-
-  Future openDialog (BuildContext context) async {
-    final DataProvider dataProvider = Provider.of<DataProvider>(context, listen: false);
-    final TextEditingController switchBoardNameController = TextEditingController();
-    return showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: const Text('Add Switch Board'),
-          content:  TextField(
-            decoration: const InputDecoration(
-
-            ),
-            controller: switchBoardNameController,
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: const Text('Cancel'),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                dataProvider.addSwitchBoard(widget.roomIndex, switchBoardNameController.text);
-                Navigator.pop(context);
-              },
-              child: const Text('Add'),
-            ),
-          ],
-        );
-      },
-    );
+    _dataProvider = Provider.of<DataProvider>(context, listen: false);
+    _dataProvider.getSwitches(widget.roomId, widget.roomName);
   }
 
   @override
   Widget build(BuildContext context) {
-    final DataProvider dataProvider = Provider.of<DataProvider>(context);
-    final Room room = dataProvider.rooms[widget.roomIndex];
-    roomNameController.text = room.name;
-
+    final smallRoomType = widget.roomType.toLowerCase();
     return Scaffold(
-      appBar: AppBar(
-        title: editRoomName
-            ? TextField(
-                controller: roomNameController,
-                decoration: const InputDecoration(
-                  hintText: 'Enter room name',
-                  border: InputBorder.none,
-                ),
-                onSubmitted: (value) {
-                  setState(() {
-                    // room.name = value;
-                    editRoomName = false;
-                  });
-                },
-              )
-            : Text(room.name),
-        actions: [
-          IconButton(
-            icon: Icon(editRoomName ? Icons.save : Icons.edit),
-            onPressed: toggleEditRoomName,
-          )
-        ],
-      ),
-      
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              // room id
-              'Room ID: ${room.id}',
-              style: Theme.of(context).textTheme.bodyLarge,
-            ),
-            // rows of switches
-            Expanded(
-              child: ListView.builder(
-                itemCount: switches.length,
-                itemBuilder: (context, index) {
-                  final switchModel = switches[index];
-                  return Dismissible(
-                    key: Key(switchModel.id.toString()),
-                    onDismissed: (direction) {
-                      dataProvider.deleteSwitch(switchModel.id.toString());
-                    },
-                    background: Container(
-                      color: Colors.red,
-                      alignment: Alignment.centerRight,
-                      padding: const EdgeInsets.only(right: 20),
-                      child: const Icon(Icons.delete),
-                    ),
-                    child: ListTile(
-                      title: Text(
-                        '${switchModel.name}-${switchModel.id}',
-                        style: Theme.of(context).textTheme.bodySmall,
-                      ),
-                      trailing: Switch(
-                        value: switchModel.state,
-                        onChanged: (value) {
-                          _toggleSwitch(index, dataProvider);
-                        },
-                      ),
-                    ),
-                  );
-                },
-              ),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                ElevatedButton(
-                  onPressed: () {
-                    // dataProvider.addSwitchBoard(widget.roomIndex);
-                    openDialog(context);
-                  },
-                  child: const Text('Add Switch Board'),
-                ),
-              ],
-            ),
-            const SizedBox(height: 20),
-
-            Text(
-              'Created at: ${room.createdAt}',
-              style: Theme.of(context).textTheme.bodyLarge,
-            ),
-            Text(
-              'Updated at: ${room.updatedAt}',
-              style: Theme.of(context).textTheme.bodyLarge,
-            ),
-            const SizedBox(height: 10),
-          ],
+        appBar: AppBar(
+          backgroundColor: const Color(0xFFE6F8FF),
+          toolbarHeight: 30,
+          // on scroll up dont change the appbar
+          scrolledUnderElevation: 0,
         ),
-      ),
-    );
+        backgroundColor: const Color(0xFFE6F8FF),
+        floatingActionButton: AddButton(
+          window: 3,
+          arguments: widget.roomId,
+        ),
+        body: Center(
+          child: Stack(
+            children: [
+              Column(
+                children: [
+                  Container(
+                    height: 90,
+                    width: MediaQuery.sizeOf(context).width,
+                    color: const Color(0xFFE6F8FF),
+                  ),
+                  Expanded(
+                    child: Container(
+                        // height should be to the bottom of the screen
+                        // width: MediaQuery.sizeOf(context).width,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          border: Border.all(
+                            color: const Color(0xFFE6F8FF),
+                          ),
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                        padding: const EdgeInsets.all(20),
+                        child: Column(
+                          children: [
+                            const SizedBox(
+                              height: 30,
+                            ),
+                            Text(
+                              widget.roomName,
+                            ),
+                            const SizedBox(
+                              height: 30,
+                            ),
+                            Expanded(
+                              child: Consumer<DataProvider>(
+                                builder: (BuildContext context,
+                                    DataProvider dataProvider, Widget? child) {
+                                  return GridView.builder(
+                                    gridDelegate:
+                                        const SliverGridDelegateWithFixedCrossAxisCount(
+                                      crossAxisCount: 2,
+                                      crossAxisSpacing: 20,
+                                      mainAxisSpacing: 20,
+                                    ),
+                                    itemCount: dataProvider
+                                            .switches[widget.roomId]?.length ??
+                                        0,
+                                    itemBuilder: (context, index) {
+                                      final switchModel = dataProvider
+                                          .switches[widget.roomId]?.values
+                                          .toList()[index];
+                                      if (switchModel != null) {
+                                        return SwitchTile(
+                                          // index: index,
+                                          powerSwitch: switchModel,
+                                          roomId: widget.roomId,
+                                          deleteCallback: deleteSwitchCallback,
+                                        );
+                                      }
+                                    },
+                                  );
+                                },
+                              ),
+                            )
+                          ],
+                        )),
+                  ),
+                ],
+              ),
+              Positioned(
+                top: -15,
+                child: Container(
+                  padding: const EdgeInsets.all(0),
+                  height: 160,
+                  width: MediaQuery.sizeOf(context).width,
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const SizedBox(
+                        width: 50,
+                      ),
+                      Image(
+                          image: AssetImage(
+                              '$roomImagePath/$smallRoomType${state ? 'true' : 'false'}.png')),
+                      Column(
+                        children: [
+                          InkWell(
+                              onTap: onPowerTap,
+                              child: Padding(
+                                  padding: const EdgeInsets.all(15),
+                                  child: Card(
+                                    margin: const EdgeInsets.all(2),
+                                    elevation: 6,
+                                    color: state
+                                        ? const Color(0xFFFFC700)
+                                        : const Color(0xFFFFFFFF),
+                                    shape: const CircleBorder(),
+                                    child: Container(
+                                        padding: const EdgeInsets.all(4),
+                                        child: SvgPicture.asset(
+                                            width: 20, powerImage)),
+                                  ))),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ));
   }
 }
